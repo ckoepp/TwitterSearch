@@ -2,6 +2,7 @@ TwitterSearch
 -------------
 This library allows you easily create a search through the Twitter Search API without having to know about the API details. Based on such a search you can even iterate throughout all tweets reachable via the Twitter Search API. There is an automatic reload of the next pages while using the iteration.
 
+<pre>
 try:
     tso = TwitterSearchOrder()
     tso.setKeywords(['Guttenberg', 'Doktorarbeit']) # we do want to look for tweets including those words
@@ -26,3 +27,4 @@ try:
 
 except TwitterSearchException, e:
     print e.msg
+</pre>
