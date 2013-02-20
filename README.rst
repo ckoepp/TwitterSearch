@@ -4,13 +4,14 @@ This library allows you easily create a search through the Twitter Search API wi
 
 Example usage
 -------------
+The library is still in a very early stage. However, if you would like to use it we prepared a small example about how to play around with it.
 
 ```python
 try:
     tso = TwitterSearchOrder()
     tso.setKeywords(['Guttenberg', 'Doktorarbeit']) # we do want to look for tweets including those words
     tso.setLanguage('de') # we do need German tweets only
-    tso.setCount(100) # this is already the default value
+    tso.setCount(102) # this is already the default value
     tso.setIncludeEntities(False) # default value, too :)
 
     tb = TwitterSearch(
