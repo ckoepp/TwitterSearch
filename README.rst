@@ -5,7 +5,7 @@ This library allows you easily create a search through the Twitter Search API wi
 Example usage
 -------------
 
-```
+```python
 try:
     tso = TwitterSearchOrder()
     tso.setKeywords(['Guttenberg', 'Doktorarbeit']) # we do want to look for tweets including those words
