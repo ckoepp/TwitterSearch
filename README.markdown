@@ -5,4 +5,32 @@ This library allows you easily create a search through the Twitter Search API wi
 ## Example
 The library is still in a very early stage. However, if you would like to use it we prepared a small example about how to play around with it.
 
-Because somehow the codeblocks don't seem to work the example is published within the [[Home|Wiki]].
+```python
+from TwitterSearch import *
+try:
+    tso = TwitterSearchOrder()
+    tso.setKeywords(['Guttenberg', 'Doktorarbeit']) # we do only need tweets including those words
+    tso.setLanguage('de') # we do need German tweets only
+    tso.setCount(100) # this is already the default value
+    tso.setIncludeEntities(False) # default value, too :)
+
+    tb = TwitterSearch(
+        consumer_key = 'aaabbb',
+        consumer_secret = 'cccddd',
+        access_token = '111222',
+        access_token_secret = '333444'
+     )
+
+    tb.authenticate() # we need to use the oauth authentication first to be able to sign messages
+
+    counter  = 0 # just a small counter
+
+    for tweet in tb.searchTweetsIterable(tso): # let's iterate
+        counter += 1
+        print '@%s tweeted: %s' % (tweet['user']['screen_name'], tweet['text'])
+
+     print '*** Found a total of %i tweets' % counter   
+
+except TwitterSearchException, e:
+    print e.msg
+```
