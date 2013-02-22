@@ -1,4 +1,5 @@
 import urllib
+import datetime
 from TwitterSearchException import TwitterSearchException
 
 class TwitterSearchOrder(object):
@@ -10,12 +11,13 @@ class TwitterSearchOrder(object):
         self.arguments = {}
         self.searchterms = []
         self.url = ''
+        self.manual_url = False
 
     def addKeyword(self, word):
-        if isinstance(word, basestring):
+        if isinstance(word, basestring) and word:
             self.searchterms.append(word)
         elif isinstance(word, list):
-            self.searchterms = self.searchterms + word
+            self.searchterms += word
         else:
             raise TwitterSearchException('Neither a list nor a string')
 
@@ -25,12 +27,15 @@ class TwitterSearchOrder(object):
         self.searchterms = word
 
     def setSearchURL(self, url):
+        self.manual_url = True
         self.url = url
         return self.url
 
     def createSearchURL(self):
-        url = '?'
+        if self.manual_url:
+            return self.url
 
+        url = '?'
         url += 'q='
         for term in self.searchterms:
             url += '%s+' % urllib.quote_plus(term)
@@ -39,7 +44,8 @@ class TwitterSearchOrder(object):
         for key, value in self.arguments.iteritems():
             url += '&' +'%s=%s' % (urllib.quote_plus(key), urllib.quote_plus(value))
 
-        return self.setSearchURL(url)
+        self.url = url
+        return self.url
 
     def setLanguage(self, lang):
         if len(lang) == 2 and lang in self.iso_6391:
@@ -47,11 +53,56 @@ class TwitterSearchOrder(object):
         else:
             raise TwitterSearchException('No ISO 6391-1 language code')
 
+    def setLocale(self, lang):
+        if len(lang) == 2 and lang in self.iso_6391:
+            self.arguments.update( { 'locale' : '%s' % lang } )
+        else:
+            raise TwitterSearchException('No ISO 6391-1 language code')
+
+    def setResultType(self, tor):
+        if tor == 'mixed' or tor == 'recent' or tor == 'popular':
+            self.arguments.update( { 'result_type' : '%s' % tor } )
+        else:
+            raise TwitterSearchException('No valid result type')
+
+    def setSinceID(self, twid):
+        if isinstance(twid, (int, long)) and twid > 0:
+            self.argument.update( { 'since_id' : '%s' % twid } )
+        else:
+            raise TwitterSearchException('Not a valid number')
+
+    def setMaxID(self, twid):
+        if isinstance(twid, (int, long)) and twid > 0:
+            self.argument.update( { 'max_id' : '%s' % twid } )
+        else:
+            raise TwitterSearchException('Not a valid number')
+
     def setCount(self, cnt):
-        if isinstance(cnt, (int, long)):
+        if isinstance(cnt, (int, long)) and cnt > 0:
             self.arguments.update( { 'count' : '%s' % cnt } )
         else:
             raise TwitterSearchException('Not a valid number')
+
+    def setGeocode(self, latitude, longitude, radius, unit):
+        if isinstance(latitude, float) and isinstance(longitude, float) and isinstance(radius, (long, int)):
+            if unit == 'mi' or unit == 'km':
+                self.arguments.update( { 'geocode' : '%s,%s,%s%s' % (latitude, longitude, radius, unit) } )
+            else:
+                raise TwitterSearchException('Invalid unit')
+        else:
+            raise TwitterSearchException('Not a valid number')
+
+    def setCallback(self, func):
+        if isinstance(func, basestring) and func:
+            self.arguments.update( { 'callback' : '%s' % func } )
+        else:
+            raise TwitterSearchException('Invalid callback string')
+
+    def setUntil(self, date):
+        if isinstance(date, date):
+            self.arguments.update( { 'unitl' : '%s' % date.strftime('%Y-%m-%d') } ) 
+        else:
+            raise TwitterSearchException('Not a date object')
 
     def setIncludeEntities(self, include):
         if not isinstance(include, (bool, int)) and ( include == 1 or include == 0):

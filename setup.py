@@ -1,5 +1,9 @@
 from setuptools import setup
 
+def readme():
+    with open('README.markdown') as f:
+        return f.read()
+
 setup(name='TwitterSearch',
       version='0.1',
       description='A library to easily iterate tweets found by the Twitter Search API',
@@ -20,7 +24,3 @@ setup(name='TwitterSearch',
           'simplejson',
       ],
       zip_safe=False)
-
-def readme():
-    with open('README.rst') as f:
-        return f.read()
