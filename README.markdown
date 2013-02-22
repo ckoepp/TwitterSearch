@@ -26,22 +26,29 @@ try:
     tso.setIncludeEntities(False) # and don't give us all those entity information (this is a default value too)
 
     # it's about time to create a TwitterSearch object with out secret tokens
-    tb = TwitterSearch(
+    ts = TwitterSearch(
         consumer_key = 'aaabbb',
         consumer_secret = 'cccddd',
         access_token = '111222',
         access_token_secret = '333444'
      )
 
-    tb.authenticate() # we need to use the oauth authentication first to be able to sign messages
+    ts.authenticate() # we need to use the oauth authentication first to be able to sign messages
 
     counter  = 0 # just a small counter
-    for tweet in tb.searchTweetsIterable(tso): # this is where the fun actually starts :)
+    for tweet in ts.searchTweetsIterable(tso): # this is where the fun actually starts :)
         counter += 1
         print '@%s tweeted: %s' % (tweet['user']['screen_name'], tweet['text'])
 
-     print '*** Found a total of %i tweets' % counter   
+    print '*** Found a total of %i tweets' % counter   
 
 except TwitterSearchException, e: # take care of all those ugly errors if there are some
     print e.message
+```
+The result will be a text looking similar to this one. But as you see unfortunately there is no idea hidden in the tweets how to get your doctorate thesis without any work. Damn it!
+```
+@enricozero tweeted: RT @viehdeo: Archiv: Comedy-Video: Oliver Welke parodiert “Mogelbaron” Dr. Guttenbergs Doktorarbeit (Schummel-cum-laude Pla... http://t. ...
+@schlagworte tweeted: "Erst letztens habe ich in meiner Doktorarbeit Guttenberg zitiert." Blockflöte des Todes: http://t.co/pCzIn429
+@nkoni7 tweeted: Familien sind auch betroffen wenn schlechte Politik gemacht wird. Nicht nur wenn Guttenberg seine Doktorarbeit fälscht ! #absolutemehrheit
+*** Found a total of 3 tweets
 ```
