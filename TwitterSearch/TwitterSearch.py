@@ -6,6 +6,20 @@ from TwitterSearchOrder import TwitterSearchOrder
 class TwitterSearch(object):
     search_url = 'https://api.twitter.com/1.1/search/tweets.json'
     request_token_url = 'http://twitter.com/oauth/request_token'
+
+    # see https://dev.twitter.com/docs/error-codes-responses
+    exceptions = { 
+                     400 : 'Bad Request: The request was invalid',
+                     401 : 'Unauthorized: Authentication credentials were missing or incorrect',
+                     403 : 'Forbidden: The request is understood, but it has been refused or access is not allowed',
+                     404 : 'Not Found: The URI requested is invalid or the resource requested does not exists',
+                     406 : 'Not Acceptable: Invalid format is specified in the request',
+                     410 : 'Gone: This resource is gone',
+                     420 : 'Enhance Your Calm:  You are being rate limited',
+                     422 : 'Unprocessable Entity: Image unable to be processed',
+                     429 : 'Too Many Requests: Request cannot be served due to the application\'s rate limit having been exhausted for the resource',
+                 }
+
     response = {}
     nextresults = None
 
@@ -37,6 +51,12 @@ class TwitterSearch(object):
             raise TwitterSearchException('No valid string')
         self.response['meta'], content = self.client.request(self.search_url + url, 'GET')
         self.response['content'] = simplejson.loads(content)
+
+        # raise exceptions based on http status
+        http_status = int(self.response['meta']['status'])
+        if http_status in self.exceptions:
+            raise TwitterSearchException('HTTP status %i - %s' % (http_status, self.exceptions[http_status]))
+
         if self.response['content']['search_metadata'].get('next_results'):
             self.nextresults = self.response['content']['search_metadata']['next_results']
         else:
