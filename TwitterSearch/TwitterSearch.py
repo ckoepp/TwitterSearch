@@ -18,6 +18,10 @@ class TwitterSearch(object):
                      420 : 'Enhance Your Calm:  You are being rate limited',
                      422 : 'Unprocessable Entity: Image unable to be processed',
                      429 : 'Too Many Requests: Request cannot be served due to the application\'s rate limit having been exhausted for the resource',
+                     500 : 'Internal Server Error: Something is broken',
+                     502 : 'Bad Gateway: Twitter is down or being upgraded',
+                     503 : 'Service Unavailable: The Twitter servers are up, but overloaded with requests',
+                     504 : 'Gateway timeout: The request couldn\'t be serviced due to some failure within our stack',
                  }
 
     response = {}
