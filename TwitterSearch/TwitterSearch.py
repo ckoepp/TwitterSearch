@@ -5,7 +5,7 @@ from TwitterSearchOrder import TwitterSearchOrder
 
 class TwitterSearch(object):
     search_url = 'https://api.twitter.com/1.1/search/tweets.json'
-    request_token_url = 'http://twitter.com/oauth/request_token'
+    request_token_url = 'https://twitter.com/oauth/request_token'
 
     # see https://dev.twitter.com/docs/error-codes-responses
     exceptions = { 
@@ -54,13 +54,13 @@ class TwitterSearch(object):
         if not isinstance(url, basestring):
             raise TwitterSearchException('No valid string')
         self.response['meta'], content = self.client.request(self.search_url + url, 'GET')
-        self.response['content'] = simplejson.loads(content)
 
         # raise exceptions based on http status
         http_status = int(self.response['meta']['status'])
         if http_status in self.exceptions:
             raise TwitterSearchException('HTTP status %i - %s' % (http_status, self.exceptions[http_status]))
 
+        self.response['content'] = simplejson.loads(content)
         if self.response['content']['search_metadata'].get('next_results'):
             self.nextresults = self.response['content']['search_metadata']['next_results']
         else:
