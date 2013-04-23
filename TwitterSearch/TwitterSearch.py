@@ -24,9 +24,6 @@ class TwitterSearch(object):
                      504 : 'Gateway timeout: The request couldn\'t be serviced due to some failure within our stack',
                  }
 
-    response = {}
-    nextresults = None
-
     def __init__(self, consumer_key, consumer_secret, access_token, access_token_secret):
         # app
         self.consumer_key = consumer_key
@@ -35,6 +32,10 @@ class TwitterSearch(object):
         # user
         self.access_token = access_token
         self.access_token_secret = access_token_secret
+
+        # init internal variables
+        self.response = {}
+        self.nextresults = None
 
     def isNextpage(self):
         if nextpage:
