@@ -5,7 +5,7 @@ from TwitterSearchOrder import TwitterSearchOrder
 
 class TwitterSearch(object):
     search_url = 'https://api.twitter.com/1.1/search/tweets.json'
-    request_token_url = 'https://twitter.com/oauth/request_token'
+    request_token_url = 'https://api.twitter.com/oauth/request_token'
 
     # see https://dev.twitter.com/docs/error-codes-responses
     exceptions = { 
