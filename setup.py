@@ -5,7 +5,7 @@ def readme():
         return f.read()
 
 setup(name='TwitterSearch',
-      version='0.1.1',
+      version='0.22',
       description='A library to easily iterate tweets found by the Twitter Search API',
       long_description=readme(),
       url='http://github.com/ckoepp/TwitterSearch',
