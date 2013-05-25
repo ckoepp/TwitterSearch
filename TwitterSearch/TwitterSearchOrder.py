@@ -99,7 +99,7 @@ class TwitterSearchOrder(object):
             raise TwitterSearchException('Invalid callback string')
 
     def setUntil(self, date):
-        if isinstance(date, date):
+        if isinstance(date, datetime.date):
             self.arguments.update( { 'unitl' : '%s' % date.strftime('%Y-%m-%d') } ) 
         else:
             raise TwitterSearchException('Not a date object')
