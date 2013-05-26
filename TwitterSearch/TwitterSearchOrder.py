@@ -67,13 +67,13 @@ class TwitterSearchOrder(object):
 
     def setSinceID(self, twid):
         if isinstance(twid, (int, long)) and twid > 0:
-            self.argument.update( { 'since_id' : '%s' % twid } )
+            self.arguments.update( { 'since_id' : '%s' % twid } )
         else:
             raise TwitterSearchException('Not a valid number')
 
     def setMaxID(self, twid):
         if isinstance(twid, (int, long)) and twid > 0:
-            self.argument.update( { 'max_id' : '%s' % twid } )
+            self.arguments.update( { 'max_id' : '%s' % twid } )
         else:
             raise TwitterSearchException('Not a valid number')
 
