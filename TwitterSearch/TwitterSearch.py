@@ -99,9 +99,10 @@ class TwitterSearch(object):
         return self
 
     def next(self):
-        self.nextTweet += 1
         if self.nextTweet < len(self.response['content']['statuses']):
-            return self.response['content']['statuses'][self.nextTweet]
+            next = self.nextTweet
+            self.nextTweet += 1
+            return self.response['content']['statuses'][next]
 
         try:
             self.searchNextResults()
