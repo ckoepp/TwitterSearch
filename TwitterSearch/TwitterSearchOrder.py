@@ -19,11 +19,11 @@ class TwitterSearchOrder(object):
         elif isinstance(word, list):
             self.searchterms += word
         else:
-            raise TwitterSearchException('Neither a list nor a string')
+            raise TwitterSearchException(1000)
 
     def setKeywords(self, word):
         if not isinstance(word, list):
-            raise TwitterSearchException('Not a list object')
+            raise TwitterSearchException(1001)
         self.searchterms = word
 
     def setSearchURL(self, url):
@@ -51,62 +51,62 @@ class TwitterSearchOrder(object):
         if len(lang) == 2 and lang in self.iso_6391:
             self.arguments.update( { 'lang' : '%s' % lang } )
         else:
-            raise TwitterSearchException('No ISO 6391-1 language code')
+            raise TwitterSearchException(1002)
 
     def setLocale(self, lang):
         if len(lang) == 2 and lang in self.iso_6391:
             self.arguments.update( { 'locale' : '%s' % lang } )
         else:
-            raise TwitterSearchException('No ISO 6391-1 language code')
+            raise TwitterSearchException(1002)
 
     def setResultType(self, tor):
         if tor == 'mixed' or tor == 'recent' or tor == 'popular':
             self.arguments.update( { 'result_type' : '%s' % tor } )
         else:
-            raise TwitterSearchException('No valid result type')
+            raise TwitterSearchException(1003)
 
     def setSinceID(self, twid):
         if isinstance(twid, (int, long)) and twid > 0:
             self.arguments.update( { 'since_id' : '%s' % twid } )
         else:
-            raise TwitterSearchException('Not a valid number')
+            raise TwitterSearchException(1004)
 
     def setMaxID(self, twid):
         if isinstance(twid, (int, long)) and twid > 0:
             self.arguments.update( { 'max_id' : '%s' % twid } )
         else:
-            raise TwitterSearchException('Not a valid number')
+            raise TwitterSearchException(1004)
 
     def setCount(self, cnt):
         if isinstance(cnt, (int, long)) and cnt > 0:
             self.arguments.update( { 'count' : '%s' % cnt } )
         else:
-            raise TwitterSearchException('Not a valid number')
+            raise TwitterSearchException(1004)
 
     def setGeocode(self, latitude, longitude, radius, unit):
         if isinstance(latitude, float) and isinstance(longitude, float) and isinstance(radius, (long, int)):
             if unit == 'mi' or unit == 'km':
                 self.arguments.update( { 'geocode' : '%s,%s,%s%s' % (latitude, longitude, radius, unit) } )
             else:
-                raise TwitterSearchException('Invalid unit')
+                raise TwitterSearchException(1005)
         else:
-            raise TwitterSearchException('Not a valid number')
+            raise TwitterSearchException(1004)
 
     def setCallback(self, func):
         if isinstance(func, basestring) and func:
             self.arguments.update( { 'callback' : '%s' % func } )
         else:
-            raise TwitterSearchException('Invalid callback string')
+            raise TwitterSearchException(1006)
 
     def setUntil(self, date):
         if isinstance(date, datetime.date):
             self.arguments.update( { 'unitl' : '%s' % date.strftime('%Y-%m-%d') } ) 
         else:
-            raise TwitterSearchException('Not a date object')
+            raise TwitterSearchException(1007)
 
     def setIncludeEntities(self, include):
         if not isinstance(include, (bool, int)) and ( include == 1 or include == 0):
-            raise TwitterSearchException('Not a valid boolean')
+            raise TwitterSearchException(1008)
 
         if include:
             self.arguments.update( { 'include_entities' : 'True' } )

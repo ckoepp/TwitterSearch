@@ -15,9 +15,11 @@ setup(name='TwitterSearch',
       packages=['TwitterSearch'],
       keywords='twitter api search',
       classifiers=[
-          'Development Status :: 2 - Pre-Alpha',
+          'Development Status :: 3 - Alpha',
+          'Intended Audience :: Science/Research',
+          'Operating System :: OS Independent',
           'License :: OSI Approved :: MIT License',
-          'Topic :: Internet :: WWW/HTTP',
+          'Topic :: Internet :: WWW/HTTP :: Dynamic Content :: CGI Tools/Libraries',
       ],
       install_requires=[
           'oauth2',

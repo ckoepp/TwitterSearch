@@ -108,6 +108,7 @@ class TwitterSearch(object):
             self.searchNextResults()
         except TwitterSearchException:
             raise StopIteration
+
         if len(self.response['content']['statuses']) != 0:
             self.nextTweet = 0
             return self.response['content']['statuses'][self.nextTweet]

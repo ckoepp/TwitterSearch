@@ -43,7 +43,7 @@ try:
     print '*** Found a total of %i tweets' % counter   
 
 except TwitterSearchException, e: # take care of all those ugly errors if there are some
-    print e.message
+    print e
 ```
 The result will be a text looking similar to this one. But as you see unfortunately there is no idea hidden in the tweets how to get your doctorate thesis without any work. Damn it!
 ```
