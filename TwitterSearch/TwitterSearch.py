@@ -1,5 +1,7 @@
 import simplejson
 import oauth2 as oauth
+from sys import maxint
+from urlparse import parse_qs
 from TwitterSearchException import TwitterSearchException
 from TwitterSearchOrder import TwitterSearchOrder
 
@@ -26,16 +28,19 @@ class TwitterSearch(object):
 
     def __init__(self, consumer_key, consumer_secret, access_token, access_token_secret):
         # app
-        self.consumer_key = consumer_key
-        self.consumer_secret = consumer_secret
+        self.__consumer_key = consumer_key
+        self.__consumer_secret = consumer_secret
 
         # user
-        self.access_token = access_token
-        self.access_token_secret = access_token_secret
+        self.__access_token = access_token
+        self.__access_token_secret = access_token_secret
 
         # init internal variables
-        self.response = {}
-        self.nextresults = None
+        self._response = {}
+        self._nextMaxID = maxint
+
+        # statistics
+        self._statistics = { 'queries' : 0, 'tweets' : 0 }
 
     def isNextpage(self):
         if nextpage:
@@ -43,9 +48,9 @@ class TwitterSearch(object):
         return False
 
     def authenticate(self):
-        consumer = oauth.Consumer(key = self.consumer_key, secret = self.consumer_secret)
-        token = oauth.Token(key = self.access_token, secret = self.access_token_secret)
-        self.client = oauth.Client(consumer, token)
+        consumer = oauth.Consumer(key = self.__consumer_key, secret = self.__consumer_secret)
+        token = oauth.Token(key = self.__access_token, secret = self.__access_token_secret)
+        self.__client = oauth.Client(consumer, token)
 
     def searchTweetsIterable(self, order):
         self.searchTweets(order)
@@ -53,63 +58,78 @@ class TwitterSearch(object):
 
     def sentSearch(self, url):
         if not isinstance(url, basestring):
-            raise TwitterSearchException('No valid string')
-        self.response['meta'], content = self.client.request(self.search_url + url, 'GET')
+            raise TwitterSearchException(1009)
+        self._response['meta'], content = self.__client.request(self.search_url + url, 'GET')
 
         # raise exceptions based on http status
-        http_status = int(self.response['meta']['status'])
+        http_status = int(self._response['meta']['status'])
         if http_status in self.exceptions:
-            raise TwitterSearchException('HTTP status %i - %s' % (http_status, self.exceptions[http_status]))
+            raise TwitterSearchException(http_status, self.exceptions[http_status])
 
-        self.response['content'] = simplejson.loads(content)
-        if self.response['content']['search_metadata'].get('next_results'):
-            self.nextresults = self.response['content']['search_metadata']['next_results']
+        self._statistics['queries'] = self._statistics['queries'] + 1
+
+        # check if there are more results
+        given_count = parse_qs(url)['count'][0]
+        self._response['content'] = simplejson.loads(content)
+        if self._response['content']['search_metadata']['count'] < given_count:
+            # have a look for the lowest ID
+            for tweet in self._response['content']['statuses']:
+              if tweet['id'] < self._nextMaxID:
+                  self._statistics['tweets'] = self._statistics['tweets'] + 1
+                  self._nextMaxID = tweet['id']
+            #self.nextMaxID = self.response['content']['search_metadata']['max_id'] - 1
+            self._nextMaxID = self._nextMaxID - 1 
         else:
-            self.nextresults = None
-        return self.response['meta'], self.response['content']
+            self._nextMaxID = None
+
+        return self._response['meta'], self._response['content']
 
     def searchTweets(self, order):
         if not isinstance(order, TwitterSearchOrder):
-            raise TwitterSearchException('Not a valid TwitterSearchOrder object')
+            raise TwitterSearchException(1010)
 
-        self.sentSearch(order.createSearchURL())
-        return self.response
+        self._startURL = order.createSearchURL()
+        self.sentSearch(self._startURL)
+        return self._response
 
     def searchNextResults(self):
-        if not self.nextresults:
-            raise TwitterSearchException('No more results available')
+        if not self._nextMaxID:
+            raise TwitterSearchException(1011)
 
-        self.sentSearch(self.nextresults)
-        return self.response
+        self.sentSearch("%s&max_id=%i" % (self._startURL, self._nextMaxID))
+        return self._response
 
     def getMetadata(self):
-        if not self.response:
-            raise TwitterSearchException('No meta available')
-        return self.response['meta']
+        if not self._response:
+            raise TwitterSearchException(1012)
+        return self._response['meta']
 
     def getTweets(self):
-        if not self.response:
-           raise TwitterSearchException('No tweets available')
-        return self.response['content']
+        if not self._response:
+           raise TwitterSearchException(1013)
+        return self._response['content']
 
+    def getStatistics(self):
+        return self._statistics
+
+    # Iteration
     def __iter__(self):
-        if not self.response:
-            raise TwitterSearchException('No results available')
-        self.nextTweet = 0
+        if not self._response:
+            raise TwitterSearchException(1014)
+        self._nextTweet = 0
         return self
 
     def next(self):
-        if self.nextTweet < len(self.response['content']['statuses']):
-            next = self.nextTweet
-            self.nextTweet += 1
-            return self.response['content']['statuses'][next]
+        if self._nextTweet < len(self._response['content']['statuses']):
+            self._nextTweet += 1
+            return self._response['content']['statuses'][self._nextTweet-1]
 
         try:
             self.searchNextResults()
         except TwitterSearchException:
             raise StopIteration
 
-        if len(self.response['content']['statuses']) != 0:
-            self.nextTweet = 0
-            return self.response['content']['statuses'][self.nextTweet]
+        if len(self._response['content']['statuses']) != 0:
+            self._nextTweet = 1
+            return self._response['content']['statuses'][self._nextTweet-1]
         raise StopIteration
