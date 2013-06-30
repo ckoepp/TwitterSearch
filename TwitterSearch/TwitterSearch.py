@@ -10,7 +10,7 @@ class TwitterSearch(object):
     request_token_url = 'https://api.twitter.com/oauth/request_token'
 
     # see https://dev.twitter.com/docs/error-codes-responses
-    exceptions = { 
+    exceptions = {
                      400 : 'Bad Request: The request was invalid',
                      401 : 'Unauthorized: Authentication credentials were missing or incorrect',
                      403 : 'Forbidden: The request is understood, but it has been refused or access is not allowed',
@@ -66,19 +66,20 @@ class TwitterSearch(object):
         if http_status in self.exceptions:
             raise TwitterSearchException(http_status, self.exceptions[http_status])
 
-        self._statistics['queries'] = self._statistics['queries'] + 1
-
-        # check if there are more results
+        # using IDs to request more results - former versions used page parameter
+        # see https://dev.twitter.com/docs/working-with-timelines
         given_count = parse_qs(url)['count'][0]
         self._response['content'] = simplejson.loads(content)
+
+        self._statistics['queries'] += 1
+        self._statistics['tweets'] += len(self._response['content']['statuses'])
+
         if self._response['content']['search_metadata']['count'] < given_count:
             # have a look for the lowest ID
             for tweet in self._response['content']['statuses']:
               if tweet['id'] < self._nextMaxID:
-                  self._statistics['tweets'] = self._statistics['tweets'] + 1
                   self._nextMaxID = tweet['id']
-            #self.nextMaxID = self.response['content']['search_metadata']['max_id'] - 1
-            self._nextMaxID = self._nextMaxID - 1 
+            self._nextMaxID -= 1
         else:
             self._nextMaxID = None
 
