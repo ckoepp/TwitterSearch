@@ -1,9 +1,12 @@
-import simplejson
 import oauth2 as oauth
 from sys import maxint
 from urlparse import parse_qs
 from TwitterSearchException import TwitterSearchException
 from TwitterSearchOrder import TwitterSearchOrder
+
+# python3 & python2.6
+try: import simplejson
+except ImportError: import json as simplejson
 
 class TwitterSearch(object):
     base_url = 'https://api.twitter.com/1.1/'

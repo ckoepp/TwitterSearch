@@ -1,7 +1,10 @@
 import urllib
-import urlparse
 import datetime
 from TwitterSearchException import TwitterSearchException
+
+# python3 & python2.6
+try: from urllib import parse
+except ImportError: from urlparse import parse_qs as parse
 
 class TwitterSearchOrder(object):
 
@@ -35,7 +38,7 @@ class TwitterSearchOrder(object):
         if url[0] == '?':
             url = url[1:]
 
-        args = urlparse.parse_qs(url)
+        args = parse(url)
         self.searchterms = args['q']
         del args['q']
 
