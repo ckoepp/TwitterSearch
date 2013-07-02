@@ -27,4 +27,4 @@ class TwitterSearchException(Exception):
             self.message = self._error_codes.get(code)
 
     def __str__(self):
-        return "Error %s: %s" % (self.code, self.message)
+        return "Error %i: %s" % (self.code, self.message)
