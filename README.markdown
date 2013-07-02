@@ -49,7 +49,7 @@ The result will be a text looking similar to this one. But as you see unfortunat
 @nkoni7 tweeted: Familien sind auch betroffen wenn schlechte Politik gemacht wird. Nicht nur wenn Guttenberg seine Doktorarbeit fälscht ! #absolutemehrheit
 ```
 
-##Wanna have more details?
+##Wanna see more details?
 If you'd like to get more information about how TwitterSearch works interally and how to use it with all it's possibilities have a look at the [Wiki](https://github.com/ckoepp/TwitterSearch/wiki).
 
 ##License (MIT)

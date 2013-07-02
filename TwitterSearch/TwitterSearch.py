@@ -1,4 +1,5 @@
-import oauth2 as oauth
+import requests
+from oauthlib import oauth1 as oauth
 from sys import maxint
 from urlparse import parse_qs
 from TwitterSearchException import TwitterSearchException
@@ -56,9 +57,10 @@ class TwitterSearch(object):
         return False
 
     def authenticate(self, verify=False):
-        consumer = oauth.Consumer(key = self.__consumer_key, secret = self.__consumer_secret)
-        token = oauth.Token(key = self.__access_token, secret = self.__access_token_secret)
-        self.__client = oauth.Client(consumer, token)
+        #consumer = oauth.Consumer(key = self.__consumer_key, secret = self.__consumer_secret)
+        #token = oauth.Token(key = self.__access_token, secret = self.__access_token_secret)
+        #self.__client = oauth.Client(consumer, token)
+        
 
         if verify:
             meta, response = self.__client.request(self.base_url + self.verify_url, 'GET')
