@@ -6,8 +6,9 @@ from TwitterSearchException import TwitterSearchException
 from TwitterSearchOrder import TwitterSearchOrder
 
 class TwitterSearch(object):
-    search_url = 'https://api.twitter.com/1.1/search/tweets.json'
-    request_token_url = 'https://api.twitter.com/oauth/request_token'
+    base_url = 'https://api.twitter.com/1.1/'
+    verify_url = 'account/verify_credentials.json'
+    search_url = 'search/tweets.json'
 
     # see https://dev.twitter.com/docs/error-codes-responses
     exceptions = {
@@ -26,7 +27,7 @@ class TwitterSearch(object):
                      504 : 'Gateway timeout: The request couldn\'t be serviced due to some failure within our stack',
                  }
 
-    def __init__(self, consumer_key, consumer_secret, access_token, access_token_secret):
+    def __init__(self, consumer_key, consumer_secret, access_token, access_token_secret, authenticate=True):
         # app
         self.__consumer_key = consumer_key
         self.__consumer_secret = consumer_secret
@@ -42,15 +43,27 @@ class TwitterSearch(object):
         # statistics
         self._statistics = { 'queries' : 0, 'tweets' : 0 }
 
+        # verify
+        if authenticate:
+            self.authenticate(True)
+
     def isNextpage(self):
         if nextpage:
             return True
         return False
 
-    def authenticate(self):
+    def authenticate(self, verify=False):
         consumer = oauth.Consumer(key = self.__consumer_key, secret = self.__consumer_secret)
         token = oauth.Token(key = self.__access_token, secret = self.__access_token_secret)
         self.__client = oauth.Client(consumer, token)
+
+        if verify:
+            meta, response = self.__client.request(self.base_url + self.verify_url, 'GET')
+            self.checkHTTPStatus(int(meta['status']))
+
+    def checkHTTPStatus(self, http_status):
+        if http_status in self.exceptions:
+            raise TwitterSearchException(http_status, self.exceptions[http_status])
 
     def searchTweetsIterable(self, order):
         self.searchTweets(order)
@@ -59,12 +72,9 @@ class TwitterSearch(object):
     def sentSearch(self, url):
         if not isinstance(url, basestring):
             raise TwitterSearchException(1009)
-        self._response['meta'], content = self.__client.request(self.search_url + url, 'GET')
+        self._response['meta'], content = self.__client.request(self.base_url + self.search_url + url, 'GET')
 
-        # raise exceptions based on http status
-        http_status = int(self._response['meta']['status'])
-        if http_status in self.exceptions:
-            raise TwitterSearchException(http_status, self.exceptions[http_status])
+        self.checkHTTPStatus(int(self._response['meta']['status']))
 
         # using IDs to request more results - former versions used page parameter
         # see https://dev.twitter.com/docs/working-with-timelines
