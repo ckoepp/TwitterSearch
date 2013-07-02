@@ -1,3 +1,3 @@
-from .TwitterSearchException import TwitterSearchException
-from .TwitterSearchOrder import TwitterSearchOrder
-from .TwitterSearch import TwitterSearch
+from . import TwitterSearchException
+from . import TwitterSearchOrder
+from . import TwitterSearch
