@@ -1,4 +1,5 @@
 import urllib
+import urlparse
 import datetime
 from TwitterSearchException import TwitterSearchException
 
@@ -31,13 +32,20 @@ class TwitterSearchOrder(object):
         self.searchterms = word
 
     def setSearchURL(self, url):
-        self.manual_url = True
-        self.url = url
-        return self.url
+        if url[0] == '?':
+            url = url[1:]
+
+        args = urlparse.parse_qs(url)
+        self.searchterms = args['q']
+        del args['q']
+
+        self.arguments = {}
+        for key, value in args.iteritems():
+            self.arguments.update({key : value[0]}) 
 
     def createSearchURL(self):
-        if self.manual_url:
-            return self.url
+        if len(self.searchterms) == 0:
+            raise TwitterSearchException(1015)
 
         url = '?'
         url += 'q='
@@ -82,7 +90,7 @@ class TwitterSearchOrder(object):
             raise TwitterSearchException(1004)
 
     def setCount(self, cnt):
-        if isinstance(cnt, (int, long)) and cnt > 0:
+        if isinstance(cnt, (int, long)) and cnt > 0 and cnt <= 100:
             self.arguments.update( { 'count' : '%s' % cnt } )
         else:
             raise TwitterSearchException(1004)

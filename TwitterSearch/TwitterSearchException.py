@@ -17,6 +17,7 @@ class TwitterSearchException(Exception):
         1012 : 'No meta data available',
         1013 : 'No tweets available',
         1014 : 'No results available',
+        1015 : 'No keywords given',
     }
 
     def __init__(self, code, msg = None):
