@@ -1,13 +1,16 @@
 import requests
-from oauthlib import oauth1 as oauth
-from sys import maxint
-from urlparse import parse_qs
+from requests_oauthlib import OAuth1
 from TwitterSearchException import TwitterSearchException
 from TwitterSearchOrder import TwitterSearchOrder
 
-# python3 & python2.6
-try: import simplejson
-except ImportError: import json as simplejson
+try: from urllib import parse # python3
+except ImportError: from urlparse import parse_qs as parse # python2
+
+# determine max int value
+try: from sys import maxint # python2
+except ImportError: # python3
+    import struct 
+    maxint = 2 ** (struct.Struct('i').size * 8 - 1) - 1
 
 class TwitterSearch(object):
     base_url = 'https://api.twitter.com/1.1/'
@@ -57,14 +60,15 @@ class TwitterSearch(object):
         return False
 
     def authenticate(self, verify=False):
-        #consumer = oauth.Consumer(key = self.__consumer_key, secret = self.__consumer_secret)
-        #token = oauth.Token(key = self.__access_token, secret = self.__access_token_secret)
-        #self.__client = oauth.Client(consumer, token)
+        self.__auth = OAuth1(self.__consumer_key,
+            client_secret = self.__consumer_secret,
+            resource_owner_key = self.__access_token,
+            resource_owner_secret = self.__access_token_secret )
         
 
         if verify:
-            meta, response = self.__client.request(self.base_url + self.verify_url, 'GET')
-            self.checkHTTPStatus(int(meta['status']))
+            r = requests.get(self.base_url + self.verify_url, auth=self.__oauth)
+            self.checkHTTPStatus(r.status_code)
 
     def checkHTTPStatus(self, http_status):
         if http_status in self.exceptions:
@@ -77,14 +81,15 @@ class TwitterSearch(object):
     def sentSearch(self, url):
         if not isinstance(url, basestring):
             raise TwitterSearchException(1009)
-        self._response['meta'], content = self.__client.request(self.base_url + self.search_url + url, 'GET')
+        r = requests.get(self.base_url + self.search_url + url, auth=self.__oauth)
+        self._response['meta'] = r.headers
 
-        self.checkHTTPStatus(int(self._response['meta']['status']))
+        self.checkHTTPStatus(r.status_code)
 
         # using IDs to request more results - former versions used page parameter
         # see https://dev.twitter.com/docs/working-with-timelines
-        given_count = parse_qs(url)['count'][0]
-        self._response['content'] = simplejson.loads(content)
+        given_count = parse(url)['count'][0]
+        self._response['content'] = r.json()
 
         self._statistics['queries'] += 1
         self._statistics['tweets'] += len(self._response['content']['statuses'])

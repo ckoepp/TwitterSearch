@@ -2,9 +2,8 @@ import urllib
 import datetime
 from TwitterSearchException import TwitterSearchException
 
-# python3 & python2.6
-try: from urllib import parse
-except ImportError: from urlparse import parse_qs as parse
+try: from urllib import parse # python3
+except ImportError: from urlparse import parse_qs as parse # python2
 
 class TwitterSearchOrder(object):
 
