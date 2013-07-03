@@ -1,6 +1,6 @@
 import urllib
 import datetime
-from TwitterSearchException import TwitterSearchException
+from .TwitterSearchException import TwitterSearchException
 
 try: from urllib import parse # python3
 except ImportError: from urlparse import parse_qs as parse # python2

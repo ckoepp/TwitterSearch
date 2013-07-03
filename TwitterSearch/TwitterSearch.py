@@ -1,7 +1,7 @@
 import requests
 from requests_oauthlib import OAuth1
-from TwitterSearchException import TwitterSearchException
-from TwitterSearchOrder import TwitterSearchOrder
+from .TwitterSearchException import TwitterSearchException
+from .TwitterSearchOrder import TwitterSearchOrder
 
 try: from urllib import parse # python3
 except ImportError: from urlparse import parse_qs as parse # python2
