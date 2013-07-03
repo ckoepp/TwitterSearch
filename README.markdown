@@ -38,10 +38,10 @@ try:
      )
 
     for tweet in ts.searchTweetsIterable(tso): # this is where the fun actually starts :)
-        print '@%s tweeted: %s' % (tweet['user']['screen_name'], tweet['text'])
+        print( '@%s tweeted: %s' % ( tweet['user']['screen_name'], tweet['text'] ) )
 
-except TwitterSearchException, e: # take care of all those ugly errors if there are some
-    print e
+except TwitterSearchException as e: # take care of all those ugly errors if there are some
+    print(e)
 ```
 The result will be a text looking similar to this one. But as you see unfortunately there is no idea hidden in the tweets how to get your doctorate thesis without any work. Damn it!
 ```

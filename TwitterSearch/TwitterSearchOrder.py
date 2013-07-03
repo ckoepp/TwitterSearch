@@ -1,9 +1,12 @@
-import urllib
 import datetime
 from .TwitterSearchException import TwitterSearchException
+from .utils import py3k
 
-try: from urllib import parse # python3
-except ImportError: from urlparse import parse_qs as parse # python2
+try: from urllib.parse import parse_qs as parse # python3
+except ImportError: from urlparse import parse_qs as parse #python2
+
+try: from urllib.parse import quote_plus # python3
+except ImportError: from urllib import quote_plus # python2
 
 class TwitterSearchOrder(object):
 
@@ -21,12 +24,20 @@ class TwitterSearchOrder(object):
         self.manual_url = False
 
     def addKeyword(self, word):
-        if isinstance(word, basestring) and word:
-            self.searchterms.append(word)
-        elif isinstance(word, list):
-            self.searchterms += word
+        if py3k:
+            if isinstance(word, str) and len(word) >= 2:
+              self.searchterms.append(word)
+            elif isinstance(word, list):
+                self.searchterms += word
+            else:
+                raise TwitterSearchException(1000)
         else:
-            raise TwitterSearchException(1000)
+            if isinstance(word, basestring) and len(word) >= 2:
+                self.searchterms.append(word)
+            elif isinstance(word, list):
+                self.searchterms += word
+            else:
+                raise TwitterSearchException(1000)
 
     def setKeywords(self, word):
         if not isinstance(word, list):
@@ -42,7 +53,7 @@ class TwitterSearchOrder(object):
         del args['q']
 
         self.arguments = {}
-        for key, value in args.iteritems():
+        for key, value in args.items():
             self.arguments.update({key : value[0]}) 
 
     def createSearchURL(self):
@@ -52,11 +63,11 @@ class TwitterSearchOrder(object):
         url = '?'
         url += 'q='
         for term in self.searchterms:
-            url += '%s+' % urllib.quote_plus(term)
+            url += '%s+' % quote_plus(term)
         url = url[0:len(url)-1]
 
-        for key, value in self.arguments.iteritems():
-            url += '&' +'%s=%s' % (urllib.quote_plus(key), urllib.quote_plus(value))
+        for key, value in self.arguments.items():
+            url += '&' +'%s=%s' % (quote_plus(key), quote_plus(value))
 
         self.url = url
         return self.url
@@ -80,25 +91,46 @@ class TwitterSearchOrder(object):
             raise TwitterSearchException(1003)
 
     def setSinceID(self, twid):
-        if isinstance(twid, (int, long)) and twid > 0:
+        if py3k:
+            if not isinstance(twid, int):
+                raise TwitterSearchException(1004)
+        else:
+           if not isinstance(twid, (int, long)):
+                raise TwitterSearchException(1004)
+
+        if twid > 0:
             self.arguments.update( { 'since_id' : '%s' % twid } )
         else:
             raise TwitterSearchException(1004)
 
     def setMaxID(self, twid):
-        if isinstance(twid, (int, long)) and twid > 0:
+        if py3k:
+            if not isinstance(twid, int):
+                raise TwitterSearchException(1004)
+        else:
+           if not isinstance(twid, (int, long)):
+                raise TwitterSearchException(1004)
+
+        if twid > 0:
             self.arguments.update( { 'max_id' : '%s' % twid } )
         else:
             raise TwitterSearchException(1004)
 
     def setCount(self, cnt):
-        if isinstance(cnt, (int, long)) and cnt > 0 and cnt <= 100:
+        if isinstance(cnt, int) and cnt > 0 and cnt <= 100:
             self.arguments.update( { 'count' : '%s' % cnt } )
         else:
             raise TwitterSearchException(1004)
 
     def setGeocode(self, latitude, longitude, radius, unit):
-        if isinstance(latitude, float) and isinstance(longitude, float) and isinstance(radius, (long, int)):
+        if py3k:
+            if not isinstance(radius, int):
+                raise TwitterSearchException(1004)
+        else:
+           if not isinstance(radius, (int, long)):
+                raise TwitterSearchException(1004)
+
+        if isinstance(latitude, float) and isinstance(longitude, float):
             if unit == 'mi' or unit == 'km':
                 self.arguments.update( { 'geocode' : '%s,%s,%s%s' % (latitude, longitude, radius, unit) } )
             else:
@@ -107,10 +139,17 @@ class TwitterSearchOrder(object):
             raise TwitterSearchException(1004)
 
     def setCallback(self, func):
-        if isinstance(func, basestring) and func:
-            self.arguments.update( { 'callback' : '%s' % func } )
+        if py3k:
+            if isinstance(func, str) and func:
+                self.arguments.update( { 'callback' : '%s' % func } )
+            else:
+                raise TwitterSearchException(1006)
         else:
-            raise TwitterSearchException(1006)
+            if isinstance(func, basestring) and func:
+                self.arguments.update( { 'callback' : '%s' % func } )
+            else:
+                raise TwitterSearchException(1006)
+
 
     def setUntil(self, date):
         if isinstance(date, datetime.date):

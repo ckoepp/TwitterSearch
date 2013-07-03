@@ -2,15 +2,14 @@ import requests
 from requests_oauthlib import OAuth1
 from .TwitterSearchException import TwitterSearchException
 from .TwitterSearchOrder import TwitterSearchOrder
+from .utils import py3k
 
-try: from urllib import parse # python3
+try: from urllib.parse import parse_qs as parse # python3
 except ImportError: from urlparse import parse_qs as parse # python2
 
 # determine max int value
 try: from sys import maxint # python2
-except ImportError: # python3
-    import struct 
-    maxint = 2 ** (struct.Struct('i').size * 8 - 1) - 1
+except ImportError: from sys import maxsize as maxint # python3
 
 class TwitterSearch(object):
     base_url = 'https://api.twitter.com/1.1/'
@@ -34,7 +33,7 @@ class TwitterSearch(object):
                      504 : 'Gateway timeout: The request couldn\'t be serviced due to some failure within our stack',
                  }
 
-    def __init__(self, consumer_key, consumer_secret, access_token, access_token_secret, authenticate=True):
+    def __init__(self, consumer_key, consumer_secret, access_token, access_token_secret, verify=True):
         # app
         self.__consumer_key = consumer_key
         self.__consumer_secret = consumer_secret
@@ -51,16 +50,15 @@ class TwitterSearch(object):
         self._statistics = { 'queries' : 0, 'tweets' : 0 }
 
         # verify
-        if authenticate:
-            self.authenticate(True)
+        self.authenticate(verify)
 
     def isNextpage(self):
         if nextpage:
             return True
         return False
 
-    def authenticate(self, verify=False):
-        self.__auth = OAuth1(self.__consumer_key,
+    def authenticate(self, verify=True):
+        self.__oauth = OAuth1(self.__consumer_key,
             client_secret = self.__consumer_secret,
             resource_owner_key = self.__access_token,
             resource_owner_secret = self.__access_token_secret )
@@ -79,8 +77,12 @@ class TwitterSearch(object):
         return self
 
     def sentSearch(self, url):
-        if not isinstance(url, basestring):
-            raise TwitterSearchException(1009)
+        if py3k:
+            if not isinstance(url, str):
+                raise TwitterSearchException(1009)
+        else:
+            if not isinstance(url, basestring):
+                raise TwitterSearchException(1009)
         r = requests.get(self.base_url + self.search_url + url, auth=self.__oauth)
         self._response['meta'] = r.headers
 
@@ -88,13 +90,13 @@ class TwitterSearch(object):
 
         # using IDs to request more results - former versions used page parameter
         # see https://dev.twitter.com/docs/working-with-timelines
-        given_count = parse(url)['count'][0]
+        given_count = int(parse(url)['count'][0])
         self._response['content'] = r.json()
 
         self._statistics['queries'] += 1
         self._statistics['tweets'] += len(self._response['content']['statuses'])
 
-        if self._response['content']['search_metadata']['count'] < given_count:
+        if int(self._response['content']['search_metadata']['count']) == given_count:
             # have a look for the lowest ID
             for tweet in self._response['content']['statuses']:
               if tweet['id'] < self._nextMaxID:
@@ -141,6 +143,9 @@ class TwitterSearch(object):
         return self
 
     def next(self):
+        return self.__next__()
+
+    def __next__(self):
         if self._nextTweet < len(self._response['content']['statuses']):
             self._nextTweet += 1
             return self._response['content']['statuses'][self._nextTweet-1]
