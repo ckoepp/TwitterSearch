@@ -12,9 +12,9 @@ try: from sys import maxint # python2
 except ImportError: from sys import maxsize as maxint # python3
 
 class TwitterSearch(object):
-    base_url = 'https://api.twitter.com/1.1/'
-    verify_url = 'account/verify_credentials.json'
-    search_url = 'search/tweets.json'
+    _base_url = 'https://api.twitter.com/1.1/'
+    _verify_url = 'account/verify_credentials.json'
+    _search_url = 'search/tweets.json'
 
     # see https://dev.twitter.com/docs/error-codes-responses
     exceptions = {
@@ -43,19 +43,27 @@ class TwitterSearch(object):
         self.__access_token_secret = access_token_secret
 
         # init internal variables
-        self._response = {}
-        self._nextMaxID = maxint
+        self.__response = {}
+        self.__nextMaxID = maxint
+        self.__proxy = {}
 
         # statistics
-        self._statistics = { 'queries' : 0, 'tweets' : 0 }
+        self.__statistics = { 'queries' : 0, 'tweets' : 0 }
 
         # verify
         self.authenticate(verify)
+
+    def setProxy(self, proxy):
+        if isinstance(proxy, dict) and 'https' in proxy:
+            self.__proxy = proxy
+        else:
+            raise TwitterSearchException(1016)
 
     def isNextpage(self):
         if nextpage:
             return True
         return False
+
 
     def authenticate(self, verify=True):
         self.__oauth = OAuth1(self.__consumer_key,
@@ -65,7 +73,7 @@ class TwitterSearch(object):
         
 
         if verify:
-            r = requests.get(self.base_url + self.verify_url, auth=self.__oauth)
+            r = requests.get(self._base_url + self._verify_url, auth=self.__oauth, proxies=self.__proxy)
             self.checkHTTPStatus(r.status_code)
 
     def checkHTTPStatus(self, http_status):
@@ -83,29 +91,29 @@ class TwitterSearch(object):
         else:
             if not isinstance(url, basestring):
                 raise TwitterSearchException(1009)
-        r = requests.get(self.base_url + self.search_url + url, auth=self.__oauth)
-        self._response['meta'] = r.headers
+        r = requests.get(self._base_url + self._search_url + url, auth=self.__oauth, proxies=self.__proxy)
+        self.__response['meta'] = r.headers
 
         self.checkHTTPStatus(r.status_code)
 
         # using IDs to request more results - former versions used page parameter
         # see https://dev.twitter.com/docs/working-with-timelines
         given_count = int(parse(url)['count'][0])
-        self._response['content'] = r.json()
+        self.__response['content'] = r.json()
 
-        self._statistics['queries'] += 1
-        self._statistics['tweets'] += len(self._response['content']['statuses'])
+        self.__statistics['queries'] += 1
+        self.__statistics['tweets'] += len(self.__response['content']['statuses'])
 
-        if int(self._response['content']['search_metadata']['count']) == given_count:
+        if int(self.__response['content']['search_metadata']['count']) == given_count:
             # have a look for the lowest ID
-            for tweet in self._response['content']['statuses']:
-              if tweet['id'] < self._nextMaxID:
-                  self._nextMaxID = tweet['id']
-            self._nextMaxID -= 1
+            for tweet in self.__response['content']['statuses']:
+              if tweet['id'] < self.__nextMaxID:
+                  self..__nextMaxID = tweet['id']
+            self.__nextMaxID -= 1
         else:
-            self._nextMaxID = None
+            self.__nextMaxID = None
 
-        return self._response['meta'], self._response['content']
+        return self.__response['meta'], self.__response['content']
 
     def searchTweets(self, order):
         if not isinstance(order, TwitterSearchOrder):
@@ -113,31 +121,31 @@ class TwitterSearch(object):
 
         self._startURL = order.createSearchURL()
         self.sentSearch(self._startURL)
-        return self._response
+        return self.__response
 
     def searchNextResults(self):
-        if not self._nextMaxID:
+        if not self.__nextMaxID:
             raise TwitterSearchException(1011)
 
-        self.sentSearch("%s&max_id=%i" % (self._startURL, self._nextMaxID))
-        return self._response
+        self.sentSearch("%s&max_id=%i" % (self._startURL, self.__nextMaxID))
+        return self.__response
 
     def getMetadata(self):
-        if not self._response:
+        if not self.__response:
             raise TwitterSearchException(1012)
-        return self._response['meta']
+        return self.__response['meta']
 
     def getTweets(self):
-        if not self._response:
+        if not self.__response:
            raise TwitterSearchException(1013)
-        return self._response['content']
+        return self.__response['content']
 
     def getStatistics(self):
-        return self._statistics
+        return self.__statistics
 
     # Iteration
     def __iter__(self):
-        if not self._response:
+        if not self.__response:
             raise TwitterSearchException(1014)
         self._nextTweet = 0
         return self
@@ -146,16 +154,16 @@ class TwitterSearch(object):
         return self.__next__()
 
     def __next__(self):
-        if self._nextTweet < len(self._response['content']['statuses']):
+        if self._nextTweet < len(self.__response['content']['statuses']):
             self._nextTweet += 1
-            return self._response['content']['statuses'][self._nextTweet-1]
+            return self.__response['content']['statuses'][self._nextTweet-1]
 
         try:
             self.searchNextResults()
         except TwitterSearchException:
             raise StopIteration
 
-        if len(self._response['content']['statuses']) != 0:
+        if len(self.__response['content']['statuses']) != 0:
             self._nextTweet = 1
-            return self._response['content']['statuses'][self._nextTweet-1]
+            return self.__response['content']['statuses'][self._nextTweet-1]
         raise StopIteration

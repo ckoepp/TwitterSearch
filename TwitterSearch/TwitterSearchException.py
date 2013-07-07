@@ -18,6 +18,7 @@ class TwitterSearchException(Exception):
         1013 : 'No tweets available',
         1014 : 'No results available',
         1015 : 'No keywords given',
+        1016 : 'Invalid dict',
     }
 
     def __init__(self, code, msg = None):

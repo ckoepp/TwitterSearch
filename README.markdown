@@ -13,6 +13,7 @@ More than that, TwitterSearch is:
  * pretty good at giving you ALL available information (including meta information)
  * pretty iterable without any need to manually reload more results from the API
  * pretty wrong values of API arguments are to raise an exception. This is done before the API gets queried and therefore helps to avoid to reach Twitters' limitations by obviously wrong API calls
+ * pretty friendly to Python >= 2.6 **and** Python >= 3.2
  * pretty pretty to look at :)
 
 ## Example
