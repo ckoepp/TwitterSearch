@@ -7,3 +7,4 @@ __copyright__ = 'Copyright 2013 Christian Koepp'
 from .TwitterSearch import TwitterSearch
 from .TwitterSearchOrder import TwitterSearchOrder
 from .TwitterSearchException import TwitterSearchException
+from .utils import py3k
