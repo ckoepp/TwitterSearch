@@ -108,7 +108,7 @@ class TwitterSearch(object):
             # have a look for the lowest ID
             for tweet in self.__response['content']['statuses']:
               if tweet['id'] < self.__nextMaxID:
-                  self..__nextMaxID = tweet['id']
+                  self.__nextMaxID = tweet['id']
             self.__nextMaxID -= 1
         else:
             self.__nextMaxID = None
