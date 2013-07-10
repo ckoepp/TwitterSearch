@@ -133,8 +133,10 @@ class TwitterSearchOrderTest(unittest.TestCase):
         wrong_values = [-1, 1.0, 101, '', [], {} ]
         for value in wrong_values:
             try:
-                tso.setGeocode( value, value, self.generateInt(-200,-1), km=bool(random.getrandbits(1)))
-                self.assertTrue(False, "Not raising exception for %s,%s,%" % value)
+                radius = self.generateInt(-200,-1)
+                unit = bool(random.getrandbits(1))
+                tso.setGeocode( value, value, radius, km=unit)
+                self.assertTrue(False, "Not raising exception for lat %s, lon %s, radius %s and metric %s" % (value,value,radius,unit))
             except TwitterSearchException as e:
                 self.assertTrue((e.code == 1004 or e.code == 1005), "Wrong exception code")
 
