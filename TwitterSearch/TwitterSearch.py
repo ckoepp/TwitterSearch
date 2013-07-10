@@ -59,18 +59,11 @@ class TwitterSearch(object):
         else:
             raise TwitterSearchException(1016)
 
-    def isNextpage(self):
-        if nextpage:
-            return True
-        return False
-
-
     def authenticate(self, verify=True):
         self.__oauth = OAuth1(self.__consumer_key,
             client_secret = self.__consumer_secret,
             resource_owner_key = self.__access_token,
             resource_owner_secret = self.__access_token_secret )
-        
 
         if verify:
             r = requests.get(self._base_url + self._verify_url, auth=self.__oauth, proxies=self.__proxy)

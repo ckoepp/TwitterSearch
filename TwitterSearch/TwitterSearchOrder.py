@@ -2,11 +2,8 @@ import datetime
 from .TwitterSearchException import TwitterSearchException
 from .utils import py3k
 
-try: from urllib.parse import parse_qs as parse # python3
-except ImportError: from urlparse import parse_qs as parse #python2
-
-try: from urllib.parse import quote_plus # python3
-except ImportError: from urllib import quote_plus # python2
+try: from urllib.parse import parse_qs, quote_plus, unquote # python3
+except ImportError: from urlparse import parse_qs; from urllib import quote_plus, unquote #python2
 
 class TwitterSearchOrder(object):
 
@@ -21,42 +18,41 @@ class TwitterSearchOrder(object):
         self.arguments = { 'count' : '%s' % self._max_count }
         self.searchterms = []
         self.url = ''
-        self.manual_url = False
 
     def addKeyword(self, word):
-        if py3k:
-            if isinstance(word, str) and len(word) >= 2:
-              self.searchterms.append(word)
-            elif isinstance(word, list):
-                self.searchterms += word
-            else:
-                raise TwitterSearchException(1000)
+        """ Adds a given string or list to the current keyword list """
+        if isinstance(word, str if py3k else basestring) and len(word) >= 2:
+          self.searchterms.append(word)
+        elif isinstance(word, list):
+            self.searchterms += word
         else:
-            if isinstance(word, basestring) and len(word) >= 2:
-                self.searchterms.append(word)
-            elif isinstance(word, list):
-                self.searchterms += word
-            else:
-                raise TwitterSearchException(1000)
+            raise TwitterSearchException(1000)
 
     def setKeywords(self, word):
+        """ Sets a given list as the new keyword list """
         if not isinstance(word, list):
             raise TwitterSearchException(1001)
         self.searchterms = word
 
     def setSearchURL(self, url):
+        """ Reads given query string and stores key-value tuples """
         if url[0] == '?':
             url = url[1:]
 
-        args = parse(url)
+        args = parse_qs(url)
         self.searchterms = args['q']
         del args['q']
 
+        # urldecode keywords
+        for item in self.searchterms:
+            item = unquote(item)
+
         self.arguments = {}
         for key, value in args.items():
-            self.arguments.update({key : value[0]}) 
+            self.arguments.update({key : unquote(value[0])})
 
     def createSearchURL(self):
+        """ Generates (urlencoded) query string from stored key-values tuples """
         if len(self.searchterms) == 0:
             raise TwitterSearchException(1015)
 
@@ -67,30 +63,34 @@ class TwitterSearchOrder(object):
         url = url[0:len(url)-1]
 
         for key, value in self.arguments.items():
-            url += '&' +'%s=%s' % (quote_plus(key), quote_plus(value))
+            url += '&%s=%s' % (quote_plus(key), (quote_plus(value) if key != 'geocode' else value) )
 
         self.url = url
         return self.url
 
     def setLanguage(self, lang):
-        if len(lang) == 2 and lang in self.iso_6391:
+        """ Sets 'lang' paramater """
+        if lang in self.iso_6391:
             self.arguments.update( { 'lang' : '%s' % lang } )
         else:
             raise TwitterSearchException(1002)
 
     def setLocale(self, lang):
-        if len(lang) == 2 and lang in self.iso_6391:
+        """ Sets 'locale' paramater """
+        if lang in self.iso_6391:
             self.arguments.update( { 'locale' : '%s' % lang } )
         else:
             raise TwitterSearchException(1002)
 
     def setResultType(self, tor):
+        """ Sets 'result_type' paramater """
         if tor == 'mixed' or tor == 'recent' or tor == 'popular':
             self.arguments.update( { 'result_type' : '%s' % tor } )
         else:
             raise TwitterSearchException(1003)
 
     def setSinceID(self, twid):
+        """ Sets 'since_id' parameter """
         if py3k:
             if not isinstance(twid, int):
                 raise TwitterSearchException(1004)
@@ -104,6 +104,7 @@ class TwitterSearchOrder(object):
             raise TwitterSearchException(1004)
 
     def setMaxID(self, twid):
+        """ Sets 'max_id' parameter """
         if py3k:
             if not isinstance(twid, int):
                 raise TwitterSearchException(1004)
@@ -117,28 +118,33 @@ class TwitterSearchOrder(object):
             raise TwitterSearchException(1004)
 
     def setCount(self, cnt):
+        """ Sets 'count' paramater """
         if isinstance(cnt, int) and cnt > 0 and cnt <= 100:
             self.arguments.update( { 'count' : '%s' % cnt } )
         else:
             raise TwitterSearchException(1004)
 
-    def setGeocode(self, latitude, longitude, radius, unit):
+    def setGeocode(self, latitude, longitude, radius, km=True):
+        """ Sets geolocation paramaters """
         if py3k:
             if not isinstance(radius, int):
                 raise TwitterSearchException(1004)
         else:
-           if not isinstance(radius, (int, long)):
+           if not isinstance(radius, (int, long)) or radius <= 0:
                 raise TwitterSearchException(1004)
 
         if isinstance(latitude, float) and isinstance(longitude, float):
-            if unit == 'mi' or unit == 'km':
-                self.arguments.update( { 'geocode' : '%s,%s,%s%s' % (latitude, longitude, radius, unit) } )
+            if km:
+                self.arguments.update( { 'geocode' : '%s,%s,%s%s' % (latitude, longitude, radius, 'km') } )
+            elif not km:
+                self.arguments.update( { 'geocode' : '%s,%s,%s%s' % (latitude, longitude, radius, 'mi') } )
             else:
                 raise TwitterSearchException(1005)
         else:
             raise TwitterSearchException(1004)
 
     def setCallback(self, func):
+        """ Sets 'callback' paramater """
         if py3k:
             if isinstance(func, str) and func:
                 self.arguments.update( { 'callback' : '%s' % func } )
@@ -152,13 +158,15 @@ class TwitterSearchOrder(object):
 
 
     def setUntil(self, date):
-        if isinstance(date, datetime.date):
-            self.arguments.update( { 'unitl' : '%s' % date.strftime('%Y-%m-%d') } )
+        """ Sets 'until' parameter """
+        if isinstance(date, datetime.date) and date <= datetime.date.today():
+            self.arguments.update( { 'until' : '%s' % date.strftime('%Y-%m-%d') } )
         else:
             raise TwitterSearchException(1007)
 
     def setIncludeEntities(self, include):
-        if not isinstance(include, (bool, int)) and ( include == 1 or include == 0):
+        """ Sets 'include entities' paramater """
+        if not isinstance(include, bool):
             raise TwitterSearchException(1008)
 
         if include:
