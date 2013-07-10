@@ -267,7 +267,7 @@ class TwitterSearchOrderTest(unittest.TestCase):
         tso2 = TwitterSearchOrder()
         tso2.setKeywords([ 'test1', 'test2' ])
         tso2.setCount(77)
-        tso2.setUntil(date(2013,07,10))
+        tso2.setUntil(date(2013,7,10))
         tso2.setLocale('en')
 
         self.assertEqual(tso1.createSearchURL(), tso2.createSearchURL(), "Query strings NOT equal")

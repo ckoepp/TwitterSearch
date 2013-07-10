@@ -4,8 +4,8 @@ from .TwitterSearchException import TwitterSearchException
 from .TwitterSearchOrder import TwitterSearchOrder
 from .utils import py3k
 
-try: from urllib.parse import parse_qs as parse # python3
-except ImportError: from urlparse import parse_qs as parse # python2
+try: from urllib.parse import parse_qs # python3
+except ImportError: from urlparse import parse_qs # python2
 
 # determine max int value
 try: from sys import maxint # python2
@@ -91,7 +91,7 @@ class TwitterSearch(object):
 
         # using IDs to request more results - former versions used page parameter
         # see https://dev.twitter.com/docs/working-with-timelines
-        given_count = int(parse(url)['count'][0])
+        given_count = int(parse_qs(url)['count'][0])
         self.__response['content'] = r.json()
 
         self.__statistics['queries'] += 1

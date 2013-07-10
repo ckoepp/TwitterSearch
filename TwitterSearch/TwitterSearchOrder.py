@@ -134,10 +134,8 @@ class TwitterSearchOrder(object):
                 raise TwitterSearchException(1004)
 
         if isinstance(latitude, float) and isinstance(longitude, float):
-            if km:
-                self.arguments.update( { 'geocode' : '%s,%s,%s%s' % (latitude, longitude, radius, 'km') } )
-            elif not km:
-                self.arguments.update( { 'geocode' : '%s,%s,%s%s' % (latitude, longitude, radius, 'mi') } )
+            if isinstance(km, bool):
+                self.arguments.update( { 'geocode' : '%s,%s,%s%s' % (latitude, longitude, radius, 'km' if km else 'mi') } )
             else:
                 raise TwitterSearchException(1005)
         else:
@@ -145,17 +143,10 @@ class TwitterSearchOrder(object):
 
     def setCallback(self, func):
         """ Sets 'callback' paramater """
-        if py3k:
-            if isinstance(func, str) and func:
-                self.arguments.update( { 'callback' : '%s' % func } )
-            else:
-                raise TwitterSearchException(1006)
+        if isinstance(func, str if py3k else basestring) and func:
+            self.arguments.update( { 'callback' : '%s' % func } )
         else:
-            if isinstance(func, basestring) and func:
-                self.arguments.update( { 'callback' : '%s' % func } )
-            else:
-                raise TwitterSearchException(1006)
-
+            raise TwitterSearchException(1006)
 
     def setUntil(self, date):
         """ Sets 'until' parameter """
