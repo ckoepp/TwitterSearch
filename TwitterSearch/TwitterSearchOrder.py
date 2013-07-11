@@ -126,12 +126,8 @@ class TwitterSearchOrder(object):
 
     def setGeocode(self, latitude, longitude, radius, km=True):
         """ Sets geolocation paramaters """
-        if py3k:
-            if not isinstance(radius, int):
-                raise TwitterSearchException(1004)
-        else:
-           if not isinstance(radius, (int, long)) or radius <= 0:
-                raise TwitterSearchException(1004)
+        if not isinstance(radius, (int) if py3k else (int, long) ) or radius <= 0:
+           raise TwitterSearchException(1004)
 
         if isinstance(latitude, float) and isinstance(longitude, float):
             if isinstance(km, bool):

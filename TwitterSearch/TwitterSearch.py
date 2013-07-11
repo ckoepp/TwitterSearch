@@ -53,6 +53,9 @@ class TwitterSearch(object):
         # verify
         self.authenticate(verify)
 
+    def __repr__(self):
+        return '<TwitterSearch %s>' % self.__access_token
+
     def setProxy(self, proxy):
         if isinstance(proxy, dict) and 'https' in proxy:
             self.__proxy = proxy

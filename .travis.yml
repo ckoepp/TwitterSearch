@@ -5,9 +5,7 @@ python:
   - "3.2"
   - "3.3"
 script: 
-  - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then unit2 discover test; fi
-  - if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then python -m unittest discover; fi
-  - if [[ $TRAVIS_PYTHON_VERSION == 3* ]]; then python -m unittest discover; fi
+  - nosetests -v
 branches:
   only:
     - master
