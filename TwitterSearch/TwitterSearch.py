@@ -12,6 +12,12 @@ try: from sys import maxint # python2
 except ImportError: from sys import maxsize as maxint # python3
 
 class TwitterSearch(object):
+    """
+    This class actually performs the calls to the Twitter Search API (v1.1 only).
+
+    It is configured using an instance of TwitterSearchOrder and valid Twitter credentials.
+    """
+
     _base_url = 'https://api.twitter.com/1.1/'
     _verify_url = 'account/verify_credentials.json'
     _search_url = 'search/tweets.json'
@@ -34,6 +40,7 @@ class TwitterSearch(object):
                  }
 
     def __init__(self, consumer_key, consumer_secret, access_token, access_token_secret, verify=True):
+
         # app
         self.__consumer_key = consumer_key
         self.__consumer_secret = consumer_secret
@@ -57,12 +64,14 @@ class TwitterSearch(object):
         return '<TwitterSearch %s>' % self.__access_token
 
     def setProxy(self, proxy):
+        """ Sets a given dict as proxy handler """
         if isinstance(proxy, dict) and 'https' in proxy:
             self.__proxy = proxy
         else:
             raise TwitterSearchException(1016)
 
     def authenticate(self, verify=True):
+        """ Creates internal oauth handler needed for queries to Twitter and verifies credentials if needed """
         self.__oauth = OAuth1(self.__consumer_key,
             client_secret = self.__consumer_secret,
             resource_owner_key = self.__access_token,
@@ -73,20 +82,20 @@ class TwitterSearch(object):
             self.checkHTTPStatus(r.status_code)
 
     def checkHTTPStatus(self, http_status):
+        """ Checks a given http_status and returns an exception in case wrong status """
         if http_status in self.exceptions:
             raise TwitterSearchException(http_status, self.exceptions[http_status])
 
     def searchTweetsIterable(self, order):
+        """ Returns itself. Is called when using an instance of this class as iterable """
         self.searchTweets(order)
         return self
 
     def sentSearch(self, url):
-        if py3k:
-            if not isinstance(url, str):
-                raise TwitterSearchException(1009)
-        else:
-            if not isinstance(url, basestring):
-                raise TwitterSearchException(1009)
+        """ Sents a given query string to the Twitter Search API, stores results interally and validates returned HTTP status code """
+        if not isinstance(url, str if py3k else basestring):
+            raise TwitterSearchException(1009)
+
         r = requests.get(self._base_url + self._search_url + url, auth=self.__oauth, proxies=self.__proxy)
         self.__response['meta'] = r.headers
 
@@ -112,6 +121,7 @@ class TwitterSearch(object):
         return self.__response['meta'], self.__response['content']
 
     def searchTweets(self, order):
+        """ Creates an query string through a given TwitterSearchOrder instance and takes care that it is sent to the Twitter API. Returns unmodified response """
         if not isinstance(order, TwitterSearchOrder):
             raise TwitterSearchException(1010)
 
@@ -120,6 +130,7 @@ class TwitterSearch(object):
         return self.__response
 
     def searchNextResults(self):
+        """ Returns True if there are more results available within the Twitter Search API """
         if not self.__nextMaxID:
             raise TwitterSearchException(1011)
 
@@ -127,16 +138,19 @@ class TwitterSearch(object):
         return self.__response
 
     def getMetadata(self):
+        """ Returns all available meta data collected during last query """
         if not self.__response:
             raise TwitterSearchException(1012)
         return self.__response['meta']
 
     def getTweets(self):
+        """ Returns all available data from last query """
         if not self.__response:
            raise TwitterSearchException(1013)
         return self.__response['content']
 
     def getStatistics(self):
+        """ Returns dict with statistical information about amount of queries and received tweets """
         return self.__statistics
 
     # Iteration
@@ -147,6 +161,7 @@ class TwitterSearch(object):
         return self
 
     def next(self):
+        """ Python2 method, simply returns .__next__() """
         return self.__next__()
 
     def __next__(self):

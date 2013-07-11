@@ -1,7 +1,10 @@
 class TwitterSearchException(Exception):
+    """
+    This class handles all exceptions directly based on TwitterSearch.
+    """
 
    # HTTP status codes are stored in TwitterSearch.exceptions due to possible on-the-fly modifications
-    _error_codes = { 
+    _error_codes = {
         1000 : 'Neither a list nor a string',
         1001 : 'Not a list object',
         1002 : 'No ISO 6391-1 language code',
@@ -10,7 +13,7 @@ class TwitterSearchException(Exception):
         1005 : 'Invalid unit',
         1006 : 'Invalid callback string',
         1007 : 'Not a date object',
-        1008 : 'Invalid boolean',                
+        1008 : 'Invalid boolean',
         1009 : 'Invalid string',
         1010 : 'Not a valid TwitterSearchOrder object',
         1011 : 'No more results available',

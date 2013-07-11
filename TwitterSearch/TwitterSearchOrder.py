@@ -6,6 +6,11 @@ try: from urllib.parse import parse_qs, quote_plus, unquote # python3
 except ImportError: from urlparse import parse_qs; from urllib import quote_plus, unquote #python2
 
 class TwitterSearchOrder(object):
+    """
+    This class is for configurating all available arguments of the Twitter Search API (v1.1).
+
+    It also creates valid query strings which can be used in other environments identical to the syntax of the Twitter Search API.
+    """
 
     # default value for count should be the maximum value to minimize traffic
     # see https://dev.twitter.com/docs/api/1.1/get/search/tweets
