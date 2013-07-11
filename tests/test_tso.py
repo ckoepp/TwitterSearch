@@ -1,5 +1,8 @@
 from TwitterSearch import *
 
+try: from urllib.parse import parse_qs # python3
+except ImportError: from urlparse import parse_qs #python2
+
 import unittest
 import random
 import copy
@@ -26,6 +29,16 @@ class TwitterSearchOrderTest(unittest.TestCase):
 
         return random.randint(minimum,maximum)
 
+    def assertEqualQuery(self, *args):
+        """ Creates dicts out of given strings and compares those dicts """
+
+        d = []
+        for arg in args:
+            d += parse_qs(arg)
+
+        # it's slower if assertsEqual is done when x == y as to avoid this case
+        (self.assertEqual(x,y,'Query strings do NOT match') for x in d for y in d)
+
     def setUp(self):
         """ Constructor """
 
@@ -43,7 +56,7 @@ class TwitterSearchOrderTest(unittest.TestCase):
         for value in correct_values:
             tso.setResultType(value)
             cor = '%s&result_type=%s' % (self.__tso.createSearchURL(), value)
-            self.assertEqual(tso.createSearchURL(), cor, "Wrong URL")
+            self.assertEqualQuery(tso.createSearchURL(), cor)
 
         # wrong values
         try:
@@ -61,7 +74,7 @@ class TwitterSearchOrderTest(unittest.TestCase):
         for value in correct_values:
             tso.setUntil(value)
             cor = '%s&until=%s' % (self.__tso.createSearchURL(), value.strftime('%Y-%m-%d'))
-            self.assertEqual(tso.createSearchURL(), cor, "Wrong URL")
+            self.assertEqualQuery(tso.createSearchURL(), cor)
 
         # wrong values
         wrong_values = [ today + timedelta(days=1), '', [], {}, -1, 39.0, 31, 'foobar' ]
@@ -82,7 +95,7 @@ class TwitterSearchOrderTest(unittest.TestCase):
         for value in correct_values:
             tso.setMaxID(value)
             cor = '%s&max_id=%i' % (self.__tso.createSearchURL(), value)
-            self.assertEqual(tso.createSearchURL(), cor, "Wrong URL")
+            self.assertEqualQuery(tso.createSearchURL(), cor)
 
         # wrong values
         wrong_values = [ -1, 1.0, '', [], {} ]
@@ -102,7 +115,7 @@ class TwitterSearchOrderTest(unittest.TestCase):
         for value in correct_values:
             tso.setSinceID(value)
             cor = '%s&since_id=%i' % (self.__tso.createSearchURL(), value)
-            self.assertEqual(tso.createSearchURL(), cor, "Wrong URL")
+            self.assertEqualQuery(tso.createSearchURL(), cor)
 
         # wrong values
         wrong_values = [-1, 1.0, '', [], {} ]
@@ -150,7 +163,7 @@ class TwitterSearchOrderTest(unittest.TestCase):
         for value in correct_values:
             tso.setCount(value)
             cor = '%s%i' % (self.__tso.createSearchURL()[0:-3], value)
-            self.assertEqual(tso.createSearchURL(), cor, "Wrong URL")
+            self.assertEqualQuery(tso.createSearchURL(), cor)
 
         # wrong values
         wrong_values = [ -1, 1.0, 101, '', [], {} ]
@@ -170,7 +183,7 @@ class TwitterSearchOrderTest(unittest.TestCase):
         for value in correct_values:
             tso.setCallback(value)
             cor = '%s&callback=%s' % (self.__tso.createSearchURL(), value)
-            self.assertEqual(tso.createSearchURL(), cor, "Wrong URL")
+            self.assertEqualQuery(tso.createSearchURL(), cor)
 
             # wrong values
             wrong_values = [ '', 1, 1.0, [], {} ]
@@ -188,7 +201,7 @@ class TwitterSearchOrderTest(unittest.TestCase):
         for value in TwitterSearchOrder.iso_6391:
             tso.setLanguage(value)
             cor = '%s&lang=%s' % (self.__tso.createSearchURL(), value)
-            self.assertEqual(tso.createSearchURL(), cor, "Wrong URL")
+            self.assertEqualQuery(tso.createSearchURL(), cor)
 
         # wrong values
         wrong_values = [ '', 'dee', 'q', 'xz', 32, 1.0, [], {} ]
@@ -206,7 +219,7 @@ class TwitterSearchOrderTest(unittest.TestCase):
         for value in TwitterSearchOrder.iso_6391:
             tso.setLocale(value)
             cor = '%s&locale=%s' % (self.__tso.createSearchURL(), value)
-            self.assertEqual(tso.createSearchURL(), cor, "Wrong URL")
+            self.assertEqualQuery(tso.createSearchURL(), cor)
 
             # wrong values
             wrong_values = [ '', 'dee', 'q', 'xz', 32, 1.0, [], {} ]
@@ -225,7 +238,7 @@ class TwitterSearchOrderTest(unittest.TestCase):
         for value in correct_values:
             tso.setIncludeEntities(value)
             cor = '%s&include_entities=%s' % (self.__tso.createSearchURL(), bool(value))
-            self.assertEqual(tso.createSearchURL(), cor, "Wrong URL")
+            self.assertEqualQuery(tso.createSearchURL(), cor)
 
         # wrong values
         wrong_values = [ '', 3.0, 3, -1, 2, [], {} ]
