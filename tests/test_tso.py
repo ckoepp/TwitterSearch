@@ -140,7 +140,7 @@ class TwitterSearchOrderTest(unittest.TestCase):
             unit = ( 'km' if is_km else 'mi' )
 
             cor = '%s&geocode=%s,%s,%s%s' % (self.__tso.createSearchURL(), lat, lon, radius, unit)
-            self.assertEqual(tso.createSearchURL(), cor)
+            self.assertEqualQuery(tso.createSearchURL(), cor)
 
         # wrong values
         wrong_values = [-1, 1.0, 101, '', [], {} ]
