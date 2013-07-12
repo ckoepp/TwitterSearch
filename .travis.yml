@@ -4,6 +4,9 @@ python:
   - "2.7"
   - "3.2"
   - "3.3"
+install:
+  - "pip install -r requirements.txt --use-mirrors"
+  - "pip install httpretty --use-mirrors"
 script: 
   - nosetests -v
 branches:
