@@ -285,5 +285,5 @@ class TwitterSearchOrderTest(unittest.TestCase):
         tso2.setUntil(date(2013,7,10))
         tso2.setLocale('en')
 
-        self.assertEqual(tso1.createSearchURL(), tso2.createSearchURL(), "Query strings NOT equal")
+        self.assertEqualQuery(tso1.createSearchURL(), tso2.createSearchURL(), "Query strings NOT equal")
 
