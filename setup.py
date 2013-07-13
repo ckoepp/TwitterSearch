@@ -1,11 +1,18 @@
 from setuptools import setup
+from TwitterSearch import __version__
 
 def readme():
     with open('README.md') as f:
         return f.read()
 
+def requirements():
+    req = []
+    for line in open('requirements.txt','r'):
+        req.append(line.split()[0])
+    return req
+
 setup(name='TwitterSearch',
-      version='0.76',
+      version=__version__,
       description='A library to easily iterate tweets found by the Twitter Search API',
       long_description=readme(),
       url='http://github.com/ckoepp/TwitterSearch',
@@ -28,10 +35,7 @@ setup(name='TwitterSearch',
           'License :: OSI Approved :: MIT License',
           'Topic :: Internet :: WWW/HTTP :: Dynamic Content :: CGI Tools/Libraries',
       ],
-      install_requires=[
-          'requests >= 1.0.0',
-          'requests-oauthlib >= 0.3.0',
-      ],
+      install_requires=requirements(),
       zip_safe=False,
       test_suite='nose.collector',
       tests_require=['nose', 'nose-cover3', 'httpretty']
