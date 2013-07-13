@@ -29,7 +29,10 @@ setup(name='TwitterSearch',
           'Topic :: Internet :: WWW/HTTP :: Dynamic Content :: CGI Tools/Libraries',
       ],
       install_requires=[
-          'requests',
-          'requests-oauthlib',
+          'requests >= 1.0.0',
+          'requests-oauthlib >= 0.3.0',
       ],
-      zip_safe=False)
+      zip_safe=False,
+      test_suite='nose.collector',
+      tests_require=['nose', 'nose-cover3', 'httpretty']
+      )

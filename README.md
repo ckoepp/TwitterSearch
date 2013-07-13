@@ -1,5 +1,5 @@
 # TwitterSearch
-[![Build](https://api.travis-ci.org/ckoepp/TwitterSearch.png?branch=master)](https://travis-ci.org/ckoepp/TwitterSearch) [![Downloads](https://pypip.in/d/TwitterSearch/badge.png)](https://crate.io/packages/TwitterSearch/) [![PyPI version](https://pypip.in/v/TwitterSearch/badge.png)](https://crate.io/packages/TwitterSearch/)
+[![Build](https://api.travis-ci.org/ckoepp/TwitterSearch.png?branch=master)](https://travis-ci.org/ckoepp/TwitterSearch/branches) [![Downloads](https://pypip.in/d/TwitterSearch/badge.png)](https://crate.io/packages/TwitterSearch/) [![PyPI version](https://pypip.in/v/TwitterSearch/badge.png)](https://crate.io/packages/TwitterSearch/)
 
 
 This library allows you easily create a search through the Twitter Search API without having to know too much about the API details. Based on such a search you can even iterate throughout all tweets reachable via the Twitter Search API. There is an automatic reload of the next pages while using the iteration.
