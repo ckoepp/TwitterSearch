@@ -61,11 +61,8 @@ class TwitterSearchOrder(object):
         if len(self.searchterms) == 0:
             raise TwitterSearchException(1015)
 
-        url = '?'
-        url += 'q='
-        for term in self.searchterms:
-            url += '%s+' % quote_plus(term)
-        url = url[0:len(url)-1]
+        url = '?q='
+        url += self.searchterms.join('+')
 
         for key, value in self.arguments.items():
             url += '&%s=%s' % (quote_plus(key), (quote_plus(value) if key != 'geocode' else value) )
