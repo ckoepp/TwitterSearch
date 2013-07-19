@@ -16,6 +16,9 @@ More than that, TwitterSearch is:
  * pretty friendly to Python >= 2.6 **and** Python >= 3.2
  * pretty pretty to look at :)
 
+## Installation
+TwitterSearch is also available on pypi and therefore can be installed via ``pip install TwitterSearch`` or ``easy_install TwitterSearch``. If you'd like to work with bleeding edge versions you're free to clone the ``devel`` branch.
+
 ## Example
 The library is still in an early stage. However, if you would like to use it we prepared a small example about how to play around. 
 
