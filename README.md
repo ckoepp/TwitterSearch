@@ -55,7 +55,7 @@ The result will be a text looking similar to this one. But as you see unfortunat
 ```
 
 ##Wanna see more details?
-If you'd like to get more information about how TwitterSearch works interally and how to use it with all it's possibilities have a look at the [Wiki](https://github.com/ckoepp/TwitterSearch/wiki).
+If you'd like to get more information about how TwitterSearch works interally and how to use it with all it's possibilities have a look at the [latest documentation](https://twittersearch.readthedocs.org/en/latest/).
 
 ##License (MIT)
 Copyright (C) 2013 Christian Koepp
