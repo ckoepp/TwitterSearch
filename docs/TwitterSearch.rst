@@ -5,8 +5,8 @@ This class contains the actual functionality of this library. It is responsible 
 
 If you're looking for the exceptions thrown by this class based on the HTTP status, please read the article about `TwitterSearchException <TwitterSearchException.html>`_.
 
-Methods
--------
+Available methods
+-----------------
 
 ============================================== ====================================================================================================================================================================================================== ================================================================================================================
 Method                                         Description                                                                                                                                                                                            Example

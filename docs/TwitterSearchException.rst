@@ -1,5 +1,5 @@
-TwitterSearchException
-======================
+The TwitterSearchException class
+================================
 
 This class is all about exceptions (surprise, surprise!). All exception based directly on TwitterSearch will consist of a **code** and a **message** describing the reason of the exception shortly.
 

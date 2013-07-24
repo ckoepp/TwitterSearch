@@ -1,5 +1,5 @@
-TwitterSearchOrder
-==================
+The TwitterSearchOrder class
+============================
 
 This class mainly acts as a plain container for configuration all parameters currently available by the Twitter Search API.
 
