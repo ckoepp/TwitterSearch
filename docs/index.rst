@@ -10,7 +10,7 @@ Also *TwitterSearch* is build to be highly flexible in its usage making it usabl
 Architecture
 ============
 
-TwitterSearch consists of three classes: [TwitterSearch](wiki/TwitterSearch), [TwitterSearchOrder](wiki/TwitterSearchOrder) and [TwitterSearchException](wiki/TwitterSearchException).
+TwitterSearch consists of three classes: `TwitterSearch <TwitterSearch.html>`_, `TwitterSearchOrder <TwitterSearchOrder.html>`_ and `TwitterSearchException <TwitterSearchException.html>`_.
 
 Table of contents
 =================

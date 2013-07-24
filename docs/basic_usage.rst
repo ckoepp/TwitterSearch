@@ -134,12 +134,3 @@ An example of how such a tweet looks like is the following dict:
           'utc_offset': None,
           'verified': False}}
 
-
-
-
-
-
-
-
-
-
