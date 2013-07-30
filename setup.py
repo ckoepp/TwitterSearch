@@ -1,5 +1,5 @@
 from setuptools import setup
-from TwitterSearch import __version__
+#from TwitterSearch import __version__
 
 def readme():
     with open('README.md') as f:
@@ -12,7 +12,7 @@ def requirements():
     return req
 
 setup(name='TwitterSearch',
-      version=__version__,
+      version='0.78.1',
       description='A library to easily iterate tweets found by the Twitter Search API',
       long_description=readme(),
       url='http://github.com/ckoepp/TwitterSearch',

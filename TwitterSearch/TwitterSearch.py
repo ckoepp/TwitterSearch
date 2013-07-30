@@ -21,6 +21,7 @@ class TwitterSearch(object):
     _base_url = 'https://api.twitter.com/1.1/'
     _verify_url = 'account/verify_credentials.json'
     _search_url = 'search/tweets.json'
+    _lang_url = 'help/languages.json'
 
     # see https://dev.twitter.com/docs/error-codes-responses
     exceptions = {
@@ -152,6 +153,20 @@ class TwitterSearch(object):
     def getStatistics(self):
         """ Returns dict with statistical information about amount of queries and received tweets """
         return self.__statistics
+
+    def setSupportedLanguages(self, order):
+        """ Loads currently supported languages from Twitter API and sets them in a given TwitterSearchOrder instance """
+        if not isinstance(order, TwitterSearchOrder):
+            raise TwitterSearchException(1010)
+
+        r = requests.get(self._base_url + self._lang_url, auth=self.__oauth, proxies=self.__proxy)
+        self.__response['meta'] = r.headers
+        self.checkHTTPStatus(r.status_code)
+        self.__response['content'] = r.json()
+
+        order.iso_6391 =  []
+        for lang in self.__response['content']:
+            order.iso_6391.append(lang['code'])
 
     # Iteration
     def __iter__(self):
