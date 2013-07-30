@@ -24,9 +24,30 @@ class TwitterSearchTest(unittest.TestCase):
         """ Constructor """
         self.auth_url = TwitterSearch._base_url + TwitterSearch._verify_url
         self.search_url = TwitterSearch._base_url + TwitterSearch._search_url
+        self.lang_url = TwitterSearch._base_url + TwitterSearch._lang_url
 
 
     ################ TESTS #########################
+
+    @httpretty.activate
+    def test_TS_setSupportedLanguages(self):
+        """ Tests TwitterSearch.setSupportedLanguages() """
+
+        httpretty.register_uri(
+                httpretty.GET, self.lang_url,
+                body=self.apiAnsweringMachine('tests/mock-data/lang.log'),
+                streaming=True,
+                status=200,
+                content_type='text/json' )
+
+        ts = self.createTS()
+        tso = self.createTSO()
+
+        try:
+            ts.setSupportedLanguages(tso)
+            self.assertEqual(tso.iso_6391.sort(), [ 'fi', 'da', 'pl', 'hu', 'fa', 'he' ].sort())
+        except Exception as e:
+            self.assertTrue(False, "An exception was raised: %s" % e)
 
     @httpretty.activate
     def test_TS_authenticate(self):
