@@ -92,7 +92,7 @@ class TwitterSearch(object):
         self.searchTweets(order)
         return self
 
-    def sentSearch(self, url):
+    def sentSearch(self, url, quick=False):
         """ Sents a given query string to the Twitter Search API, stores results interally and validates returned HTTP status code """
         if not isinstance(url, str if py3k else basestring):
             raise TwitterSearchException(1009)
@@ -110,13 +110,19 @@ class TwitterSearch(object):
         self.__statistics['queries'] += 1
         self.__statistics['tweets'] += len(self.__response['content']['statuses'])
 
+        # if we've seen the correct amount of tweets there may be some more
         if int(self.__response['content']['search_metadata']['count']) == given_count:
-            # have a look for the lowest ID
-            for tweet in self.__response['content']['statuses']:
-              if tweet['id'] < self.__nextMaxID:
-                  self.__nextMaxID = tweet['id']
-            self.__nextMaxID -= 1
-        else:
+
+            if quick: # as Twitter orders it's tweets correctly we can just grab the last id and decrement it by 1
+                self.__nextMaxID = self.__response['content']['statuses'][given_count-1]['id'] -1
+
+            else: # perform a search by iterating all tweets and don't relay on the Twitter API
+                for tweet in self.__response['content']['statuses']:
+                  if tweet['id'] < self.__nextMaxID:
+                      self.__nextMaxID = tweet['id']
+                self.__nextMaxID -= 1
+
+        else: # we got less tweets than requested -> no more results in API
             self.__nextMaxID = None
 
         return self.__response['meta'], self.__response['content']
