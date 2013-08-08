@@ -1,6 +1,17 @@
 Change history
 **************
 
+
+0.78.2
+######
+
+* using lambda function to determine minimal ID of tweets on reloads of new pages from API
+
+0.78.1
+######
+
+* added interface to help/languages to load supported ISO 6391-1 language codes directly from API
+
 0.76
 ####
 
