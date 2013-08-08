@@ -1,0 +1,23 @@
+Change history
+**************
+
+0.76
+####
+
+* added tests for TwitterSearchOrder class
+* Python3/Python2 improvements by using conditional expressions
+* fixed url-encoding of ',' letters in geocode argument within createSearchURL()
+* some internally used variables are now marked as private (e.g. TwitterSearch.__response) 
+* added proxy feature (https only)
+* removed TwitterSearch.isNext()
+* added TwitterSearchException(1016) [Invalid dict]
+* added docstrings
+
+0.75
+####
+
+* added requirements.txt
+* added license file
+* added Python3 support
+* changed from oauth2 and simplejson to requests and requests_oauthlib
+* added verification of credentials feature
