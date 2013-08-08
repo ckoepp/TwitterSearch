@@ -43,7 +43,6 @@ The library is still in an early stage. However, if you would like to use it we 
 Everybody knows how much work it is to study at a university. So why not take a small shortcut? So in this example we assume we would like to find out how to copy a doctorate thesis in Germany. Let's have a look what the Twitter users have to say about `Mr Guttenberg <http://www.bbc.co.uk/news/world-europe-12608083>`_.
 
 .. code-block:: python
-    :linenos:
 
     from TwitterSearch import *
     try:
