@@ -92,8 +92,8 @@ class TwitterSearch(object):
         self.searchTweets(order)
         return self
 
-    def sentSearch(self, url):
-        """ Sents a given query string to the Twitter Search API, stores results interally and validates returned HTTP status code """
+    def sendSearch(self, url):
+        """ Sends a given query string to the Twitter Search API, stores results interally and validates returned HTTP status code """
         if not isinstance(url, str if py3k else basestring):
             raise TwitterSearchException(1009)
 
@@ -120,12 +120,12 @@ class TwitterSearch(object):
         return self.__response['meta'], self.__response['content']
 
     def searchTweets(self, order):
-        """ Creates an query string through a given TwitterSearchOrder instance and takes care that it is sent to the Twitter API. Returns unmodified response """
+        """ Creates an query string through a given TwitterSearchOrder instance and takes care that it is send to the Twitter API. Returns unmodified response """
         if not isinstance(order, TwitterSearchOrder):
             raise TwitterSearchException(1010)
 
         self._startURL = order.createSearchURL()
-        self.sentSearch(self._startURL)
+        self.sendSearch(self._startURL)
         return self.__response
 
     def searchNextResults(self):
@@ -133,7 +133,7 @@ class TwitterSearch(object):
         if not self.__nextMaxID:
             raise TwitterSearchException(1011)
 
-        self.sentSearch("%s&max_id=%i" % (self._startURL, self.__nextMaxID))
+        self.sendSearch("%s&max_id=%i" % (self._startURL, self.__nextMaxID))
         return self.__response
 
     def getMetadata(self):
