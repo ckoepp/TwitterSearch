@@ -26,7 +26,7 @@ class TwitterSearch(object):
     _verify_url = 'account/verify_credentials.json'
     _search_url = 'search/tweets.json'
     _lang_url = 'help/languages.json'
-    _user_url = 'statuses/user_timeline.json '
+    _user_url = 'statuses/user_timeline.json'
 
     # see https://dev.twitter.com/docs/error-codes-responses
     exceptions = {
@@ -101,14 +101,14 @@ class TwitterSearch(object):
         """ Sends a given query string to the Twitter Search API, stores results interally and validates returned HTTP status code """
         if not isinstance(url, str if py3k else basestring):
             raise TwitterSearchException(1009)
-            
+
         endpoint = self._base_url + (self._search_url if self.__orderIsSearch else self._user_url)
 
         r = requests.get(endpoint + url, auth=self.__oauth, proxies=self.__proxy)
         self.__response['meta'] = r.headers
-        
+
         self.checkHTTPStatus(r.status_code)
-        
+
         self.__response['content'] = r.json()
 
         # update statistics if everything worked fine so far
@@ -125,7 +125,7 @@ class TwitterSearch(object):
 
         if seen_tweets == given_count:
             self.__nextMaxID = min(
-                                    self.__response['content']['statuses'] if self.__orderIsSearch else self.__response['content'], 
+                                    self.__response['content']['statuses'] if self.__orderIsSearch else self.__response['content'],
                                     key=lambda i: i['id']
                                 )['id'] - 1
 
@@ -175,10 +175,10 @@ class TwitterSearch(object):
         """ Returns current amount of tweets available within this instance """
         if not self.__response:
            raise TwitterSearchException(1013)
-        
+
         return len(self.__response['content']['statuses']) if self.__orderIsSearch else len(self.__response['content'])
-    
-    
+
+
     def setSupportedLanguages(self, order):
         """ Loads currently supported languages from Twitter API and sets them in a given TwitterSearchOrder instance """
         if not isinstance(order, TwitterSearchOrder):
