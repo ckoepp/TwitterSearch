@@ -1,16 +1,19 @@
+# -*- coding: utf-8 -*-
+
 import datetime
 from .TwitterSearchException import TwitterSearchException
+from .TwitterOrder import TwitterOrder
 from .utils import py3k
 
 try: from urllib.parse import parse_qs, quote_plus, unquote # python3
 except ImportError: from urlparse import parse_qs; from urllib import quote_plus, unquote #python2
 
-class TwitterSearchOrder(object):
+class TwitterSearchOrder(TwitterOrder):
     """
-    This class is for configurating all available arguments of the Twitter Search API (v1.1).
+This class is for configurating all available arguments of the Twitter Search API (v1.1).
 
-    It also creates valid query strings which can be used in other environments identical to the syntax of the Twitter Search API.
-    """
+It also creates valid query strings which can be used in other environments identical to the syntax of the Twitter Search API.
+"""
 
     # default value for count should be the maximum value to minimize traffic
     # see https://dev.twitter.com/docs/api/1.1/get/search/tweets
@@ -91,41 +94,6 @@ class TwitterSearchOrder(object):
         else:
             raise TwitterSearchException(1003)
 
-    def setSinceID(self, twid):
-        """ Sets 'since_id' parameter """
-        if py3k:
-            if not isinstance(twid, int):
-                raise TwitterSearchException(1004)
-        else:
-           if not isinstance(twid, (int, long)):
-                raise TwitterSearchException(1004)
-
-        if twid > 0:
-            self.arguments.update( { 'since_id' : '%s' % twid } )
-        else:
-            raise TwitterSearchException(1004)
-
-    def setMaxID(self, twid):
-        """ Sets 'max_id' parameter """
-        if py3k:
-            if not isinstance(twid, int):
-                raise TwitterSearchException(1004)
-        else:
-           if not isinstance(twid, (int, long)):
-                raise TwitterSearchException(1004)
-
-        if twid > 0:
-            self.arguments.update( { 'max_id' : '%s' % twid } )
-        else:
-            raise TwitterSearchException(1004)
-
-    def setCount(self, cnt):
-        """ Sets 'count' paramater """
-        if isinstance(cnt, int) and cnt > 0 and cnt <= 100:
-            self.arguments.update( { 'count' : '%s' % cnt } )
-        else:
-            raise TwitterSearchException(1004)
-
     def setGeocode(self, latitude, longitude, radius, km=True):
         """ Sets geolocation paramaters """
         if not isinstance(radius, (int) if py3k else (int, long) ) or radius <= 0:
@@ -152,13 +120,3 @@ class TwitterSearchOrder(object):
             self.arguments.update( { 'until' : '%s' % date.strftime('%Y-%m-%d') } )
         else:
             raise TwitterSearchException(1007)
-
-    def setIncludeEntities(self, include):
-        """ Sets 'include entities' paramater """
-        if not isinstance(include, bool):
-            raise TwitterSearchException(1008)
-
-        if include:
-            self.arguments.update( { 'include_entities' : 'True' } )
-        else:
-            self.arguments.update( { 'include_entities' : 'False' } )
