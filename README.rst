@@ -23,7 +23,7 @@ Well, because it can be quite annoying to always parse the search url together a
 
 More than that, TwitterSearch is:
 
-* pretty small (around 350 lines of code currently)
+* pretty small (around 500 lines of code currently)
 * pretty easy to use, even for beginners
 * pretty good at giving you **all** available information (including meta information)
 * pretty iterable without any need to manually reload more results from the API
