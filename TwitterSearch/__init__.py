@@ -5,6 +5,8 @@ __license__ = 'MIT'
 __copyright__ = 'Copyright 2013 Christian Koepp'
 
 from .TwitterSearch import TwitterSearch
+from .TwitterOrder import TwitterOrder
 from .TwitterSearchOrder import TwitterSearchOrder
+from .TwitterUserOrder import TwitterUserOrder
 from .TwitterSearchException import TwitterSearchException
 from .utils import py3k
