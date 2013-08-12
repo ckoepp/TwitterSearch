@@ -1,7 +1,11 @@
+# -*- coding: utf-8 -*-
+
 import requests
 from requests_oauthlib import OAuth1
 from .TwitterSearchException import TwitterSearchException
+from .TwitterOrder import TwitterOrder
 from .TwitterSearchOrder import TwitterSearchOrder
+from .TwitterUserOrder import TwitterUserOrder
 from .utils import py3k
 
 try: from urllib.parse import parse_qs # python3
@@ -22,6 +26,7 @@ class TwitterSearch(object):
     _verify_url = 'account/verify_credentials.json'
     _search_url = 'search/tweets.json'
     _lang_url = 'help/languages.json'
+    _user_url = 'statuses/user_timeline.json '
 
     # see https://dev.twitter.com/docs/error-codes-responses
     exceptions = {
@@ -96,23 +101,33 @@ class TwitterSearch(object):
         """ Sends a given query string to the Twitter Search API, stores results interally and validates returned HTTP status code """
         if not isinstance(url, str if py3k else basestring):
             raise TwitterSearchException(1009)
+            
+        endpoint = self._base_url + (self._search_url if self.__orderIsSearch else self._user_url)
 
-        r = requests.get(self._base_url + self._search_url + url, auth=self.__oauth, proxies=self.__proxy)
+        r = requests.get(endpoint + url, auth=self.__oauth, proxies=self.__proxy)
         self.__response['meta'] = r.headers
-
+        
         self.checkHTTPStatus(r.status_code)
-
-        # using IDs to request more results - former versions used page parameter
-        # see https://dev.twitter.com/docs/working-with-timelines
-        given_count = int(parse_qs(url)['count'][0])
+        
         self.__response['content'] = r.json()
 
+        # update statistics if everything worked fine so far
+        seen_tweets = self.getAmountOfTweets()
         self.__statistics['queries'] += 1
-        self.__statistics['tweets'] += len(self.__response['content']['statuses'])
+        self.__statistics['tweets'] += seen_tweets
 
         # if we've seen the correct amount of tweets there may be some more
-        if int(self.__response['content']['search_metadata']['count']) == given_count:
-            self.__nextMaxID = min(self.__response['content']['statuses'], key=lambda i: i['id'])['id'] - 1
+        # using IDs to request more results - former versions used page parameter
+        # see https://dev.twitter.com/docs/working-with-timelines
+        if url[0] == '?': # a leading ? char does "confuse" parse_qs()
+            url = url[1:]
+        given_count = int(parse_qs(url)['count'][0])
+
+        if seen_tweets == given_count:
+            self.__nextMaxID = min(
+                                    self.__response['content']['statuses'] if self.__orderIsSearch else self.__response['content'], 
+                                    key=lambda i: i['id']
+                                )['id'] - 1
 
         else: # we got less tweets than requested -> no more results in API
             self.__nextMaxID = None
@@ -121,8 +136,12 @@ class TwitterSearch(object):
 
     def searchTweets(self, order):
         """ Creates an query string through a given TwitterSearchOrder instance and takes care that it is send to the Twitter API. Returns unmodified response """
-        if not isinstance(order, TwitterSearchOrder):
-            raise TwitterSearchException(1010)
+        if isinstance(order, TwitterUserOrder):
+            self.__orderIsSearch = False
+        elif isinstance(order, TwitterSearchOrder):
+            self.__orderIsSearch = True
+        else:
+            raise TwitterSearchException(1018)
 
         self._startURL = order.createSearchURL()
         self.sendSearch(self._startURL)
@@ -152,6 +171,14 @@ class TwitterSearch(object):
         """ Returns dict with statistical information about amount of queries and received tweets """
         return self.__statistics
 
+    def getAmountOfTweets(self):
+        """ Returns current amount of tweets available within this instance """
+        if not self.__response:
+           raise TwitterSearchException(1013)
+        
+        return len(self.__response['content']['statuses']) if self.__orderIsSearch else len(self.__response['content'])
+    
+    
     def setSupportedLanguages(self, order):
         """ Loads currently supported languages from Twitter API and sets them in a given TwitterSearchOrder instance """
         if not isinstance(order, TwitterSearchOrder):
@@ -178,16 +205,22 @@ class TwitterSearch(object):
         return self.__next__()
 
     def __next__(self):
-        if self._nextTweet < len(self.__response['content']['statuses']):
+        if self._nextTweet < self.getAmountOfTweets():
             self._nextTweet += 1
-            return self.__response['content']['statuses'][self._nextTweet-1]
+            if self.__orderIsSearch:
+                return self.__response['content']['statuses'][self._nextTweet-1]
+            else:
+                return self.__response['content'][self._nextTweet-1]
 
         try:
             self.searchNextResults()
         except TwitterSearchException:
             raise StopIteration
 
-        if len(self.__response['content']['statuses']) != 0:
+        if self.getAmountOfTweets() != 0:
             self._nextTweet = 1
-            return self.__response['content']['statuses'][self._nextTweet-1]
+            if self.__orderIsSearch:
+                return self.__response['content']['statuses'][self._nextTweet-1]
+            else:
+                return self.__response['content'][self._nextTweet-1]
         raise StopIteration
