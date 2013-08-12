@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
+
 class TwitterSearchException(Exception):
     """
-    This class handles all exceptions directly based on TwitterSearch.
-    """
+This class handles all exceptions directly based on TwitterSearch.
+"""
 
    # HTTP status codes are stored in TwitterSearch.exceptions due to possible on-the-fly modifications
     _error_codes = {
@@ -22,6 +24,7 @@ class TwitterSearchException(Exception):
         1014 : 'No results available',
         1015 : 'No keywords given',
         1016 : 'Invalid dict',
+        1017 : 'Invalid argument: need either a user ID or a screen-name',
     }
 
     def __init__(self, code, msg = None):
