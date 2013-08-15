@@ -97,6 +97,17 @@ class TwitterSearch(object):
         self.searchTweets(order)
         return self
 
+    def getMinimalID(self):
+        """ Returns the minimal Tweet ID of the current response """
+        if not self.__response:
+            raise TwitterSearchException(1013)
+
+        return min(
+                self.__response['content']['statuses'] if self.__orderIsSearch else self.__response['content'],
+                key=lambda i: i['id']
+                )['id'] - 1
+
+
     def sendSearch(self, url):
         """ Sends a given query string to the Twitter Search API, stores results interally and validates returned HTTP status code """
         if not isinstance(url, str if py3k else basestring):
@@ -123,11 +134,14 @@ class TwitterSearch(object):
             url = url[1:]
         given_count = int(parse_qs(url)['count'][0])
 
-        if seen_tweets == given_count:
-            self.__nextMaxID = min(
-                                    self.__response['content']['statuses'] if self.__orderIsSearch else self.__response['content'],
-                                    key=lambda i: i['id']
-                                )['id'] - 1
+        # Search API does have valid count values
+        if self.__orderIsSearch and seen_tweets == given_count:
+            self.__nextMaxID = self.getMinimalID()
+
+        # Timelines doesn't have valid count values
+        # see: https://dev.twitter.com/docs/faq - section: "How do I properly navigate a timeline?"
+        elif not self.__orderIsSearch and len(self.__response['content']) > 0:
+            self.__nextMaxID = self.getMinimalID()
 
         else: # we got less tweets than requested -> no more results in API
             self.__nextMaxID = None
@@ -153,7 +167,7 @@ class TwitterSearch(object):
             raise TwitterSearchException(1011)
 
         self.sendSearch("%s&max_id=%i" % (self._startURL, self.__nextMaxID))
-        return self.__response
+        return True
 
     def getMetadata(self):
         """ Returns all available meta data collected during last query """
@@ -175,7 +189,6 @@ class TwitterSearch(object):
         """ Returns current amount of tweets available within this instance """
         if not self.__response:
            raise TwitterSearchException(1013)
-
         return len(self.__response['content']['statuses']) if self.__orderIsSearch else len(self.__response['content'])
 
 
@@ -201,7 +214,7 @@ class TwitterSearch(object):
         return self
 
     def next(self):
-        """ Python2 method, simply returns .__next__() """
+        """ Python2 method, simply returns self.__next__() """
         return self.__next__()
 
     def __next__(self):

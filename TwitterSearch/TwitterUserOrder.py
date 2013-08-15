@@ -20,6 +20,8 @@ class TwitterUserOrder(TwitterOrder):
     def __init__(self, user):
         """ Argument user can be either a ID or screen-name of a user """
         self.arguments.update({ 'count' : '%s' % self._max_count })
+        self.setIncludeRts(True) # see: https://dev.twitter.com/docs/api/1.1/get/statuses/user_timeline
+        self.setExcludeReplies(False)
         self.url = ''
 
         if py3k:
