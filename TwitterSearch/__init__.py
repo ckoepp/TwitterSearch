@@ -1,5 +1,5 @@
 __title__ = 'TwitterSearch'
-__version__ = '0.78.22'
+__version__ = '0.78.3'
 __author__ = 'Christian Koepp'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2013 Christian Koepp'
