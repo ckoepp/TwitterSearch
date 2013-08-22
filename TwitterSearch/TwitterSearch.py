@@ -111,8 +111,7 @@ class TwitterSearch(object):
         self.__statistics['tweets'] += len(self.__response['content']['statuses'])
 
         # if we've seen the correct amount of tweets there may be some more
-        if len(self.__response['content']) > 0 and
-           int(self.__response['content']['search_metadata']['count']) == given_count:
+        if len(self.__response['content']['statuses']) > 0 and int(self.__response['content']['search_metadata']['count']) == given_count:
             self.__nextMaxID = min(self.__response['content']['statuses'], key=lambda i: i['id'])['id'] - 1
 
         else: # we got less tweets than requested -> no more results in API
