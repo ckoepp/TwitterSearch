@@ -82,6 +82,11 @@ Interested in some more details?
 
 If you'd like to get more information about how TwitterSearch works interally and how to use it with all it's possibilities have a look at the `latest documentation <https://twittersearch.readthedocs.org/en/latest/>`_.
 
+Like what you see?
+##################
+
+If this pice of code helped you so much that you'd like to buy me a coffee as a "thank you" gesture - `please don't hesitate to do so! <https://www.gittip.com/ckoepp/>`_.
+
 License (MIT)
 #############
 
