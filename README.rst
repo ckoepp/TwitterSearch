@@ -85,7 +85,12 @@ If you'd like to get more information about how TwitterSearch works interally an
 Like what you see?
 ##################
 
-If this pice of code helped you so much that you'd like to buy me a coffee as a "thank you" gesture - `please don't hesitate to do so! <https://www.gittip.com/ckoepp/>`_.
+.. image:: https://api.flattr.com/button/flattr-badge-large.png
+    :target: https://flattr.com/submit/auto?user_id=ckoepp&url=https://github.com/ckoepp/TwitterSearch&title=TwitterSearch&language=&tags=github&category=software
+    :alt: Flattr this git repo
+
+If this pice of software helped you so much that you'd like to buy me a coffee as a "thank you" gesture - please don't hesitate to do so, it's appreciated!
+
 
 License (MIT)
 #############
