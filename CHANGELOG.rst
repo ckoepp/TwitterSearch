@@ -1,6 +1,10 @@
 Change history
 **************
 
+0.78.3
+######
+
+* fixed a bug (issue #10): min() with lambda-function doesn't work with empty responses 
 
 0.78.2
 ######
