@@ -94,13 +94,17 @@ It also creates valid query strings which can be used in other environments iden
         else:
             raise TwitterSearchException(1003)
 
-    def setGeocode(self, latitude, longitude, radius, km=True):
-        """ Sets geolocation paramaters """
+    def setGeocode(self, latitude, longitude, radius, metric=True):
+        """ Sets geolocation paramaters
+            
+            Keyword arguments:
+            metric -- whether the radius is given in metric (kilometers) or imperial (miles) system (default True)
+        """
         if not isinstance(radius, (int) if py3k else (int, long) ) or radius <= 0:
            raise TwitterSearchException(1004)
 
         if isinstance(latitude, float) and isinstance(longitude, float):
-            if isinstance(km, bool):
+            if isinstance(metric, bool):
                 self.arguments.update( { 'geocode' : '%s,%s,%s%s' % (latitude, longitude, radius, 'km' if km else 'mi') } )
             else:
                 raise TwitterSearchException(1005)
