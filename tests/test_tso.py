@@ -1,7 +1,7 @@
 from TwitterSearch import *
 
-try: from urllib.parse import parse_qs # python3
-except ImportError: from urlparse import parse_qs #python2
+try: from urllib.parse import parse_qs, quote_plus, unquote # python3
+except ImportError: from urlparse import parse_qs; from urllib import quote_plus, unquote #python2
 
 import unittest
 import random
@@ -84,6 +84,17 @@ class TwitterSearchOrderTest(unittest.TestCase):
                 assertTrue(False, "Not raising exception for %s" % value.strfttime('%Y-%m-%d'))
             except TwitterSearchException as e:
                 self.assertEqual(e.code, 1007, "Wrong exception code")
+
+    def test_TSO_search_encoding(self):
+        """ Tests the url encoding of TwitterSearchOrder.createSearchURL() """
+
+        test_cases = [ 'test(', '[test' , 'foo$bar','plain', '==', '=%!' ]
+
+        for value in test_cases:
+            tso = TwitterSearchOrder()
+            tso.addKeyword(value)
+            cor = '?q=%s&count=%s' % (quote_plus(value),tso._max_count)
+            self.assertEqualQuery(tso.createSearchURL(), cor)
 
 
     def test_TSO_maxID(self):
