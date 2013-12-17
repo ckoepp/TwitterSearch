@@ -1,6 +1,13 @@
 Change history
 **************
 
+0.78.4
+######
+
+* fixed missing url encoding of search keywords (issue #16)
+* created test to check url encoding of keywords
+* fixed typo in documentation (issue #17)
+
 0.78.3
 ######
 
