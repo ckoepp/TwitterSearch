@@ -7,15 +7,15 @@ class TwitterOrder(object):
 
     arguments = {}
     
-    def createSearchURL(self):
+    def create_search_url(self):
         """ Generates (urlencoded) query string from stored key-values tuples. Has to be implemented within child classes. """
         raise NotImplementedError
         
-    def setSearchURL(self):
+    def set_search_url(self):
         """ Reads given query string and stores key-value tuples. Has to be implemented within child classes. """
         raise NotImplementedError
 
-    def setSinceID(self, twid):
+    def set_since_id(self, twid):
         """ Sets 'since_id' parameter """
         if py3k:
             if not isinstance(twid, int):
@@ -29,7 +29,7 @@ class TwitterOrder(object):
         else:
             raise TwitterSearchException(1004)
 
-    def setMaxID(self, twid):
+    def set_max_id(self, twid):
         """ Sets 'max_id' parameter """
         if py3k:
             if not isinstance(twid, int):
@@ -43,14 +43,14 @@ class TwitterOrder(object):
         else:
             raise TwitterSearchException(1004)
             
-    def setCount(self, cnt):
+    def set_count(self, cnt):
         """ Sets 'count' paramater """
         if isinstance(cnt, int) and cnt > 0 and cnt <= 100:
             self.arguments.update( { 'count' : '%s' % cnt } )
         else:
             raise TwitterSearchException(1004)
             
-    def setIncludeEntities(self, include):
+    def set_include_entities(self, include):
         """ Sets 'include entities' paramater """
         if not isinstance(include, bool):
             raise TwitterSearchException(1008)

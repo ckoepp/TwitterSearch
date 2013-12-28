@@ -69,7 +69,7 @@ class TwitterSearch(object):
     def __repr__(self):
         return '<TwitterSearch %s>' % self.__access_token
 
-    def setProxy(self, proxy):
+    def set_proxy(self, proxy):
         """ Sets a given dict as proxy handler """
         if isinstance(proxy, dict) and 'https' in proxy:
             self.__proxy = proxy
@@ -85,45 +85,45 @@ class TwitterSearch(object):
 
         if verify:
             r = requests.get(self._base_url + self._verify_url, auth=self.__oauth, proxies=self.__proxy)
-            self.checkHTTPStatus(r.status_code)
+            self.check_http_status(r.status_code)
 
-    def checkHTTPStatus(self, http_status):
+    def check_http_status(self, http_status):
         """ Checks a given http_status and returns an exception in case wrong status """
         if http_status in self.exceptions:
             raise TwitterSearchException(http_status, self.exceptions[http_status])
 
-    def searchTweetsIterable(self, order):
+    def search_tweets_iterable(self, order):
         """ Returns itself. Is called when using an instance of this class as iterable """
-        self.searchTweets(order)
+        self.search_tweets(order)
         return self
 
-    def getMinimalID(self):
+    def get_minimal_id(self):
         """ Returns the minimal Tweet ID of the current response """
         if not self.__response:
             raise TwitterSearchException(1013)
 
         return min(
-                self.__response['content']['statuses'] if self.__orderIsSearch else self.__response['content'],
+                self.__response['content']['statuses'] if self.__order_is_search else self.__response['content'],
                 key=lambda i: i['id']
                 )['id'] - 1
 
 
-    def sendSearch(self, url):
+    def send_search(self, url):
         """ Sends a given query string to the Twitter Search API, stores results interally and validates returned HTTP status code """
         if not isinstance(url, str if py3k else basestring):
             raise TwitterSearchException(1009)
 
-        endpoint = self._base_url + (self._search_url if self.__orderIsSearch else self._user_url)
+        endpoint = self._base_url + (self._search_url if self.__order_is_search else self._user_url)
 
         r = requests.get(endpoint + url, auth=self.__oauth, proxies=self.__proxy)
         self.__response['meta'] = r.headers
 
-        self.checkHTTPStatus(r.status_code)
+        self.check_http_status(r.status_code)
 
         self.__response['content'] = r.json()
 
         # update statistics if everything worked fine so far
-        seen_tweets = self.getAmountOfTweets()
+        seen_tweets = self.get_amount_of_tweets()
         self.__statistics['queries'] += 1
         self.__statistics['tweets'] += seen_tweets
 
@@ -135,72 +135,72 @@ class TwitterSearch(object):
         given_count = int(parse_qs(url)['count'][0])
 
         # Search API does have valid count values
-        if self.__orderIsSearch and seen_tweets == given_count:
-            self.__nextMaxID = self.getMinimalID()
+        if self.__order_is_search and seen_tweets == given_count:
+            self.__next_max_id = self.get_minimal_id()
 
         # Timelines doesn't have valid count values
         # see: https://dev.twitter.com/docs/faq - section: "How do I properly navigate a timeline?"
         # ToDo: see wether this works (implement test case with zero statuses!)
-        elif not self.__orderIsSearch and len(self.__response['content']['statuses']) > 0:
-            self.__nextMaxID = self.getMinimalID()
+        elif not self.__order_is_search and len(self.__response['content']['statuses']) > 0:
+            self.__next_max_id = self.get_minimal_id()
 
         else: # we got less tweets than requested -> no more results in API
-            self.__nextMaxID = None
+            self.__next_max_id = None
 
         return self.__response['meta'], self.__response['content']
 
-    def searchTweets(self, order):
+    def search_tweets(self, order):
         """ Creates an query string through a given TwitterSearchOrder instance and takes care that it is send to the Twitter API. Returns unmodified response """
         if isinstance(order, TwitterUserOrder):
-            self.__orderIsSearch = False
+            self.__order_is_search = False
         elif isinstance(order, TwitterSearchOrder):
-            self.__orderIsSearch = True
+            self.__order_is_search = True
         else:
             raise TwitterSearchException(1018)
 
-        self._startURL = order.createSearchURL()
-        self.sendSearch(self._startURL)
+        self._start_url = order.create_search_url()
+        self.send_search(self._start_url)
         return self.__response
 
-    def searchNextResults(self):
+    def search_next_results(self):
         """ Returns True if there are more results available within the Twitter Search API """
-        if not self.__nextMaxID:
+        if not self.__next_max_id:
             raise TwitterSearchException(1011)
 
-        self.sendSearch("%s&max_id=%i" % (self._startURL, self.__nextMaxID))
+        self.send_search("%s&max_id=%i" % (self._start_url, self.__next_max_id))
         return True
 
-    def getMetadata(self):
+    def get_metadata(self):
         """ Returns all available meta data collected during last query """
         if not self.__response:
             raise TwitterSearchException(1012)
         return self.__response['meta']
 
-    def getTweets(self):
+    def get_tweets(self):
         """ Returns all available data from last query """
         if not self.__response:
            raise TwitterSearchException(1013)
         return self.__response['content']
 
-    def getStatistics(self):
+    def get_statistics(self):
         """ Returns dict with statistical information about amount of queries and received tweets """
         return self.__statistics
 
-    def getAmountOfTweets(self):
+    def get_amount_of_tweets(self):
         """ Returns current amount of tweets available within this instance """
         if not self.__response:
            raise TwitterSearchException(1013)
-        return len(self.__response['content']['statuses']) if self.__orderIsSearch else len(self.__response['content'])
+        return len(self.__response['content']['statuses']) if self.__order_is_search else len(self.__response['content'])
 
 
-    def setSupportedLanguages(self, order):
+    def set_supported_languages(self, order):
         """ Loads currently supported languages from Twitter API and sets them in a given TwitterSearchOrder instance """
         if not isinstance(order, TwitterSearchOrder):
             raise TwitterSearchException(1010)
 
         r = requests.get(self._base_url + self._lang_url, auth=self.__oauth, proxies=self.__proxy)
         self.__response['meta'] = r.headers
-        self.checkHTTPStatus(r.status_code)
+        self.check_http_status(r.status_code)
         self.__response['content'] = r.json()
 
         order.iso_6391 =  []
@@ -211,7 +211,7 @@ class TwitterSearch(object):
     def __iter__(self):
         if not self.__response:
             raise TwitterSearchException(1014)
-        self._nextTweet = 0
+        self._next_tweet = 0
         return self
 
     def next(self):
@@ -219,22 +219,22 @@ class TwitterSearch(object):
         return self.__next__()
 
     def __next__(self):
-        if self._nextTweet < self.getAmountOfTweets():
-            self._nextTweet += 1
-            if self.__orderIsSearch:
-                return self.__response['content']['statuses'][self._nextTweet-1]
+        if self._next_tweet < self.get_amount_of_tweets():
+            self._next_tweet += 1
+            if self.__order_is_search:
+                return self.__response['content']['statuses'][self._next_tweet-1]
             else:
-                return self.__response['content'][self._nextTweet-1]
+                return self.__response['content'][self._next_tweet-1]
 
         try:
-            self.searchNextResults()
+            self.search_next_results()
         except TwitterSearchException:
             raise StopIteration
 
-        if self.getAmountOfTweets() != 0:
-            self._nextTweet = 1
-            if self.__orderIsSearch:
-                return self.__response['content']['statuses'][self._nextTweet-1]
+        if self.get_amount_of_tweets() != 0:
+            self._next_tweet = 1
+            if self.__order_is_search:
+                return self.__response['content']['statuses'][self._next_tweet-1]
             else:
-                return self.__response['content'][self._nextTweet-1]
+                return self.__response['content'][self._next_tweet-1]
         raise StopIteration

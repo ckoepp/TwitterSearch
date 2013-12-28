@@ -20,8 +20,8 @@ class TwitterUserOrder(TwitterOrder):
     def __init__(self, user):
         """ Argument user can be either a ID or screen-name of a user """
         self.arguments.update({ 'count' : '%s' % self._max_count })
-        self.setIncludeRts(True) # see: https://dev.twitter.com/docs/api/1.1/get/statuses/user_timeline
-        self.setExcludeReplies(False)
+        self.set_include_rts(True) # see: https://dev.twitter.com/docs/api/1.1/get/statuses/user_timeline
+        self.set_exclude_replies(False)
         self.url = ''
 
         if py3k:
@@ -39,31 +39,31 @@ class TwitterUserOrder(TwitterOrder):
             else:
                 raise TwitterSearchException(1017)
 
-    def setTrimUser(self, trim):
+    def set_trim_user(self, trim):
         """ Sets 'trim_user' paramater """
         if not isinstance(trim, bool):
             raise TwitterSearchException(1008)
         self.arguments.update( { 'trim_user' : 'true' if trim else 'false' } )
 
-    def setIncludeRts(self, rts):
+    def set_include_rts(self, rts):
         """ Sets 'include_rts' paramater """
         if not isinstance(rts, bool):
             raise TwitterSearchException(1008)
         self.arguments.update( { 'trim_user' : 'true' if rts else 'false' } )
 
-    def setExcludeReplies(self, exclude):
+    def set_exclude_replies(self, exclude):
         """ Sets 'exclude_replies' paramater """
         if not isinstance(exclude, bool):
             raise TwitterSearchException(1008)
         self.arguments.update( { 'trim_user' : 'true' if exclude else 'false' } )
 
-    def setContributorDetails(self, contdetails):
+    def set_contributor_details(self, contdetails):
         """ Sets 'contributor_details' paramater """
         if not isinstance(contdetails, bool):
             raise TwitterSearchException(1008)
         self.arguments.update( { 'trim_user' : 'true' if contdetails else 'false' } )
 
-    def createSearchURL(self):
+    def create_search_url(self):
         """ Generates (urlencoded) query string from stored key-values tuples """
         url = '?'
         for key, value in self.arguments.items():
@@ -71,7 +71,7 @@ class TwitterUserOrder(TwitterOrder):
         self.url = url[:-1]
         return self.url
 
-    def setSearchURL(self, url):
+    def set_search_url(self, url):
         """ Reads given query string and stores key-value tuples """
         if url[0] == '?':
             url = url[1:]

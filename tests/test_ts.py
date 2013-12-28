@@ -8,7 +8,7 @@ class TwitterSearchTest(unittest.TestCase):
     def createTSO(self):
         """ Returns a default TwitterSearchOrder instance """
         tso = TwitterSearchOrder()
-        tso.setKeywords(['foo'])
+        tso.set_keywords(['foo'])
         return tso
 
     def createTS(self):
@@ -31,7 +31,7 @@ class TwitterSearchTest(unittest.TestCase):
 
     @httpretty.activate
     def test_TS_set_supported_languages(self):
-        """ Tests TwitterSearch.setSupportedLanguages() """
+        """ Tests TwitterSearch.set_supported_languages() """
 
         httpretty.register_uri(
                 httpretty.GET, self.lang_url,
@@ -44,7 +44,7 @@ class TwitterSearchTest(unittest.TestCase):
         tso = self.createTSO()
 
         try:
-            ts.setSupportedLanguages(tso)
+            ts.set_supported_languages(tso)
             self.assertEqual(tso.iso_6391.sort(), [ 'fi', 'da', 'pl', 'hu', 'fa', 'he' ].sort())
         except Exception as e:
             self.assertTrue(False, "An exception was raised: %s" % e)
@@ -90,7 +90,7 @@ class TwitterSearchTest(unittest.TestCase):
 
     @httpretty.activate
     def test_TS_search_tweets_iterable(self):
-        """ Tests TwitterSearch.searchTweetsIterable() and .getStatistics() """
+        """ Tests TwitterSearch.search_tweets_iterable() and .get_statistics() """
 
         httpretty.register_uri(httpretty.GET, self.search_url,
                         responses=[
@@ -104,24 +104,24 @@ class TwitterSearchTest(unittest.TestCase):
         cnt = 4
         pages = 4 # 4 pages with 4*4-1 tweets in total
         tso = self.createTSO()
-        tso.setCount(cnt)
+        tso.set_count(cnt)
         ts = self.createTS()
 
         tweet_cnt = 0
-        for tweet in ts.searchTweetsIterable(tso):
+        for tweet in ts.search_tweets_iterable(tso):
             tweet_cnt += 1
 
         self.assertEqual( (cnt*4-1), tweet_cnt, "Wrong amount of tweets")
 
         # test statistics
-        stats = ts.getStatistics()
+        stats = ts.get_statistics()
         self.assertEqual(stats['tweets'], tweet_cnt, "Tweet counter is NOT working correctly (%i should be %i)" % (stats['tweets'], tweet_cnt))
         self.assertEqual(stats['queries'], pages, "Query counter is NOT working correctly (%i should be %i)" % (stats['queries'], pages))
 
 
     @httpretty.activate
     def test_TS_empty_results(self):
-        """ Tests TwitterSearch.searchTweetsIterable() with empty results """
+        """ Tests TwitterSearch.search_tweets_iterable() with empty results """
 
         httpretty.register_uri(httpretty.GET, self.search_url, 
                 responses=[
@@ -130,13 +130,13 @@ class TwitterSearchTest(unittest.TestCase):
 
         tso = self.createTSO()
         ts = self.createTS()
-        for tweet in ts.searchTweetsIterable(tso):
+        for tweet in ts.search_tweets_iterable(tso):
             self.assertFalse(True, "There should be no tweets to be found")
 
 
     @httpretty.activate
     def test_TS_search_tweets(self):
-        """ Tests TwitterSearch.searchTweets() """
+        """ Tests TwitterSearch.search_tweets() """
 
         httpretty.register_uri(httpretty.GET, self.search_url,
                 responses=[
@@ -149,7 +149,7 @@ class TwitterSearchTest(unittest.TestCase):
 
         cnt = 4
         tso = self.createTSO()
-        tso.setCount(cnt)
+        tso.set_count(cnt)
         ts = self.createTS()
 
         todo = True
@@ -159,14 +159,14 @@ class TwitterSearchTest(unittest.TestCase):
 
         while(todo):
             max_ids.append(next_max_id)
-            response = ts.searchTweets(tso)
+            response = ts.search_tweets(tso)
             todo = len(response['content']['statuses']) == cnt
             for tweet in response['content']['statuses']:
                 tweet_id = tweet['id']
                 if (tweet_id < next_max_id) or (next_max_id == 0):
                      next_max_id = tweet_id
                      next_max_id -= 1
-            tso.setMaxID(next_max_id)
+            tso.set_max_id(next_max_id)
 
         self.assertEqual(max_ids, [0, 355715848851300353, 355714667852726271, 355712782454358015], "Max ids NOT equal")
 

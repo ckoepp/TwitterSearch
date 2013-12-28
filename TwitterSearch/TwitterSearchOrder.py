@@ -27,7 +27,7 @@ It also creates valid query strings which can be used in other environments iden
         self.searchterms = []
         self.url = ''
 
-    def addKeyword(self, word):
+    def add_keyword(self, word):
         """ Adds a given string or list to the current keyword list """
         if isinstance(word, str if py3k else basestring) and len(word) >= 2:
           self.searchterms.append(word)
@@ -36,13 +36,13 @@ It also creates valid query strings which can be used in other environments iden
         else:
             raise TwitterSearchException(1000)
 
-    def setKeywords(self, word):
+    def set_keywords(self, word):
         """ Sets a given list as the new keyword list """
         if not isinstance(word, list):
             raise TwitterSearchException(1001)
         self.searchterms = word
 
-    def setSearchURL(self, url):
+    def set_search_url(self, url):
         """ Reads given query string and stores key-value tuples """
         if url[0] == '?':
             url = url[1:]
@@ -59,7 +59,7 @@ It also creates valid query strings which can be used in other environments iden
         for key, value in args.items():
             self.arguments.update({key : unquote(value[0])})
 
-    def createSearchURL(self):
+    def create_search_url(self):
         """ Generates (urlencoded) query string from stored key-values tuples """
         if len(self.searchterms) == 0:
             raise TwitterSearchException(1015)
@@ -73,28 +73,28 @@ It also creates valid query strings which can be used in other environments iden
         self.url = url
         return self.url
 
-    def setLanguage(self, lang):
+    def set_language(self, lang):
         """ Sets 'lang' paramater """
         if lang in self.iso_6391:
             self.arguments.update( { 'lang' : '%s' % lang } )
         else:
             raise TwitterSearchException(1002)
 
-    def setLocale(self, lang):
+    def set_locale(self, lang):
         """ Sets 'locale' paramater """
         if lang in self.iso_6391:
             self.arguments.update( { 'locale' : '%s' % lang } )
         else:
             raise TwitterSearchException(1002)
 
-    def setResultType(self, tor):
+    def set_result_type(self, tor):
         """ Sets 'result_type' paramater """
         if tor == 'mixed' or tor == 'recent' or tor == 'popular':
             self.arguments.update( { 'result_type' : '%s' % tor } )
         else:
             raise TwitterSearchException(1003)
 
-    def setGeocode(self, latitude, longitude, radius, metric=True):
+    def set_geocode(self, latitude, longitude, radius, metric=True):
         """ Sets geolocation paramaters
             
             Keyword arguments:
@@ -111,14 +111,14 @@ It also creates valid query strings which can be used in other environments iden
         else:
             raise TwitterSearchException(1004)
 
-    def setCallback(self, func):
+    def set_callback(self, func):
         """ Sets 'callback' paramater """
         if isinstance(func, str if py3k else basestring) and func:
             self.arguments.update( { 'callback' : '%s' % func } )
         else:
             raise TwitterSearchException(1006)
 
-    def setUntil(self, date):
+    def set_until(self, date):
         """ Sets 'until' parameter """
         if isinstance(date, datetime.date) and date <= datetime.date.today():
             self.arguments.update( { 'until' : '%s' % date.strftime('%Y-%m-%d') } )

@@ -43,102 +43,102 @@ class TwitterSearchOrderTest(unittest.TestCase):
         """ Constructor """
 
         self.__tso = TwitterSearchOrder()
-        self.__tso.setKeywords( [ self._stdkeyword ] )
+        self.__tso.set_keywords( [ self._stdkeyword ] )
 
     ################ TESTS #########################
 
-    def test_TSO_ResultType(self):
-        """ Tests TwitterSearchOrder.setResultType() """
+    def test_TSO_result_type(self):
+        """ Tests TwitterSearchOrder.set_result_type() """
 
         tso = self.getCopy()
         correct_values = [ 'recent', 'mixed', 'popular' ]
 
         for value in correct_values:
-            tso.setResultType(value)
-            cor = '%s&result_type=%s' % (self.__tso.createSearchURL(), value)
-            self.assertEqualQuery(tso.createSearchURL(), cor)
+            tso.set_result_type(value)
+            cor = '%s&result_type=%s' % (self.__tso.create_search_url(), value)
+            self.assertEqualQuery(tso.create_search_url(), cor)
 
         # wrong values
         try:
-            tso.setResultType(self.generateString())
+            tso.set_result_type(self.generateString())
             self.assertTrue(False, "Not raising exception for %s" % value)
         except TwitterSearchException as e:
             self.assertEqual(e.code, 1003, "Wrong exception code")
 
     def test_TSO_until(self):
-        """ Tests TwitterSearchOrder.setUntil() """
+        """ Tests TwitterSearchOrder.set_until() """
 
         tso = self.getCopy()
         today = date.today()
         correct_values = [ today, today - timedelta(days=1), today - timedelta(days=10), today - timedelta(days=371) ]
         for value in correct_values:
-            tso.setUntil(value)
-            cor = '%s&until=%s' % (self.__tso.createSearchURL(), value.strftime('%Y-%m-%d'))
-            self.assertEqualQuery(tso.createSearchURL(), cor)
+            tso.set_until(value)
+            cor = '%s&until=%s' % (self.__tso.create_search_url(), value.strftime('%Y-%m-%d'))
+            self.assertEqualQuery(tso.create_search_url(), cor)
 
         # wrong values
         wrong_values = [ today + timedelta(days=1), '', [], {}, -1, 39.0, 31, 'foobar' ]
         for value in wrong_values:
             try:
-                tso.setUntil(value)
+                tso.set_until(value)
                 assertTrue(False, "Not raising exception for %s" % value.strfttime('%Y-%m-%d'))
             except TwitterSearchException as e:
                 self.assertEqual(e.code, 1007, "Wrong exception code")
 
     def test_TSO_search_encoding(self):
-        """ Tests the url encoding of TwitterSearchOrder.createSearchURL() """
+        """ Tests the url encoding of TwitterSearchOrder.create_search_url() """
 
         test_cases = [ 'test(', '[test' , 'foo$bar','plain', '==', '=%!' ]
 
         for value in test_cases:
             tso = TwitterSearchOrder()
-            tso.addKeyword(value)
+            tso.add_keyword(value)
             cor = '?q=%s&count=%s' % (quote_plus(value),tso._max_count)
-            self.assertEqualQuery(tso.createSearchURL(), cor)
+            self.assertEqualQuery(tso.create_search_url(), cor)
 
 
     def test_TSO_maxID(self):
-        """ Tests TwitterSearchOrder.setMaxID() """
+        """ Tests TwitterSearchOrder.set_max_id() """
 
         tso = self.getCopy()
         correct_values = [ self.generateInt(1,999999999) for x in range(0,10) ]
 
         for value in correct_values:
-            tso.setMaxID(value)
-            cor = '%s&max_id=%i' % (self.__tso.createSearchURL(), value)
-            self.assertEqualQuery(tso.createSearchURL(), cor)
+            tso.set_max_id(value)
+            cor = '%s&max_id=%i' % (self.__tso.create_search_url(), value)
+            self.assertEqualQuery(tso.create_search_url(), cor)
 
         # wrong values
         wrong_values = [ -1, 1.0, '', [], {} ]
         for value in wrong_values:
             try:
-                tso.setMaxID(value)
+                tso.set_max_id(value)
                 self.assertTrue(False, "Not raising exception for %s" % value)
             except TwitterSearchException as e:
                 self.assertEqual(e.code, 1004, "Wrong exception code")
 
     def test_TSO_sinceID(self):
-        """ Tests TwitterSearchOrder.setSinceID() """
+        """ Tests TwitterSearchOrder.set_since_id() """
 
         tso = self.getCopy()
         correct_values = [ self.generateInt(1,999999999) for x in range(0,10) ]
 
         for value in correct_values:
-            tso.setSinceID(value)
-            cor = '%s&since_id=%i' % (self.__tso.createSearchURL(), value)
-            self.assertEqualQuery(tso.createSearchURL(), cor)
+            tso.set_since_id(value)
+            cor = '%s&since_id=%i' % (self.__tso.create_search_url(), value)
+            self.assertEqualQuery(tso.create_search_url(), cor)
 
         # wrong values
         wrong_values = [-1, 1.0, '', [], {} ]
         for value in wrong_values:
             try:
-                tso.setSinceID(value)
+                tso.set_since_id(value)
                 self.assertTrue(False, "Not raising exception for %s" % value)
             except TwitterSearchException as e:
                 self.assertEqual(e.code, 1004, "Wrong exception code")
 
     def test_TSO_geo(self):
-        """ Tests TwitterSearchOrder.setGeocode() """
+        """ Tests TwitterSearchOrder.set_geocode() """
 
         tso = self.getCopy()
         cor_geo = [ 0.0, -12.331, 99.019, 12.33 ]
@@ -146,12 +146,12 @@ class TwitterSearchOrderTest(unittest.TestCase):
             is_km = bool(random.getrandbits(1))
             lon = random.choice(cor_geo)
             radius = self.generateInt(1,100)
-            tso.setGeocode( lat, lon, radius, metric=is_km)
+            tso.set_geocode( lat, lon, radius, metric=is_km)
 
             unit = ( 'km' if is_km else 'mi' )
 
-            cor = '%s&geocode=%s,%s,%s%s' % (self.__tso.createSearchURL(), lat, lon, radius, unit)
-            self.assertEqualQuery(tso.createSearchURL(), cor)
+            cor = '%s&geocode=%s,%s,%s%s' % (self.__tso.create_search_url(), lat, lon, radius, unit)
+            self.assertEqualQuery(tso.create_search_url(), cor)
 
         # wrong values
         wrong_values = [-1, 1.0, 101, '', [], {} ]
@@ -159,142 +159,142 @@ class TwitterSearchOrderTest(unittest.TestCase):
             try:
                 radius = self.generateInt(-200,-1)
                 unit = bool(random.getrandbits(1))
-                tso.setGeocode( value, value, radius, metric=unit)
+                tso.set_geocode( value, value, radius, metric=unit)
                 self.assertTrue(False, "Not raising exception for lat %s, lon %s, radius %s and metric %s" % (value,value,radius,unit))
             except TwitterSearchException as e:
                 self.assertTrue((e.code == 1004 or e.code == 1005), "Wrong exception code")
 
 
     def test_TSO_count(self):
-        """ Tests TwitterSearchOrder.setCount() """
+        """ Tests TwitterSearchOrder.set_count() """
 
         tso = self.getCopy()
         correct_values = [ self.generateInt(minimum=1,maximum=100) for x in range(0,10) ]
 
         for value in correct_values:
-            tso.setCount(value)
-            cor = '%s%i' % (self.__tso.createSearchURL()[0:-3], value)
-            self.assertEqualQuery(tso.createSearchURL(), cor)
+            tso.set_count(value)
+            cor = '%s%i' % (self.__tso.create_search_url()[0:-3], value)
+            self.assertEqualQuery(tso.create_search_url(), cor)
 
         # wrong values
         wrong_values = [ -1, 1.0, 101, '', [], {} ]
         for value in wrong_values:
             try:
-                tso.setCount(value)
+                tso.set_count(value)
                 self.assertTrue(False, "Not raising exception for %s" % value)
             except TwitterSearchException as e:
                 self.assertEqual(e.code, 1004, "Wrong exception code")
 
     def test_TSO_callback(self):
-        """ Tests TwitterSearchOrder.setCallback() """
+        """ Tests TwitterSearchOrder.set_callback() """
 
         tso = self.getCopy()
         correct_values = [ self.generateString() for x in range(0,10) ]
 
         for value in correct_values:
-            tso.setCallback(value)
-            cor = '%s&callback=%s' % (self.__tso.createSearchURL(), value)
-            self.assertEqualQuery(tso.createSearchURL(), cor)
+            tso.set_callback(value)
+            cor = '%s&callback=%s' % (self.__tso.create_search_url(), value)
+            self.assertEqualQuery(tso.create_search_url(), cor)
 
             # wrong values
             wrong_values = [ '', 1, 1.0, [], {} ]
             for value in wrong_values:
                 try:
-                    tso.setCallback(value)
+                    tso.set_callback(value)
                     self.assertTrue(False, "Not raising exception for %s" % value)
                 except TwitterSearchException as e:
                     self.assertEqual(e.code, 1006, "Wrong exception code")
 
     def test_TSO_language(self):
-        """ Tests TwitterSearchOrder.setLanguage() """
+        """ Tests TwitterSearchOrder.set_language() """
 
         tso = self.getCopy()
         for value in TwitterSearchOrder.iso_6391:
-            tso.setLanguage(value)
-            cor = '%s&lang=%s' % (self.__tso.createSearchURL(), value)
-            self.assertEqualQuery(tso.createSearchURL(), cor)
+            tso.set_language(value)
+            cor = '%s&lang=%s' % (self.__tso.create_search_url(), value)
+            self.assertEqualQuery(tso.create_search_url(), cor)
 
         # wrong values
         wrong_values = [ '', 'dee', 'q', 'xz', 32, 1.0, [], {} ]
         for value in wrong_values:
             try:
-                tso.setLanguage(value)
+                tso.set_language(value)
                 self.assertTrue(False, "Not raising exception for %s" % value)
             except TwitterSearchException as e:
                 self.assertEqual(e.code, 1002, "Wrong exception code")
 
     def test_TSO_locale(self):
-        """ Tests TwitterSearchOrder.setLanguage() """
+        """ Tests TwitterSearchOrder.set_language() """
 
         tso = self.getCopy()
         for value in TwitterSearchOrder.iso_6391:
-            tso.setLocale(value)
-            cor = '%s&locale=%s' % (self.__tso.createSearchURL(), value)
-            self.assertEqualQuery(tso.createSearchURL(), cor)
+            tso.set_locale(value)
+            cor = '%s&locale=%s' % (self.__tso.create_search_url(), value)
+            self.assertEqualQuery(tso.create_search_url(), cor)
 
             # wrong values
             wrong_values = [ '', 'dee', 'q', 'xz', 32, 1.0, [], {} ]
             for value in wrong_values:
                 try:
-                    tso.setLocale(value)
+                    tso.set_locale(value)
                     self.assertTrue(False, "Not raising exception for %s" % value)
                 except TwitterSearchException as e:
                     self.assertEqual(e.code, 1002, "Wrong exception code")
 
     def test_TSO_inclEntities(self):
-        """ Tests TwitterSearchOrder.setIncludeEntities() """
+        """ Tests TwitterSearchOrder.set_include_entities() """
 
         tso = self.getCopy()
         correct_values = [ True, False ]
         for value in correct_values:
-            tso.setIncludeEntities(value)
-            cor = '%s&include_entities=%s' % (self.__tso.createSearchURL(), bool(value))
-            self.assertEqualQuery(tso.createSearchURL(), cor)
+            tso.set_include_entities(value)
+            cor = '%s&include_entities=%s' % (self.__tso.create_search_url(), bool(value))
+            self.assertEqualQuery(tso.create_search_url(), cor)
 
         # wrong values
         wrong_values = [ '', 3.0, 3, -1, 2, [], {} ]
         for value in wrong_values:
             try:
-                tso.setIncludeEntities(value)
+                tso.set_include_entities(value)
                 self.assertTrue(False, "Not raising exception for %s" % value)
             except TwitterSearchException as e:
                     self.assertEqual(e.code, 1008)
 
     def test_TSO_keywords(self):
-        """ Tests TwitterSearchOrder.setKeywords() and .addKeyword() """
+        """ Tests TwitterSearchOrder.set_keywords() and .add_keyword() """
 
         tso = self.getCopy()
-        tso.setKeywords([ 'foo', 'bar' ])
-        self.assertEqual(tso.createSearchURL()[0:10], '?q=foo+bar', "Keywords are NOT equal")
+        tso.set_keywords([ 'foo', 'bar' ])
+        self.assertEqual(tso.create_search_url()[0:10], '?q=foo+bar', "Keywords are NOT equal")
 
-        tso.addKeyword(['one', 'two'])
-        self.assertEqual(tso.createSearchURL()[0:18], '?q=foo+bar+one+two', "Keywords are NOT equal")
+        tso.add_keyword(['one', 'two'])
+        self.assertEqual(tso.create_search_url()[0:18], '?q=foo+bar+one+two', "Keywords are NOT equal")
 
-        tso.addKeyword('test')
-        self.assertEqual(tso.createSearchURL()[0:23], '?q=foo+bar+one+two+test', "Keywords are NOT equal")
+        tso.add_keyword('test')
+        self.assertEqual(tso.create_search_url()[0:23], '?q=foo+bar+one+two+test', "Keywords are NOT equal")
 
-        tso.setKeywords(['test'])
-        self.assertEqual(tso.createSearchURL()[0:7], '?q=test', "Keywords are NOT equal")
+        tso.set_keywords(['test'])
+        self.assertEqual(tso.create_search_url()[0:7], '?q=test', "Keywords are NOT equal")
 
         # wrong values
         tso2 = TwitterSearchOrder()
         try:
-            tso2.createSearchURL()
+            tso2.create_search_url()
         except TwitterSearchException as e:
             self.assertEqual(e.code, 1015, "Wrong exception code")
 
 
     def test_TSO_setURL(self):
-        """ Tests TwitterSearchOrder.setSearchURL() """
+        """ Tests TwitterSearchOrder.set_search_url() """
 
         tso1 = self.getCopy()
-        tso1.setSearchURL('?q=test1+test2&count=77&until=2013-07-10&locale=en')
+        tso1.set_search_url('?q=test1+test2&count=77&until=2013-07-10&locale=en')
 
         tso2 = TwitterSearchOrder()
-        tso2.setKeywords([ 'test1', 'test2' ])
-        tso2.setCount(77)
-        tso2.setUntil(date(2013,7,10))
-        tso2.setLocale('en')
+        tso2.set_keywords([ 'test1', 'test2' ])
+        tso2.set_count(77)
+        tso2.set_until(date(2013,7,10))
+        tso2.set_locale('en')
 
-        self.assertEqualQuery(tso1.createSearchURL(), tso2.createSearchURL(), "Query strings NOT equal")
+        self.assertEqualQuery(tso1.create_search_url(), tso2.create_search_url(), "Query strings NOT equal")
 
