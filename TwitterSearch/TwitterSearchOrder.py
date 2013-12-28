@@ -65,7 +65,7 @@ It also creates valid query strings which can be used in other environments iden
             raise TwitterSearchException(1015)
 
         url = '?q='
-        url += '+'.join(self.searchterms)
+        url += '+'.join([ quote_plus(i) for i in self.searchterms])
 
         for key, value in self.arguments.items():
             url += '&%s=%s' % (quote_plus(key), (quote_plus(value) if key != 'geocode' else value) )

@@ -8,6 +8,11 @@ Change history
 * created test to check url encoding of keywords
 * fixed typo in documentation (issue #17)
 
+0.78.3
+######
+
+* fixed a bug (issue #10): min() with lambda-function doesn't work with empty responses 
+
 0.78.2
 ######
 

@@ -262,7 +262,7 @@ A possible solution could look like this:
             response = ts.searchTweets(tso)
 
             # print rate limiting status
-            print "Current rate-limiting status: %i" % rs.getMetadata()['x-rate-limit-reset']
+            print "Current rate-limiting status: %i" % ts.getMetadata()['x-rate-limit-reset']
 
             # check if there are statuses returned and whether we still have work to do
             todo = not len(response['content']['statuses']) == 0
