@@ -101,6 +101,7 @@ You're thinking that the global wisdom of Twitter is way too much for your needs
 You may guess the resulting output, but here it is anyway:
 
 ::
+
     @NeinQuarterly tweeted: To make a long story short: Twitter.
     @NeinQuarterly tweeted: A German subordinating conjunction walks into a bar. Three hours later it's joined by a verb.
     @NeinQuarterly tweeted: Foucault walks into a bar. No one notices.
