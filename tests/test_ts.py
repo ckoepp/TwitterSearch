@@ -30,7 +30,7 @@ class TwitterSearchTest(unittest.TestCase):
     ################ TESTS #########################
 
     @httpretty.activate
-    def test_TS_setSupportedLanguages(self):
+    def test_TS_set_supported_languages(self):
         """ Tests TwitterSearch.setSupportedLanguages() """
 
         httpretty.register_uri(
@@ -89,7 +89,7 @@ class TwitterSearchTest(unittest.TestCase):
             self.assertEqual(e.code, 401, "Exception code should be 401 but is %i" % e.code)
 
     @httpretty.activate
-    def test_TS_searchTweetsIterable(self):
+    def test_TS_search_tweets_iterable(self):
         """ Tests TwitterSearch.searchTweetsIterable() and .getStatistics() """
 
         httpretty.register_uri(httpretty.GET, self.search_url,
@@ -120,7 +120,22 @@ class TwitterSearchTest(unittest.TestCase):
 
 
     @httpretty.activate
-    def test_TS_searchTweets(self):
+    def test_TS_empty_results(self):
+        """ Tests TwitterSearch.searchTweetsIterable() with empty results """
+
+        httpretty.register_uri(httpretty.GET, self.search_url, 
+                responses=[
+                    httpretty.Response(streaming=True, status=200, content_type='text/json', body=self.apiAnsweringMachine('tests/mock-data/empty.log')),
+                ])
+
+        tso = self.createTSO()
+        ts = self.createTS()
+        for tweet in ts.searchTweetsIterable(tso):
+            self.assertFalse(True, "There should be no tweets to be found")
+
+
+    @httpretty.activate
+    def test_TS_search_tweets(self):
         """ Tests TwitterSearch.searchTweets() """
 
         httpretty.register_uri(httpretty.GET, self.search_url,
