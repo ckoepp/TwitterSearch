@@ -79,6 +79,7 @@ The result will be a text looking similar to this one. But as you see unfortunat
 You're thinking that the global wisdom of Twitter is way too much for your needs? Well, let's query a timeline of a certain user than:
 
 .. code-block:: python
+
     from TwitterSearch import *
 
     try:
