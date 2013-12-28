@@ -146,7 +146,7 @@ class TwitterSearchOrderTest(unittest.TestCase):
             is_km = bool(random.getrandbits(1))
             lon = random.choice(cor_geo)
             radius = self.generateInt(1,100)
-            tso.setGeocode( lat, lon, radius, km=is_km)
+            tso.setGeocode( lat, lon, radius, metric=is_km)
 
             unit = ( 'km' if is_km else 'mi' )
 
@@ -159,7 +159,7 @@ class TwitterSearchOrderTest(unittest.TestCase):
             try:
                 radius = self.generateInt(-200,-1)
                 unit = bool(random.getrandbits(1))
-                tso.setGeocode( value, value, radius, km=unit)
+                tso.setGeocode( value, value, radius, metric=unit)
                 self.assertTrue(False, "Not raising exception for lat %s, lon %s, radius %s and metric %s" % (value,value,radius,unit))
             except TwitterSearchException as e:
                 self.assertTrue((e.code == 1004 or e.code == 1005), "Wrong exception code")

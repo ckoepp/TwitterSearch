@@ -105,7 +105,7 @@ It also creates valid query strings which can be used in other environments iden
 
         if isinstance(latitude, float) and isinstance(longitude, float):
             if isinstance(metric, bool):
-                self.arguments.update( { 'geocode' : '%s,%s,%s%s' % (latitude, longitude, radius, 'km' if km else 'mi') } )
+                self.arguments.update( { 'geocode' : '%s,%s,%s%s' % (latitude, longitude, radius, 'km' if metric else 'mi') } )
             else:
                 raise TwitterSearchException(1005)
         else:
