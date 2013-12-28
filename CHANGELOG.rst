@@ -1,6 +1,12 @@
 Change history
 **************
 
+1.0.0
+#####
+
+* PEP-8 compatible API (issue #12)
+* added support of loading timlines of users
+
 0.78.4
 ######
 

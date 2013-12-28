@@ -14,7 +14,7 @@ TwitterSearch
     :target: https://pypi.python.org/pypi/TwitterSearch/
     :alt: PyPi version
 
-This library allows you easily create a search through the Twitter Search API without having to know too much about the API details. Based on such a search you can even iterate throughout all tweets reachable via the Twitter Search API. There is an automatic reload of the next pages while using the iteration.
+This library allows you easily create a search through the Twitter  API without having to know too much about the API details. Based on such a search you can even iterate throughout all tweets reachable via the Twitter Search API. There is an automatic reload of the next pages while using the iteration.
 
 Reasons to use TwitterSearch
 ############################
@@ -23,11 +23,7 @@ Well, because it can be quite annoying to always parse the search url together a
 
 More than that, TwitterSearch is:
 
-<<<<<<< HEAD
 * pretty small (around 500 lines of code currently)
-=======
-* pretty small (around 350 lines of code currently)
->>>>>>> master
 * pretty easy to use, even for beginners
 * pretty good at giving you **all** available information (including meta information)
 * pretty iterable without any need to manually reload more results from the API
@@ -43,7 +39,7 @@ TwitterSearch is also available on pypi and therefore can be installed via ``pip
 Example
 #######
 
-The library is still in an early stage. However, if you would like to use it we prepared a small example about how to play around. 
+The library is still in development. However, if you would like to use it we prepared a small example about how to play around. 
 
 Everybody knows how much work it is to study at a university. So why not take a small shortcut? So in this example we assume we would like to find out how to copy a doctorate thesis in Germany. Let's have a look what the Twitter users have to say about `Mr Guttenberg <http://www.bbc.co.uk/news/world-europe-12608083>`_.
 
@@ -52,10 +48,10 @@ Everybody knows how much work it is to study at a university. So why not take a 
     from TwitterSearch import *
     try:
         tso = TwitterSearchOrder() # create a TwitterSearchOrder object
-        tso.setKeywords(['Guttenberg', 'Doktorarbeit']) # let's define all words we would like to have a look for
-        tso.setLanguage('de') # we want to see German tweets only
-        tso.setCount(7) # please dear Mr Twitter, only give us 7 results per page
-        tso.setIncludeEntities(False) # and don't give us all those entity information
+        tso.set_keywords(['Guttenberg', 'Doktorarbeit']) # let's define all words we would like to have a look for
+        tso.set_language('de') # we want to see German tweets only
+        tso.set_count(7) # please dear Mr Twitter, only give us 7 results per page
+        tso.set_include_entities(False) # and don't give us all those entity information
         
         # it's about time to create a TwitterSearch object with our secret tokens
         ts = TwitterSearch(
@@ -65,7 +61,7 @@ Everybody knows how much work it is to study at a university. So why not take a 
             access_token_secret = '333444'
          )
         
-        for tweet in ts.searchTweetsIterable(tso): # this is where the fun actually starts :)
+        for tweet in ts.search_tweets_iterable(tso): # this is where the fun actually starts :)
             print( '@%s tweeted: %s' % ( tweet['user']['screen_name'], tweet['text'] ) )
         
     except TwitterSearchException as e: # take care of all those ugly errors if there are some
@@ -80,6 +76,38 @@ The result will be a text looking similar to this one. But as you see unfortunat
     @schlagworte tweeted: "Erst letztens habe ich in meiner Doktorarbeit Guttenberg zitiert." Blockflöte des Todes: http://t.co/pCzIn429
     @nkoni7 tweeted: Familien sind auch betroffen wenn schlechte Politik gemacht wird. Nicht nur wenn Guttenberg seine Doktorarbeit fälscht ! #absolutemehrheit
 
+You're thinking that the global wisdom of Twitter is way too much for your needs? Well, let's query a timeline of a certain user than:
+
+.. code-block:: python
+    from TwitterSearch import *
+
+    try:
+        tuo = TwitterUserOrder('NeinQuarterly') # create a TwitterUserOrder
+
+        # it's about time ti create TwitterSearch object again
+        ts = TwitterSearch(
+            consumer_key = 'aaabbb',
+            consumer_secret = 'cccddd',
+            access_token = '111222',
+            access_token_secret = '333444'
+        )
+
+        for tweet in ts.search_tweets_iterable(tuo): # start asking Twitter about the timeline
+            print( '@%s tweeted: %s' % ( tweet['user']['screen_name'], tweet['text'] ) )
+
+    except TwitterSearchException as e: # catch all those ugly errors
+        print(e)
+
+You may guess the resulting output, but here it is anyway:
+
+::
+    @NeinQuarterly tweeted: To make a long story short: Twitter.
+    @NeinQuarterly tweeted: A German subordinating conjunction walks into a bar. Three hours later it's joined by a verb.
+    @NeinQuarterly tweeted: Foucault walks into a bar. No one notices.
+    @NeinQuarterly tweeted: If it's not deleted, probably wasn't worth writing.
+    @NeinQuarterly tweeted: Trust me: German prepositions aren't laughing with you. They're laughing at you.
+    @NeinQuarterly tweeted: Another beautiful day for cultural pessimism.
+    @NeinQuarterly tweeted: Excuse me, sir. Your Zeitgeist has arrived.
 
 Interested in some more details?
 ################################

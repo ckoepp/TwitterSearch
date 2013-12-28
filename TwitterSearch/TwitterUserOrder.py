@@ -34,7 +34,7 @@ class TwitterUserOrder(TwitterOrder):
         else:
             if isinstance(user, (int, long)):
                 self.arguments.update( { 'user_id' : '%i' % user } )
-            elif isinstance(user, basestring):
+            elif isinstance(user, str if py3k else basestring):
                 self.arguments.update( { 'screen_name' : user } )
             else:
                 raise TwitterSearchException(1017)

@@ -141,7 +141,7 @@ class TwitterSearch(object):
         # Timelines doesn't have valid count values
         # see: https://dev.twitter.com/docs/faq - section: "How do I properly navigate a timeline?"
         # ToDo: see wether this works (implement test case with zero statuses!)
-        elif not self.__order_is_search and len(self.__response['content']['statuses']) > 0:
+        elif not self.__order_is_search and len(self.__response['content']) > 0:
             self.__next_max_id = self.get_minimal_id()
 
         else: # we got less tweets than requested -> no more results in API
