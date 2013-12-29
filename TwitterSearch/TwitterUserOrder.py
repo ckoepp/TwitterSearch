@@ -49,19 +49,19 @@ class TwitterUserOrder(TwitterOrder):
         """ Sets 'include_rts' paramater """
         if not isinstance(rts, bool):
             raise TwitterSearchException(1008)
-        self.arguments.update( { 'trim_user' : 'true' if rts else 'false' } )
+        self.arguments.update( { 'include_rts' : 'true' if rts else 'false' } )
 
     def set_exclude_replies(self, exclude):
         """ Sets 'exclude_replies' paramater """
         if not isinstance(exclude, bool):
             raise TwitterSearchException(1008)
-        self.arguments.update( { 'trim_user' : 'true' if exclude else 'false' } )
+        self.arguments.update( { 'exclude_replies' : 'true' if exclude else 'false' } )
 
     def set_contributor_details(self, contdetails):
         """ Sets 'contributor_details' paramater """
         if not isinstance(contdetails, bool):
             raise TwitterSearchException(1008)
-        self.arguments.update( { 'trim_user' : 'true' if contdetails else 'false' } )
+        self.arguments.update( { 'contributor_details' : 'true' if contdetails else 'false' } )
 
     def create_search_url(self):
         """ Generates (urlencoded) query string from stored key-values tuples """

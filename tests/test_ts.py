@@ -11,6 +11,11 @@ class TwitterSearchTest(unittest.TestCase):
         tso.set_keywords(['foo'])
         return tso
 
+    def createTUO(self):
+        """ Returns a default TwitterUserOrder instance """
+        tuo = TwitterUserOrder("foo")
+        return tuo
+
     def createTS(self):
         """ Returns a default TwitterSearch instance """
         return TwitterSearch('aaabbb','cccddd','111222','333444', verify=False)
@@ -94,10 +99,10 @@ class TwitterSearchTest(unittest.TestCase):
 
         httpretty.register_uri(httpretty.GET, self.search_url,
                         responses=[
-                            httpretty.Response(streaming=True, status=200, content_type='text/json', body=self.apiAnsweringMachine('tests/mock-data/0.log')),
-                            httpretty.Response(streaming=True, status=200, content_type='text/json', body=self.apiAnsweringMachine('tests/mock-data/1.log')),
-                            httpretty.Response(streaming=True, status=200, content_type='text/json', body=self.apiAnsweringMachine('tests/mock-data/2.log')),
-                            httpretty.Response(streaming=True, status=200, content_type='text/json', body=self.apiAnsweringMachine('tests/mock-data/3.log'))
+                            httpretty.Response(streaming=True, status=200, content_type='text/json', body=self.apiAnsweringMachine('tests/mock-data/search/0.log')),
+                            httpretty.Response(streaming=True, status=200, content_type='text/json', body=self.apiAnsweringMachine('tests/mock-data/search/1.log')),
+                            httpretty.Response(streaming=True, status=200, content_type='text/json', body=self.apiAnsweringMachine('tests/mock-data/search/2.log')),
+                            httpretty.Response(streaming=True, status=200, content_type='text/json', body=self.apiAnsweringMachine('tests/mock-data/search/3.log'))
                             ]
                         )
 
@@ -125,7 +130,7 @@ class TwitterSearchTest(unittest.TestCase):
 
         httpretty.register_uri(httpretty.GET, self.search_url, 
                 responses=[
-                    httpretty.Response(streaming=True, status=200, content_type='text/json', body=self.apiAnsweringMachine('tests/mock-data/empty.log')),
+                    httpretty.Response(streaming=True, status=200, content_type='text/json', body=self.apiAnsweringMachine('tests/mock-data/search/empty.log')),
                 ])
 
         tso = self.createTSO()
@@ -140,10 +145,10 @@ class TwitterSearchTest(unittest.TestCase):
 
         httpretty.register_uri(httpretty.GET, self.search_url,
                 responses=[
-                    httpretty.Response(streaming=True, status=200, content_type='text/json', body=self.apiAnsweringMachine('tests/mock-data/0.log')),
-                    httpretty.Response(streaming=True, status=200, content_type='text/json', body=self.apiAnsweringMachine('tests/mock-data/1.log')),
-                    httpretty.Response(streaming=True, status=200, content_type='text/json', body=self.apiAnsweringMachine('tests/mock-data/2.log')),
-                    httpretty.Response(streaming=True, status=200, content_type='text/json', body=self.apiAnsweringMachine('tests/mock-data/3.log'))
+                    httpretty.Response(streaming=True, status=200, content_type='text/json', body=self.apiAnsweringMachine('tests/mock-data/search/0.log')),
+                    httpretty.Response(streaming=True, status=200, content_type='text/json', body=self.apiAnsweringMachine('tests/mock-data/search/1.log')),
+                    httpretty.Response(streaming=True, status=200, content_type='text/json', body=self.apiAnsweringMachine('tests/mock-data/search/2.log')),
+                    httpretty.Response(streaming=True, status=200, content_type='text/json', body=self.apiAnsweringMachine('tests/mock-data/search/3.log'))
                     ]
                 )
 
