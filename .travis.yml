@@ -12,7 +12,7 @@ script:
   - "coverage run --source=TwitterSearch setup.py test"
 after_success:
   coveralls
-branches:1
+branches:
   only:
     - master
     - devel
