@@ -14,6 +14,10 @@ TwitterSearch
     :target: https://pypi.python.org/pypi/TwitterSearch/
     :alt: PyPi version
 
+.. image:: https://coveralls.io/repos/ckoepp/TwitterSearch/badge.png?branch=master
+     :target: https://coveralls.io/r/ckoepp/TwitterSearch?branch=master
+     :alt: Coverage
+
 This library allows you easily create a search through the Twitter  API without having to know too much about the API details. Based on such a search you can even iterate throughout all tweets reachable via the Twitter Search API. There is an automatic reload of the next pages while using the iteration.
 
 Reasons to use TwitterSearch
