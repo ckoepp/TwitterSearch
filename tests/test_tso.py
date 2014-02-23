@@ -164,7 +164,16 @@ class TwitterSearchOrderTest(unittest.TestCase):
             except TwitterSearchException as e:
                 self.assertTrue((e.code == 1004 or e.code == 1005), "Wrong exception code")
 
+        try:
+            tso.set_geocode(2.0,1.0,10, metric='foo')
+        except TwitterSearchException as e:
+            self.assertEqual(e.code, 1005, 'Wrong exception code')
 
+        try:
+           tso.set_geocode('foo','bar',10)
+        except TwitterSearchException as e:
+            self.assertEqual(e.code, 1004, 'Wrong exception code')
+ 
     def test_TSO_count(self):
         """ Tests TwitterSearchOrder.set_count() """
 
@@ -277,6 +286,16 @@ class TwitterSearchOrderTest(unittest.TestCase):
         self.assertEqual(tso.create_search_url()[0:7], '?q=test', "Keywords are NOT equal")
 
         # wrong values
+        try:
+            tso.add_keyword({ 'foo' : 'bar' })
+        except TwitterSearchException as e:
+            self.assertEqual(e.code, 1000, "Wrong exception code")
+
+        try:
+            tso.set_keywords({ 'other' : 'stuff'})
+        except TwitterSearchException as e:
+            self.assertEqual(e.code, 1001, "Wrong exception code")
+
         tso2 = TwitterSearchOrder()
         try:
             tso2.create_search_url()
