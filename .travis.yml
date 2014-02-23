@@ -9,7 +9,9 @@ install:
   - "pip install httpretty --use-mirrors"
   - "pip install coveralls"
 script: 
-  - coverage run --source=TwitterSearch setup.py test
+  - "coverage run --source=TwitterSearch setup.py test"
+after_success:
+  coveralls
 branches:1
   only:
     - master
