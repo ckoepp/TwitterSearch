@@ -63,6 +63,11 @@ Please be aware that there is **no further check** whether or not your credentia
 
 But be aware that you're only saving **one** request at all by avoiding the automatic verification process. Due to the fact that json doesn't consume much traffic at all, this may only be a way for very conservative developers or some exotic scenarios.
 
+Proxy usage
++++++++++++
+
+To use a HTTPS proxy at initialization of the *TwitterSearch* class, an addition argument named ``proxy={ 'https' : 'some.proxy:888' }`` can be used. Otherwise the authentication will fail if the client has no direct access to the    Twitter API.
+
 Returned tweets
 +++++++++++++++
 

@@ -1,6 +1,11 @@
 Change history
 **************
 
+0.78.5
+######
+
+* fixed proxy usage at initialization of TwitterSearch object
+
 0.78.4
 ######
 
