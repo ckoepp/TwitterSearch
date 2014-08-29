@@ -2,7 +2,7 @@ from setuptools import setup
 #from TwitterSearch import __version__
 
 def readme():
-    with open('README.rst', encoding="UTF-8") as f:
+    with open('README.rst', 'r') as f:
         return f.read()
 
 def requirements():
