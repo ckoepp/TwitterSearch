@@ -53,6 +53,7 @@ class TwitterSearch(object):
         # init internal variables
         self.__response = {}
         self.__nextMaxID = maxint
+        self._nextTweet = 0
 
         if "proxy" in attr:
             self.setProxy(attr["proxy"])
