@@ -173,8 +173,6 @@ class TwitterSearch(object):
 
     # Iteration
     def __iter__(self):
-        if not self.__response:
-            raise TwitterSearchException(1014)
         self._nextTweet = 0
         return self
 
@@ -183,6 +181,9 @@ class TwitterSearch(object):
         return self.__next__()
 
     def __next__(self):
+        if not self.__response:
+            raise TwitterSearchException(1014)
+
         if self._nextTweet < len(self.__response['content']['statuses']):
             self._nextTweet += 1
             return self.__response['content']['statuses'][self._nextTweet-1]
