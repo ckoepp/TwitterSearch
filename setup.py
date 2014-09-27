@@ -1,8 +1,10 @@
 from setuptools import setup
+import io
+
 #from TwitterSearch import __version__
 
 def readme():
-    with open('README.rst', 'r', encoding="utf8") as f:
+    with io.open('README.rst', 'r', encoding="utf8") as f:
         return f.read()
 
 def requirements():
