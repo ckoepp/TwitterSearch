@@ -1,6 +1,12 @@
 Change history
 **************
 
+0.78.6
+######
+
+* Fixed codec error on Win7 installation (issue #21)
+* Added manual iteration support (issue #20)
+
 0.78.5
 ######
 

@@ -2,7 +2,7 @@ from setuptools import setup
 #from TwitterSearch import __version__
 
 def readme():
-    with open('README.rst', 'r') as f:
+    with open('README.rst', 'r', encoding="utf8") as f:
         return f.read()
 
 def requirements():
@@ -12,7 +12,7 @@ def requirements():
     return req
 
 setup(name='TwitterSearch',
-      version='0.78.5',
+      version='0.78.6',
       description='A library to easily iterate tweets found by the Twitter Search API',
       long_description=readme(),
       url='http://github.com/ckoepp/TwitterSearch',
@@ -29,7 +29,7 @@ setup(name='TwitterSearch',
           'Programming Language :: Python :: 3',
           'Programming Language :: Python :: 3.2',
           'Programming Language :: Python :: 3.3',
-          'Development Status :: 3 - Alpha',
+          'Development Status :: 5 - Production/Stable',
           'Intended Audience :: Science/Research',
           'Operating System :: OS Independent',
           'License :: OSI Approved :: MIT License',
