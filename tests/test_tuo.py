@@ -136,3 +136,9 @@ class TwitterUserOrderTest(unittest.TestCase):
         tuo2.set_contributor_details(True)
 
         self.assertEqualQuery(tuo1.create_search_url(), tuo2.create_search_url(), "Query strings NOT equal")
+
+    def test_TUO_contructuor(self):
+        """ Tests __init__ method of TwitterUserOrder """
+
+        with self.assertRaise(TwitterSearchException):
+            TwitterUserOrder("foo")

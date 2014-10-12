@@ -317,3 +317,13 @@ class TwitterSearchOrderTest(unittest.TestCase):
 
         self.assertEqualQuery(tso1.create_search_url(), tso2.create_search_url(), "Query strings NOT equal")
 
+    def test_TO_exceptions(self):
+        """ Tests unimplemented TwitterOrder functions aiming for exceptions """
+
+        to = TwitterOrder()
+
+        with self.assertRaises(NotImplementedError):
+            to.set_search_url("foo")
+            to.create_search_url()
+
+

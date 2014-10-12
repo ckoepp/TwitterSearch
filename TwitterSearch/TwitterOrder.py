@@ -11,7 +11,7 @@ class TwitterOrder(object):
         """ Generates (urlencoded) query string from stored key-values tuples. Has to be implemented within child classes. """
         raise NotImplementedError
         
-    def set_search_url(self):
+    def set_search_url(self, url):
         """ Reads given query string and stores key-value tuples. Has to be implemented within child classes. """
         raise NotImplementedError
 
