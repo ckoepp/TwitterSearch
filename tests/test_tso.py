@@ -323,15 +323,7 @@ class TwitterSearchOrderTest(unittest.TestCase):
         value = "foo"
         exc_class = NotImplementedError
         to = TwitterOrder()
-
-        from sys import hexversion
-
-        if hexversion > 0x02060000: # everything newer than py2.6
-            with self.assertRaises(exc_class):
-                to.set_search_url(value)
-                to.create_search_url()
-        else: # py2.6 <= fallback
-            self.assertRaises(exc_class, to.set_search_url(value))
-            self.assertRaises(exc_class, to.create_search_url())
-
+        with self.assertRaises(exc_class):
+            to.set_search_url(value)
+            to.create_search_url()
 

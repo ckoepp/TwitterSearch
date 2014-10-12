@@ -61,9 +61,9 @@ class TwitterSearch(object):
         self.__next_tweet = 0
 
         if "proxy" in attr:
-            self.setProxy(attr["proxy"])
+            self.set_proxy(attr["proxy"])
         else:
-            self.__proxy = {}
+            self.__proxy = None
 
         # statistics
         self.__statistics = { 'queries' : 0, 'tweets' : 0 }
@@ -72,14 +72,18 @@ class TwitterSearch(object):
         self.authenticate( attr["verify"] if "verify" in attr else True )
 
     def __repr__(self):
-        return '<TwitterSearch %s>' % self.__access_token
+        return '<%s %s>' % (self.__class__.__name__, self.__access_token)
 
     def set_proxy(self, proxy):
         """ Sets a given dict as proxy handler """
-        if isinstance(proxy, dict) and 'https' in proxy:
+        if isinstance(proxy, str if py3k else basestring):
             self.__proxy = proxy
         else:
-            raise TwitterSearchException(1016)
+            raise TwitterSearchException(1009)
+
+    def get_proxy(self):
+        """ Returns the current proxy url or None if no proxy is set """
+        return self.__proxy
 
     def authenticate(self, verify=True):
         """ Creates internal oauth handler needed for queries to Twitter and verifies credentials if needed """
@@ -89,7 +93,7 @@ class TwitterSearch(object):
             resource_owner_secret = self.__access_token_secret )
 
         if verify:
-            r = requests.get(self._base_url + self._verify_url, auth=self.__oauth, proxies=self.__proxy)
+            r = requests.get(self._base_url + self._verify_url, auth=self.__oauth, proxies={"https":self.__proxy})
             self.check_http_status(r.status_code)
 
     def check_http_status(self, http_status):
@@ -120,7 +124,7 @@ class TwitterSearch(object):
 
         endpoint = self._base_url + (self._search_url if self.__order_is_search else self._user_url)
 
-        r = requests.get(endpoint + url, auth=self.__oauth, proxies=self.__proxy)
+        r = requests.get(endpoint + url, auth=self.__oauth, proxies={"https":self.__proxy})
         self.__response['meta'] = r.headers
 
         self.check_http_status(r.status_code)
@@ -203,7 +207,7 @@ class TwitterSearch(object):
         if not isinstance(order, TwitterSearchOrder):
             raise TwitterSearchException(1010)
 
-        r = requests.get(self._base_url + self._lang_url, auth=self.__oauth, proxies=self.__proxy)
+        r = requests.get(self._base_url + self._lang_url, auth=self.__oauth, proxies={"https":self.__proxy})
         self.__response['meta'] = r.headers
         self.check_http_status(r.status_code)
         self.__response['content'] = r.json()

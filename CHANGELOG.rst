@@ -6,6 +6,7 @@ Change history
 
 * PEP-8 compatible API (issue #12)
 * added support of loading timlines of users
+* simplified proxy functionality
 
 0.78.6
 ######

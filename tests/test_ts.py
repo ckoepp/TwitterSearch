@@ -177,3 +177,50 @@ class TwitterSearchTest(unittest.TestCase):
 
         self.assertEqual(max_ids, [0, 355715848851300353, 355714667852726271, 355712782454358015], "Max ids NOT equal")
 
+
+    def test_TS_string_output(self):
+        """ Tests the string conversion of TwitterSearch """
+
+        access_token = "foobar"
+        ts = TwitterSearch('aaabbb','cccddd', access_token, '333444', verify=False)
+        self.assertEqual( "<%s %s>" % (ts.__class__.__name__, access_token), "%s" % ts)
+
+
+    def test_TS_methods_exceptions(self):
+        """ Tests various TwitterSearch methods with invalid inputs/states """
+
+        ts = self.createTS()
+        with self.assertRaises(TwitterSearchException):
+            ts.get_minimal_id()
+            ts.send_search(101)
+            ts.search_tweets("foobar")
+            ts.get_metadata()
+            ts.get_tweets()
+            ts.get_amount_of_tweets()
+            ts.set_supported_languages("joe.doe")
+
+    def test_TS_minimal_id(self):
+        """ Tests TwitterSearch.get_minimal_id method without request done """
+
+        ts = self.createTS()
+        self.assertRaises(TwitterSearchException, ts.get_minimal_id, )       
+
+    def test_TS_proxy(self):
+        """ Tests the proxy functionality of TwitterSearch class """
+
+        # test constructor
+        example_proxy = "some.proxy.com:1337"
+        ts = TwitterSearch('aaabbb','cccddd','111222','333444', proxy=example_proxy, verify=False)
+        self.assertEqual(ts.get_proxy(), example_proxy)
+
+        # test manual setup
+        example_proxy = "test.com:123"
+        ts.set_proxy(example_proxy)
+        self.assertEqual(ts.get_proxy(), example_proxy)
+
+        try:
+            ts.set_proxy(29.0)
+            self.assertTrue(False, "Exception should be raised instead")
+        except TwitterSearchException as e:
+            self.assertEqual(e.code, 1009, "Exception code should be 401 but is %i" % e.code)
+
