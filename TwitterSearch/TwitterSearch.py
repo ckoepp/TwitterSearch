@@ -58,7 +58,7 @@ class TwitterSearch(object):
         # init internal variables
         self.__response = {}
         self.__nextMaxID = maxint
-        self._nextTweet = 0
+        self.__next_tweet = 0
 
         if "proxy" in attr:
             self.setProxy(attr["proxy"])
@@ -214,9 +214,7 @@ class TwitterSearch(object):
 
     # Iteration
     def __iter__(self):
-        if not self.__response:
-            raise TwitterSearchException(1014)
-        self._next_tweet = 0
+        self.__next_tweet = 0
         return self
 
     def next(self):
@@ -224,12 +222,15 @@ class TwitterSearch(object):
         return self.__next__()
 
     def __next__(self):
-        if self._next_tweet < self.get_amount_of_tweets():
-            self._next_tweet += 1
+        if not self.__response:
+            raise TwitterSearchException(1014)
+
+        if self.__next_tweet < self.get_amount_of_tweets():
+            self.__next_tweet += 1
             if self.__order_is_search:
-                return self.__response['content']['statuses'][self._next_tweet-1]
+                return self.__response['content']['statuses'][self.__next_tweet-1]
             else:
-                return self.__response['content'][self._next_tweet-1]
+                return self.__response['content'][self.__next_tweet-1]
 
         try:
             self.search_next_results()
@@ -237,9 +238,9 @@ class TwitterSearch(object):
             raise StopIteration
 
         if self.get_amount_of_tweets() != 0:
-            self._next_tweet = 1
+            self.__next_tweet = 1
             if self.__order_is_search:
-                return self.__response['content']['statuses'][self._next_tweet-1]
+                return self.__response['content']['statuses'][self.__next_tweet-1]
             else:
-                return self.__response['content'][self._next_tweet-1]
+                return self.__response['content'][self.__next_tweet-1]
         raise StopIteration
