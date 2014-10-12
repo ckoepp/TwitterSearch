@@ -140,4 +140,11 @@ class TwitterUserOrderTest(unittest.TestCase):
     def test_TUO_contructuor(self):
         """ Tests __init__ method of TwitterUserOrder """
 
-        self.assertRaises(TwitterSearchException, TwitterUserOrder, 133.7)
+        value = 133.7
+
+        from sys import hexversion
+
+        if hexversion > 0x02060000: # everything newer than py2.6
+            self.assertRaises(TwitterSearchException, TwitterUserOrder, value)
+        else: # py2.6 <= fallback
+            self.assertRaises(TwitterSearchException, TwitterUserOrder(value))
