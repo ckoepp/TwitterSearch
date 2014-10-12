@@ -45,7 +45,7 @@ class TwitterSearch(object):
                      504 : 'Gateway timeout: The request couldn\'t be serviced due to some failure within our stack',
                  }
 
-    def __init__(self, consumer_key, consumer_secret, access_token, access_token_secret, verify=True):
+    def __init__(self, consumer_key, consumer_secret, access_token, access_token_secret, **attr):
 
         # app
         self.__consumer_key = consumer_key
@@ -58,13 +58,18 @@ class TwitterSearch(object):
         # init internal variables
         self.__response = {}
         self.__nextMaxID = maxint
-        self.__proxy = {}
+        self._nextTweet = 0
+
+        if "proxy" in attr:
+            self.setProxy(attr["proxy"])
+        else:
+            self.__proxy = {}
 
         # statistics
         self.__statistics = { 'queries' : 0, 'tweets' : 0 }
 
         # verify
-        self.authenticate(verify)
+        self.authenticate( attr["verify"] if "verify" in attr else True )
 
     def __repr__(self):
         return '<TwitterSearch %s>' % self.__access_token

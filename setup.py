@@ -1,8 +1,10 @@
 from setuptools import setup
+import io
+
 #from TwitterSearch import __version__
 
 def readme():
-    with open('README.rst') as f:
+    with io.open('README.rst', 'r', encoding="utf8") as f:
         return f.read()
 
 def requirements():
@@ -29,7 +31,7 @@ setup(name='TwitterSearch',
           'Programming Language :: Python :: 3',
           'Programming Language :: Python :: 3.2',
           'Programming Language :: Python :: 3.3',
-          'Development Status :: 4 - Beta',
+          'Development Status :: 5 - Production/Stable',
           'Intended Audience :: Science/Research',
           'Operating System :: OS Independent',
           'License :: OSI Approved :: MIT License',

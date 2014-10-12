@@ -7,6 +7,17 @@ Change history
 * PEP-8 compatible API (issue #12)
 * added support of loading timlines of users
 
+0.78.6
+######
+
+* Fixed codec error on Win7 installation (issue #21)
+* Added manual iteration support (issue #20)
+
+0.78.5
+######
+
+* fixed proxy usage at initialization of TwitterSearch object
+
 0.78.4
 ######
 
