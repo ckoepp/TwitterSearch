@@ -320,10 +320,18 @@ class TwitterSearchOrderTest(unittest.TestCase):
     def test_TO_exceptions(self):
         """ Tests unimplemented TwitterOrder functions aiming for exceptions """
 
+        value = "foo"
+        exc_class = NotImplementedError
         to = TwitterOrder()
 
-        with self.assertRaises(NotImplementedError):
-            to.set_search_url("foo")
-            to.create_search_url()
+        from sys import hexversion
+
+        if hexversion > 0x02060000: # everything newer than py2.6
+            with self.assertRaises(exc_class):
+                to.set_search_url(value)
+                to.create_search_url()
+        else: # py2.6 <= fallback
+            self.assertRaises(exc_class, to.set_search_url(value))
+            self.assertRaises(exc_class, to.create_search_url())
 
 
