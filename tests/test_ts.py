@@ -22,8 +22,10 @@ class TwitterSearchTest(unittest.TestCase):
 
     def apiAnsweringMachine(self, filename):
         """ Generates faked API responses by returing content of a given file """
-        for line in open(filename, 'r'):
+        f = open(filename, 'r')
+        for line in f:
             yield line
+        f.close()
 
     def setUp(self):
         """ Constructor """

@@ -140,5 +140,4 @@ class TwitterUserOrderTest(unittest.TestCase):
     def test_TUO_contructuor(self):
         """ Tests __init__ method of TwitterUserOrder """
 
-        with self.assertRaise(TwitterSearchException):
-            TwitterUserOrder("foo")
+        self.assertRaises(TwitterSearchException, TwitterUserOrder, 133.7)
