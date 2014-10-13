@@ -27,9 +27,9 @@ This library allows you easily create a search through the Twitter  API without 
 Version 1.0.0 and newer
 #######################
 As part of the process to gain fully `PEP-8 <http://legacy.python.org/dev/peps/pep-0008/>`_ compatibility all methods have been renamed in this and further versions. 
-The code changes to support the PEP-8 naming scheme is trivial. Just change the old naming from ``setKeywords`` to the new one of ``set_keywords``. 
+The code changes to support the `PEP-8 naming scheme <http://legacy.python.org/dev/peps/pep-0008/#function-names>`_ is trivial. Just change the old naming from ``setKeywords`` to the new one of ``set_keywords``. 
 If you're unable apply those changes, you might consider using TwitterSearch versions < 1.0.0. Those versions will still be supported but will not be equipped with the newest functionalities. 
-Using the `release tags <https://github.com/ckoepp/TwitterSearch/releases>`_ enables an easy way to navigate through all versions of this software.
+Using the `release tags <https://github.com/ckoepp/TwitterSearch/releases>`_ is an easy way to navigate through all versions of this software.
 
 Reasons to use TwitterSearch
 ############################
