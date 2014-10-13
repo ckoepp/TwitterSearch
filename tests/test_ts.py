@@ -11,10 +11,9 @@ class TwitterSearchTest(unittest.TestCase):
         tso.set_keywords(['foo'])
         return tso
 
-    def createTUO(self):
+    def createTUO(self, username="foo"):
         """ Returns a default TwitterUserOrder instance """
-        tuo = TwitterUserOrder("foo")
-        return tuo
+        return TwitterUserOrder(username)
 
     def createTS(self):
         """ Returns a default TwitterSearch instance """
@@ -32,6 +31,7 @@ class TwitterSearchTest(unittest.TestCase):
         self.auth_url = TwitterSearch._base_url + TwitterSearch._verify_url
         self.search_url = TwitterSearch._base_url + TwitterSearch._search_url
         self.lang_url = TwitterSearch._base_url + TwitterSearch._lang_url
+        self.user_url = TwitterSearch._base_url + TwitterSearch._user_url
 
 
     ################ TESTS #########################
@@ -96,8 +96,40 @@ class TwitterSearchTest(unittest.TestCase):
             self.assertEqual(e.code, 401, "Exception code should be 401 but is %i" % e.code)
 
     @httpretty.activate
+    def test_TS_search_usertimeline_iterable(self):
+        """ Tests TwitterSearch.search_tweets_iterable() and .get_statistics() by using TwitterUserOrder class """
+
+        httpretty.register_uri(httpretty.GET, self.user_url,
+                        responses=[
+                            httpretty.Response(streaming=True, status=200, content_type='text/json', body=self.apiAnsweringMachine('tests/mock-data/user/0.log')),
+                            httpretty.Response(streaming=True, status=200, content_type='text/json', body=self.apiAnsweringMachine('tests/mock-data/user/1.log')),
+
+                            # add an empty page to mock the behavior of Twitter Timeline API
+                            httpretty.Response(streaming=True, status=200, content_type='text/json', body=self.apiAnsweringMachine('tests/mock-data/user/2.log')) 
+                            ]
+                        )
+
+        expected_cnt = 190 # 100 in 0.log and 90 in 1.log
+        pages = 2 # 0.log and 1.log
+
+        ts = self.createTS()
+        tuo = self.createTUO()
+        tweet_cnt = 0
+
+        for tweet in ts.search_tweets_iterable(tuo):
+            tweet_cnt += 1
+
+        #self.assertEqual( expected_cnt, tweet_cnt, "Wrong amount of tweets")
+
+        # test statistics
+        #stats = ts.get_statistics()
+        #self.assertEqual(stats['tweets'], tweet_cnt, "Tweet counter is NOT working correctly (%i should be %i)" % (stats['tweets'], tweet_cnt))
+        #self.assertEqual(stats['queries'], pages, "Query counter is NOT working correctly (%i should be %i)" % (stats['queries'], pages))
+
+
+    @httpretty.activate
     def test_TS_search_tweets_iterable(self):
-        """ Tests TwitterSearch.search_tweets_iterable() and .get_statistics() """
+        """ Tests TwitterSearch.search_tweets_iterable() and .get_statistics() by using TwitterSearchOrder class """
 
         httpretty.register_uri(httpretty.GET, self.search_url,
                         responses=[

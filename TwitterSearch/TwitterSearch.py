@@ -118,7 +118,7 @@ class TwitterSearch(object):
 
 
     def send_search(self, url):
-        """ Sends a given query string to the Twitter Search API, stores results interally and validates returned HTTP status code """
+        """ Sends a given query string to the Twitter Search API, stores results internally and validates returned HTTP status code """
         if not isinstance(url, str if py3k else basestring):
             raise TwitterSearchException(1009)
 
@@ -149,7 +149,6 @@ class TwitterSearch(object):
 
         # Timelines doesn't have valid count values
         # see: https://dev.twitter.com/docs/faq - section: "How do I properly navigate a timeline?"
-        # ToDo: see wether this works (implement test case with zero statuses!)
         elif not self.__order_is_search and len(self.__response['content']) > 0:
             self.__next_max_id = self.get_minimal_id()
 
