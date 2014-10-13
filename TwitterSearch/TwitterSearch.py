@@ -18,7 +18,6 @@ except ImportError: from sys import maxsize as maxint # python3
 class TwitterSearch(object):
     """
     This class actually performs the calls to the Twitter Search API (v1.1 only).
-
     It is configured using an instance of TwitterSearchOrder and valid Twitter credentials.
     """
 
@@ -46,6 +45,15 @@ class TwitterSearch(object):
                  }
 
     def __init__(self, consumer_key, consumer_secret, access_token, access_token_secret, **attr):
+        """ Constructor
+
+        :param consumer_key: Consumer key (app related)
+        :param consumer_secret: Consumer consumer_secret (app related)
+        :param access_token: Access token (user related)
+        :param access_token_secret: Access token secret (user related)
+        :param verify: A boolean variable to control verification of access codes. Default value is ``True`` which raises an instant exception when using invalid credentials.
+        :param proxy: A string containing a HTTPS proxy (e.g. ``my.proxy.com:8080``). Default value is ``None`` which means that no proxy is used at all.
+        """
 
         # app
         self.__consumer_key = consumer_key
@@ -69,24 +77,42 @@ class TwitterSearch(object):
         self.__statistics = { 'queries' : 0, 'tweets' : 0 }
 
         # verify
-        self.authenticate( attr["verify"] if "verify" in attr else True )
+        self.authenticate( attr["verify"] if attr.get("verify", True) else True )
 
     def __repr__(self):
+        """ Returns the class and its access token
+
+        :returns: A string represenation of this class containing the class name and the used access token
+        """
+
         return '<%s %s>' % (self.__class__.__name__, self.__access_token)
 
     def set_proxy(self, proxy):
-        """ Sets a given dict as proxy handler """
+        """ Sets a HTTPS proxy to query the Twitter API 
+
+        :param proxy: A string of containing a HTTPS proxy (e.g. ``my.proxy.com:8080``).
+        :raises: TwitterSearchException 
+        """
+
         if isinstance(proxy, str if py3k else basestring):
             self.__proxy = proxy
         else:
             raise TwitterSearchException(1009)
 
     def get_proxy(self):
-        """ Returns the current proxy url or None if no proxy is set """
+        """ Returns the current proxy url or None if no proxy is set
+
+        :returns: A string containing the current HTTPS proxy (e.g. ``my.proxy.com:8080``) or ``None`` is no proxy is used
+        """
+
         return self.__proxy
 
     def authenticate(self, verify=True):
-        """ Creates internal oauth handler needed for queries to Twitter and verifies credentials if needed """
+        """ Creates internal oauth handler needed for queries to Twitter and verifies credentials if needed
+
+        :param verify: boolean variable to directly check. Default value is ``True``
+        """
+
         self.__oauth = OAuth1(self.__consumer_key,
             client_secret = self.__consumer_secret,
             resource_owner_key = self.__access_token,
@@ -97,17 +123,32 @@ class TwitterSearch(object):
             self.check_http_status(r.status_code)
 
     def check_http_status(self, http_status):
-        """ Checks a given http_status and returns an exception in case wrong status """
+        """ Checks a given http_status and returns an exception in case wrong status
+
+        :param http_status: An integer value of the HTTP status of the last query. Invalid statuses will raise an exception.
+        :raises: TwitterSearchException
+        """
+
         if http_status in self.exceptions:
             raise TwitterSearchException(http_status, self.exceptions[http_status])
 
     def search_tweets_iterable(self, order):
-        """ Returns itself. Is called when using an instance of this class as iterable """
+        """ Returns itself. Is called when using an instance of this class as iterable
+
+        :param order: An instance of TwitterOrder class (e.g. TwitterSearchOrder or TwitterUserOrder)
+        :returns: Itself using ``self`` keyword
+        """
+
         self.search_tweets(order)
         return self
 
     def get_minimal_id(self):
-        """ Returns the minimal Tweet ID of the current response """
+        """ Returns the minimal tweet ID of the current response
+
+        :returns: minimal tweet identification number
+        :raises: TwitterSearchException
+        """
+
         if not self.__response:
             raise TwitterSearchException(1013)
 
@@ -118,7 +159,12 @@ class TwitterSearch(object):
 
 
     def send_search(self, url):
-        """ Sends a given query string to the Twitter Search API, stores results internally and validates returned HTTP status code """
+        """ Sends a given query string to the Twitter Search API, stores results internally and validates returned HTTP status code
+
+        :param url: A string of the URL to send the query to
+        :raises: TwitterSearchException
+        """
+
         if not isinstance(url, str if py3k else basestring):
             raise TwitterSearchException(1009)
 
@@ -158,7 +204,13 @@ class TwitterSearch(object):
         return self.__response['meta'], self.__response['content']
 
     def search_tweets(self, order):
-        """ Creates an query string through a given TwitterSearchOrder instance and takes care that it is send to the Twitter API. Returns unmodified response """
+        """ Creates an query string through a given TwitterSearchOrder instance and takes care that it is send to the Twitter API
+
+        :param order: A TwitterOrder instance. Can be either TwitterSearchOrder or TwitterUserOrder
+        :returns: Unmodified response as ``dict``.
+        :raises: TwitterSearchException
+        """
+
         if isinstance(order, TwitterUserOrder):
             self.__order_is_search = False
         elif isinstance(order, TwitterSearchOrder):
@@ -171,7 +223,13 @@ class TwitterSearch(object):
         return self.__response
 
     def search_next_results(self):
-        """ Returns True if there are more results available within the Twitter Search API """
+        """ Triggers the search for more results using the Twitter API. 
+        Raises exception if no further results can be found
+
+        :returns: ``True`` if there are more results available within the Twitter Search API  
+        :raises: TwitterSearchException
+        """
+
         if not self.__next_max_id:
             raise TwitterSearchException(1011)
 
@@ -179,30 +237,53 @@ class TwitterSearch(object):
         return True
 
     def get_metadata(self):
-        """ Returns all available meta data collected during last query """
+        """ Returns all available meta data collected during last query
+
+        :returns: Available meta information about the last query in form of a ``dict``
+        :raises: TwitterSearchException
+        """
+
         if not self.__response:
             raise TwitterSearchException(1012)
         return self.__response['meta']
 
     def get_tweets(self):
-        """ Returns all available data from last query """
+        """ Returns all available data from last query
+        
+        :returns: All tweets found using the last query as a ``dict``
+        :raises: TwitterSearchException
+        """
+
         if not self.__response:
            raise TwitterSearchException(1013)
         return self.__response['content']
 
     def get_statistics(self):
-        """ Returns dict with statistical information about amount of queries and received tweets """
+        """ Returns dict with statistical information about amount of queries and received tweets
+
+        :returns: A ``dict`` with ``queries`` and ``tweets`` keys containing integers.
+        """
+
         return self.__statistics
 
     def get_amount_of_tweets(self):
-        """ Returns current amount of tweets available within this instance """
+        """ Returns current amount of tweets available within this instance
+
+        :returns: The amount of tweets currently available
+        :raises: TwitterSearchException
+        """
+
         if not self.__response:
            raise TwitterSearchException(1013)
         return len(self.__response['content']['statuses']) if self.__order_is_search else len(self.__response['content'])
 
 
     def set_supported_languages(self, order):
-        """ Loads currently supported languages from Twitter API and sets them in a given TwitterSearchOrder instance """
+        """ Loads currently supported languages from Twitter API and sets them in a given TwitterSearchOrder instance
+
+        :param order: A TwitterOrder instance. Can be either TwitterSearchOrder or TwitterUserOrder
+        """
+
         if not isinstance(order, TwitterSearchOrder):
             raise TwitterSearchException(1010)
 
@@ -221,7 +302,11 @@ class TwitterSearch(object):
         return self
 
     def next(self):
-        """ Python2 method, simply returns self.__next__() """
+        """ Python2 comparability method. Simply returns ``self.__next__()``
+
+        :returns: the ``__next__()`` method of this class
+        """
+
         return self.__next__()
 
     def __next__(self):

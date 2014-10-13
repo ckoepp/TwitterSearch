@@ -54,7 +54,7 @@ If you're new to Python take a look at the following example:
 
     # equals
 
-    ts2 = TwitterSearch('aaabbb', 'cccddd', '111222', '333444', verify=True)
+    ts2 = TwitterSearch('aaabbb', 'cccddd', '111222', '333444', verify=True, proxy=None)
 
 Authentication and verification
 +++++++++++++++++++++++++++++++
@@ -66,12 +66,12 @@ But be aware that you're only saving **one** request at all by avoiding the auto
 Proxy usage
 +++++++++++
 
-To use a HTTPS proxy at initialization of the *TwitterSearch* class, an addition argument named ``proxy={ 'https' : 'some.proxy:888' }`` can be used. Otherwise the authentication will fail if the client has no direct access to the    Twitter API.
+To use a HTTPS proxy at initialization of the *TwitterSearch* class, an addition argument named ``proxy='some.proxy:888'`` can be used. Otherwise the authentication will fail if the client has no direct access to the Twitter API.
 
 Returned tweets
 +++++++++++++++
 
-*TwitterSearch* is trying to not hide anything from your eyes except the complexity of it's functions. Due to this you're able to get all the information available (which can be quite a lot).
+*TwitterSearch* is trying to not hide anything from your eyes except the complexity of its functions. Due to this you're able to get all the information available (which can be quite a lot).
 
 Example output with only one tweet included:
 
@@ -206,7 +206,7 @@ Sometime the default use-case is not sufficient and you may like to use *Twitter
 Access meta data
 ++++++++++++++++
 
-An output of the available meta data from the query to the Twitter API is stored in a ``dict``. You can access it by calling ``getMetadata()`` which will return all meta information about the last query.
+An output of the available meta data from the query to the Twitter API is stored in a ``dict``. You can access it by calling ``get_metadata()`` which will return all meta information about the last query.
 
 Example:
 
@@ -236,7 +236,7 @@ Example:
     'content-type': 'application/json;charset=utf-8'
     }
 
-Be **careful** about those data as it contains sensible data as you can see in ``getMetadata()['content-location']``. Do **NOT** save or output those information to insecure environments!
+Be **careful** about those data as it contains sensible data as you can see in ``get_metadata()['content-location']``. Do **NOT** save or output those information to insecure environments!
 
 
 TwitterSearch without iteration
@@ -252,7 +252,7 @@ A possible solution could look like this:
 
     try:
         tso = TwitterSearchOrder()
-        tso.setKeywords(['Germany', 'castle'])
+        tso.set_keywords(['Germany', 'castle'])
 
         ts = TwitterSearch('aaabbb', 'cccddd', '111222', '333444')
 
@@ -264,10 +264,10 @@ A possible solution could look like this:
         while(todo):
 
             # first query the Twitter API
-            response = ts.searchTweets(tso)
+            response = ts.search_tweets(tso)
 
             # print rate limiting status
-            print "Current rate-limiting status: %i" % ts.getMetadata()['x-rate-limit-reset']
+            print( "Current rate-limiting status: %i" % ts.get_metadata()['x-rate-limit-reset'])
 
             # check if there are statuses returned and whether we still have work to do
             todo = not len(response['content']['statuses']) == 0
@@ -283,7 +283,7 @@ A possible solution could look like this:
                     next_max_id -= 1 # decrement to avoid seeing this tweet again
 
             # set lowest ID as MaxID
-            tso.setMaxID(next_max_id)
+            tso.set_max_id(next_max_id)
 
     except TwitterSearchException as e:
         print(e)
@@ -303,10 +303,10 @@ As you may have figured out some languages are not supported by Twitter and thos
             ts = TwitterSearch('aaabbb', 'cccddd', '111222', '333444')
 
             # load  currently supported languages by Twitter and store them in a TwitterSearchOrder object
-            ts.setSupportedLanguages(tso)
+            ts.set_supported_languages(tso)
 
             # try to set German (see ISO 639-1) as language 
-            ts.setLanguage('de')
+            ts.set_language('de')
             print('German seems to be officially supported by Twitter. Yay!')
 
         except TwitterSearchException as e:

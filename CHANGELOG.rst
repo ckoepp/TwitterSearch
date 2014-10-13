@@ -6,7 +6,8 @@ Change history
 
 * PEP-8 compatible API (issue #12)
 * added support of loading timlines of users
-* simplified proxy functionality
+* simplified proxy functionality (no usage of dicts but plain strings)
+* simplified geo-code parameter (``TwitterSearchOrder.set_geocode(...,metric=True)`` renamed to ``set_geocode(...,imperial_metric=True)``)
 * dropped Python 2.6 support
 
 0.78.6

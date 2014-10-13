@@ -9,7 +9,7 @@ In most cases you probably just like to iterate through all available tweets as 
     
     try:
         tso = TwitterSearchOrder()
-        tso.setKeywords(['#Hashtag1', '#Hashtag2'])
+        tso.set_keywords(['#Hashtag1', '#Hashtag2'])
         
         ts = TwitterSearch(
                 consumer_key = 'aaabbb',
@@ -18,7 +18,7 @@ In most cases you probably just like to iterate through all available tweets as 
                 access_token_secret = '333444'
             )
         
-        for tweet in ts.searchTweetsIterable(tso):
+        for tweet in ts.search_tweets_iterable(tso):
             print('@%s tweeted: %s' % (tweet['user']['screen_name'], tweet['text']))
     
         except TwitterSearchException as e: # take care of all those ugly errors if there are some
