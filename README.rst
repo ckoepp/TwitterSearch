@@ -18,6 +18,12 @@ TwitterSearch
      :target: https://coveralls.io/r/ckoepp/TwitterSearch?branch=master
      :alt: Coverage
 
+.. image:: https://api.flattr.com/button/flattr-badge-large.png
+    :target: https://flattr.com/submit/auto?user_id=ckoepp&url=https://github.com/ckoepp/TwitterSearch&title=TwitterSearch&language=&tags=github&category=software
+    :alt: Flattr this git repo
+
+.. warning:: As part of the process to gain fully `PEP-8 <http://legacy.python.org/dev/peps/pep-0008/>`_ compatibility all methods have been renamed in this and further versions. The code changes to support the PEP-8 naming scheme is trivial. Just change the old naming from ``setKeywords`` to the new one of ``set_keywords``. If you're unable apply those changes, you might consider using TwitterSearch versions < 1.0.0. Those versions will still be supported but will not be equipped with the newest functionalities. Using the `release tags <https://github.com/ckoepp/TwitterSearch/releases>`_ enables an easy way to navigate through all versions of this software.
+
 This library allows you easily create a search through the Twitter  API without having to know too much about the API details. Based on such a search you can even iterate throughout all tweets reachable via the Twitter Search API. There is an automatic reload of the next pages while using the iteration.
 
 Reasons to use TwitterSearch
@@ -32,18 +38,16 @@ More than that, TwitterSearch is:
 * pretty good at giving you **all** available information (including meta information)
 * pretty iterable without any need to manually reload more results from the API
 * pretty wrong values of API arguments are to raise an exception. This is done before the API gets queried and therefore helps to avoid to reach Twitters' limitations by obviously wrong API calls
-* pretty friendly to Python >= 2.6 **and** Python >= 3.2
+* pretty friendly to Python >= 2.7 **and** Python >= 3.2
 * pretty pretty to look at :)
 
 Installation
 ############
 
-TwitterSearch is also available on pypi and therefore can be installed via ``pip install TwitterSearch`` or ``easy_install TwitterSearch``. If you'd like to work with bleeding edge versions you're free to clone the ``devel`` branch.
+TwitterSearch is also available on pypi and therefore can be installed via ``pip install TwitterSearch`` or ``easy_install TwitterSearch``. If you'd like to work with bleeding edge versions you're free to clone the ``devel`` branch. A manual installation can be done doing by downloading or cloning the repository and running ``python setup.py install`` within the directory of it. 
 
-Example
-#######
-
-The library is still in development. However, if you would like to use it we prepared a small example about how to play around. 
+Search Twitter
+##############
 
 Everybody knows how much work it is to study at a university. So why not take a small shortcut? So in this example we assume we would like to find out how to copy a doctorate thesis in Germany. Let's have a look what the Twitter users have to say about `Mr Guttenberg <http://www.bbc.co.uk/news/world-europe-12608083>`_.
 
@@ -54,7 +58,6 @@ Everybody knows how much work it is to study at a university. So why not take a 
         tso = TwitterSearchOrder() # create a TwitterSearchOrder object
         tso.set_keywords(['Guttenberg', 'Doktorarbeit']) # let's define all words we would like to have a look for
         tso.set_language('de') # we want to see German tweets only
-        tso.set_count(7) # please dear Mr Twitter, only give us 7 results per page
         tso.set_include_entities(False) # and don't give us all those entity information
         
         # it's about time to create a TwitterSearch object with our secret tokens
@@ -79,6 +82,9 @@ The result will be a text looking similar to this one. But as you see unfortunat
     @enricozero tweeted: RT @viehdeo: Archiv: Comedy-Video: Oliver Welke parodiert “Mogelbaron” Dr. Guttenbergs Doktorarbeit (Schummel-cum-laude Pla... http://t. ...
     @schlagworte tweeted: "Erst letztens habe ich in meiner Doktorarbeit Guttenberg zitiert." Blockflöte des Todes: http://t.co/pCzIn429
     @nkoni7 tweeted: Familien sind auch betroffen wenn schlechte Politik gemacht wird. Nicht nur wenn Guttenberg seine Doktorarbeit fälscht ! #absolutemehrheit
+
+Access User Timelines
+#####################
 
 You're thinking that the global wisdom of Twitter is way too much for your needs? Well, let's query a timeline of a certain user than:
 
@@ -118,17 +124,7 @@ You may guess the resulting output, but here it is anyway:
 Interested in some more details?
 ################################
 
-If you'd like to get more information about how TwitterSearch works interally and how to use it with all it's possibilities have a look at the `latest documentation <https://twittersearch.readthedocs.org/en/latest/>`_.
-
-Like what you see?
-##################
-
-.. image:: https://api.flattr.com/button/flattr-badge-large.png
-    :target: https://flattr.com/submit/auto?user_id=ckoepp&url=https://github.com/ckoepp/TwitterSearch&title=TwitterSearch&language=&tags=github&category=software
-    :alt: Flattr this git repo
-
-If this pice of software helped you so much that you'd like to buy me a coffee as a "thank you" gesture - please don't hesitate to do so, it's appreciated!
-
+If you'd like to get more information about how TwitterSearch works internally and how to use it with all it's possibilities have a look at the `latest documentation <https://twittersearch.readthedocs.org/en/latest/>`_. A `changelog <./CHANGELOG.rst>`_ is also available within this repository. 
 
 License (MIT)
 #############
@@ -140,9 +136,3 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
-.. image:: https://d2weczhvl823v0.cloudfront.net/ckoepp/twittersearch/trend.png
-   :alt: Bitdeli badge
-   :target: https://bitdeli.com/free
-
