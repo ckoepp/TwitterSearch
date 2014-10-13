@@ -22,12 +22,14 @@ TwitterSearch
     :target: https://flattr.com/submit/auto?user_id=ckoepp&url=https://github.com/ckoepp/TwitterSearch&title=TwitterSearch&language=&tags=github&category=software
     :alt: Flattr this git repo
 
-
-.. warning:: 
-        As part of the process to gain fully `PEP-8 <http://legacy.python.org/dev/peps/pep-0008/>`_ compatibility all methods have been renamed in this and further versions. The code changes to support the PEP-8 naming scheme is trivial. Just change the old naming from ``setKeywords`` to the new one of ``set_keywords``. If you're unable apply those changes, you might consider using TwitterSearch versions < 1.0.0. Those versions will still be supported but will not be equipped with the newest functionalities. Using the `release tags <https://github.com/ckoepp/TwitterSearch/releases>`_ enables an easy way to navigate through all versions of this software.
-
-
 This library allows you easily create a search through the Twitter  API without having to know too much about the API details. Based on such a search you can even iterate throughout all tweets reachable via the Twitter Search API. There is an automatic reload of the next pages while using the iteration.
+
+Version 1.0.0 and newer
+#######################
+As part of the process to gain fully `PEP-8 <http://legacy.python.org/dev/peps/pep-0008/>`_ compatibility all methods have been renamed in this and further versions. 
+The code changes to support the PEP-8 naming scheme is trivial. Just change the old naming from ``setKeywords`` to the new one of ``set_keywords``. 
+If you're unable apply those changes, you might consider using TwitterSearch versions < 1.0.0. Those versions will still be supported but will not be equipped with the newest functionalities. 
+Using the `release tags <https://github.com/ckoepp/TwitterSearch/releases>`_ enables an easy way to navigate through all versions of this software.
 
 Reasons to use TwitterSearch
 ############################
@@ -71,7 +73,8 @@ Everybody knows how much work it is to study at a university. So why not take a 
             access_token_secret = '333444'
          )
         
-        for tweet in ts.search_tweets_iterable(tso): # this is where the fun actually starts :)
+         # this is where the fun actually starts :)
+        for tweet in ts.search_tweets_iterable(tso):
             print( '@%s tweeted: %s' % ( tweet['user']['screen_name'], tweet['text'] ) )
         
     except TwitterSearchException as e: # take care of all those ugly errors if there are some
@@ -98,15 +101,16 @@ You're thinking that the global wisdom of Twitter is way too much for your needs
     try:
         tuo = TwitterUserOrder('NeinQuarterly') # create a TwitterUserOrder
 
-        # it's about time ti create TwitterSearch object again
+        # it's about time to create TwitterSearch object again
         ts = TwitterSearch(
             consumer_key = 'aaabbb',
             consumer_secret = 'cccddd',
             access_token = '111222',
             access_token_secret = '333444'
         )
-
-        for tweet in ts.search_tweets_iterable(tuo): # start asking Twitter about the timeline
+        
+        # start asking Twitter about the timeline
+        for tweet in ts.search_tweets_iterable(tuo): 
             print( '@%s tweeted: %s' % ( tweet['user']['screen_name'], tweet['text'] ) )
 
     except TwitterSearchException as e: # catch all those ugly errors
