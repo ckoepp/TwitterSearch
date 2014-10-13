@@ -22,7 +22,10 @@ TwitterSearch
     :target: https://flattr.com/submit/auto?user_id=ckoepp&url=https://github.com/ckoepp/TwitterSearch&title=TwitterSearch&language=&tags=github&category=software
     :alt: Flattr this git repo
 
-.. warning:: As part of the process to gain fully `PEP-8 <http://legacy.python.org/dev/peps/pep-0008/>`_ compatibility all methods have been renamed in this and further versions. The code changes to support the PEP-8 naming scheme is trivial. Just change the old naming from ``setKeywords`` to the new one of ``set_keywords``. If you're unable apply those changes, you might consider using TwitterSearch versions < 1.0.0. Those versions will still be supported but will not be equipped with the newest functionalities. Using the `release tags <https://github.com/ckoepp/TwitterSearch/releases>`_ enables an easy way to navigate through all versions of this software.
+
+.. warning:: 
+        As part of the process to gain fully `PEP-8 <http://legacy.python.org/dev/peps/pep-0008/>`_ compatibility all methods have been renamed in this and further versions. The code changes to support the PEP-8 naming scheme is trivial. Just change the old naming from ``setKeywords`` to the new one of ``set_keywords``. If you're unable apply those changes, you might consider using TwitterSearch versions < 1.0.0. Those versions will still be supported but will not be equipped with the newest functionalities. Using the `release tags <https://github.com/ckoepp/TwitterSearch/releases>`_ enables an easy way to navigate through all versions of this software.
+
 
 This library allows you easily create a search through the Twitter  API without having to know too much about the API details. Based on such a search you can even iterate throughout all tweets reachable via the Twitter Search API. There is an automatic reload of the next pages while using the iteration.
 
