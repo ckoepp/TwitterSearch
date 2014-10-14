@@ -77,7 +77,10 @@ class TwitterSearch(object):
         self.__statistics = { 'queries' : 0, 'tweets' : 0 }
 
         # verify
-        self.authenticate( attr["verify"] if attr.get("verify", True) else True )
+        if "verify" in attr:
+            self.authenticate(attr["verify"])
+        else:
+            self.authenticate(True)
 
     def __repr__(self):
         """ Returns the class and its access token

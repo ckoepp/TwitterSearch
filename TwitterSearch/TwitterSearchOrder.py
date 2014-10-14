@@ -143,12 +143,13 @@ class TwitterSearchOrder(TwitterOrder):
         :param imperial_metric: Whether the radius is given in metric (kilometers) or imperial (miles) system. Default is ``True`` which relates to usage of the imperial kilometer metric
         :raises: TwitterSearchException
         """
+        
         if not isinstance(radius, (int) if py3k else (int, long) ) or radius <= 0:
            raise TwitterSearchException(1004)
 
         if isinstance(latitude, float) and isinstance(longitude, float):
-            if isinstance(metric, bool):
-                self.arguments.update( { 'geocode' : '%s,%s,%s%s' % (latitude, longitude, radius, 'km' if metric else 'mi') } )
+            if isinstance(imperial_metric, bool):
+                self.arguments.update( { 'geocode' : '%s,%s,%s%s' % (latitude, longitude, radius, 'km' if imperial_metric else 'mi') } )
             else:
                 raise TwitterSearchException(1005)
         else:
