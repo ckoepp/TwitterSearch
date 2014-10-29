@@ -109,8 +109,8 @@ class TwitterSearchTest(unittest.TestCase):
                             ]
                         )
 
-        expected_cnt = 190 # 100 in 0.log and 90 in 1.log
-        pages = 2 # 0.log and 1.log
+        expected_cnt = 190 # 100 in 0.log and 90 in 1.log (2.log is empty)
+        pages = 3 # 0.log, 1.log and 2.log
 
         ts = self.createTS()
         tuo = self.createTUO()
@@ -119,12 +119,12 @@ class TwitterSearchTest(unittest.TestCase):
         for tweet in ts.search_tweets_iterable(tuo):
             tweet_cnt += 1
 
-        #self.assertEqual( expected_cnt, tweet_cnt, "Wrong amount of tweets")
+        print(tweet_cnt)
 
         # test statistics
-        #stats = ts.get_statistics()
-        #self.assertEqual(stats['tweets'], tweet_cnt, "Tweet counter is NOT working correctly (%i should be %i)" % (stats['tweets'], tweet_cnt))
-        #self.assertEqual(stats['queries'], pages, "Query counter is NOT working correctly (%i should be %i)" % (stats['queries'], pages))
+        stats = ts.get_statistics()
+        #self.assertEqual(stats[1], tweet_cnt, "Tweet counter is NOT working correctly (%i should be %i)" % (stats[1], tweet_cnt))
+        self.assertEqual(stats[0], pages, "Query counter is NOT working correctly (%i should be %i)" % (stats[0], pages))
 
 
     @httpretty.activate
@@ -154,8 +154,8 @@ class TwitterSearchTest(unittest.TestCase):
 
         # test statistics
         stats = ts.get_statistics()
-        self.assertEqual(stats['tweets'], tweet_cnt, "Tweet counter is NOT working correctly (%i should be %i)" % (stats['tweets'], tweet_cnt))
-        self.assertEqual(stats['queries'], pages, "Query counter is NOT working correctly (%i should be %i)" % (stats['queries'], pages))
+        self.assertEqual(stats[1], tweet_cnt, "Tweet counter is NOT working correctly (%i should be %i)" % (stats[1], tweet_cnt))
+        self.assertEqual(stats[0], pages, "Query counter is NOT working correctly (%i should be %i)" % (stats[0], pages))
 
 
     @httpretty.activate

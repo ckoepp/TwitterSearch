@@ -23,9 +23,20 @@ except ImportError:
 
 class TwitterSearch(object):
     """
-    This class actually performs the calls to the
-    Twitter Search API (v1.1 only). It is configured using an
-    instance of TwitterSearchOrder and valid Twitter credentials.
+    This class contains the actual functionality of this library. 
+    It is responsible for correctly transmitting your data to the Twitter API 
+    (v1.1 only) and returning the results to your program afterwards.
+    It is configured using an implementation of :class:`TwitterOrder` 
+    along with valid Twitter credentials. Currently two different
+    implementations are usable: :class:`TwitterUserOrder` for retrieving the
+    timeline of a certain user and :class:`TwitterSearchOrder` for accessing
+    the Twitter Search API.
+
+    The methods ``next()``, ``__next__()`` and ``__iter__()`` are used 
+    during the iteration process. For more information about those 
+    methods please consult the `official Python
+    documentation
+    <http://docs.python.org/2/library/stdtypes.html#iterator-types>`_.
     """
 
     _base_url = 'https://api.twitter.com/1.1/'
@@ -67,12 +78,12 @@ class TwitterSearch(object):
         :param access_token: Access token (user related)
         :param access_token_secret: Access token secret (user related)
 
-        :param verify: A boolean variable to control verification of
-        access codes. Default value is ``True`` which
+        :param verify: A boolean variable to control verification of \
+        access codes. Default value is ``True`` which \
         raises an instant exception when using invalid credentials.
 
-        :param proxy: A string containing a HTTPS proxy
-        (e.g. ``my.proxy.com:8080``). Default value is ``None``
+        :param proxy: A string containing a HTTPS proxy \
+        (e.g. ``my.proxy.com:8080``). Default value is ``None`` \
         which means that no proxy is used at all.
         """
 
@@ -95,7 +106,7 @@ class TwitterSearch(object):
             self.__proxy = None
 
         # statistics
-        self.__statistics = {'queries': 0, 'tweets': 0}
+        self.__statistics = [0,0]
 
         # verify
         if "verify" in attr:
@@ -106,7 +117,7 @@ class TwitterSearch(object):
     def __repr__(self):
         """ Returns the class and its access token
 
-        :returns: A string represenation of this
+        :returns: A string represenation of this \
         class containing the class name and the used access token
         """
 
@@ -115,8 +126,8 @@ class TwitterSearch(object):
     def set_proxy(self, proxy):
         """ Sets a HTTPS proxy to query the Twitter API
 
-        :param proxy: A string of containing a HTTPS proxy
-        (e.g. ``my.proxy.com:8080``).
+        :param proxy: A string of containing a HTTPS proxy \
+        e.g. ``set_proxy("my.proxy.com:8080")``.
         :raises: TwitterSearchException
         """
 
@@ -126,20 +137,21 @@ class TwitterSearch(object):
             raise TwitterSearchException(1009)
 
     def get_proxy(self):
-        """ Returns the current proxy url or
-        None if no proxy is set
+        """ Returns the current proxy url or None if no proxy is set
 
-        :returns: A string containing the current HTTPS proxy
+        :returns: A string containing the current HTTPS proxy \
         (e.g. ``my.proxy.com:8080``) or ``None`` is no proxy is used
         """
 
         return self.__proxy
 
     def authenticate(self, verify=True):
-        """ Creates internal oauth handler needed for
-        queries to Twitter and verifies credentials if needed
+        """ Creates an authenticated and internal oauth2  handler needed for \
+        queries to Twitter and verifies credentials if needed.  If ``verify`` \
+        is true, it also checks if the user credentials are valid. \
+        The **default** value is *True*
 
-        :param verify: boolean variable to
+        :param verify: boolean variable to \
         directly check. Default value is ``True``
         """
 
@@ -155,10 +167,13 @@ class TwitterSearch(object):
             self.check_http_status(r.status_code)
 
     def check_http_status(self, http_status):
-        """ Checks a given http_status and returns an exception in case wrong status
+        """ Checks if given HTTP status code is within the list at \
+         ``TwitterSearch.exceptions`` and raises a ``TwitterSearchException`` \
+         if this is the case. Example usage: ``checkHTTPStatus(200)`` and \
+         ``checkHTTPStatus(401)``
 
-        :param http_status: Integer value of the HTTP status of the last query.
-        Invalid statuses will raise an exception.
+        :param http_status: Integer value of the HTTP status of the \
+        last query. Invalid statuses will raise an exception.
         :raises: TwitterSearchException
         """
 
@@ -167,9 +182,11 @@ class TwitterSearch(object):
                                          self.exceptions[http_status])
 
     def search_tweets_iterable(self, order):
-        """ Returns itself. Is called when using an instance of this class as iterable
+        """ Returns itself and queries the Twitter API. Is called when using \
+        an instance of this class as iterable. \
+        See `Basic usage <basic_usage.html>`_ for examples
 
-        :param order: An instance of TwitterOrder class
+        :param order: An instance of TwitterOrder class \
         (e.g. TwitterSearchOrder or TwitterUserOrder)
         :returns: Itself using ``self`` keyword
         """
@@ -194,8 +211,10 @@ class TwitterSearch(object):
             )['id'] - 1
 
     def send_search(self, url):
-        """ Sends a given query string to the Twitter Search API,
-        stores results internally and validates returned HTTP status code
+        """ Queries the Twitter API with a given query string and \
+        stores the results internally. Also validates returned HTTP status \
+        code and throws an exception in case of invalid HTTP states. \
+        Example usage ``sendSearch('?q=One+Two&count=100')``
 
         :param url: A string of the URL to send the query to
         :raises: TwitterSearchException
@@ -220,8 +239,8 @@ class TwitterSearch(object):
 
         # update statistics if everything worked fine so far
         seen_tweets = self.get_amount_of_tweets()
-        self.__statistics['queries'] += 1
-        self.__statistics['tweets'] += seen_tweets
+        self.__statistics[0] += 1
+        self.__statistics[1] += seen_tweets
 
         # if we've seen the correct amount of tweets there may be some more
         # using IDs to request more results
@@ -250,10 +269,13 @@ class TwitterSearch(object):
         return self.__response['meta'], self.__response['content']
 
     def search_tweets(self, order):
-        """ Creates an query string through a given TwitterSearchOrder instance
-        and takes care that it is send to the Twitter API
+        """ Creates an query string through a given TwitterSearchOrder \
+        instance and takes care that it is send to the Twitter API. \
+        This method queries the Twitter API **without** iterating or \
+        reloading of further results and returns response. \
+        See `Advanced usage <advanced_usage.html>`_ for example
 
-        :param order: A TwitterOrder instance.
+        :param order: A TwitterOrder instance. \
         Can be either TwitterSearchOrder or TwitterUserOrder
         :returns: Unmodified response as ``dict``.
         :raises: TwitterSearchException
@@ -271,10 +293,11 @@ class TwitterSearch(object):
         return self.__response
 
     def search_next_results(self):
-        """ Triggers the search for more results using the Twitter API.
-        Raises exception if no further results can be found
+        """ Triggers the search for more results using the Twitter API. \
+        Raises exception if no further results can be found. \
+        See `Advanced usage <advanced_usage.html>`_ for example
 
-        :returns: ``True`` if there are more results available
+        :returns: ``True`` if there are more results available \
         within the Twitter Search API
         :raises: TwitterSearchException
         """
@@ -288,9 +311,10 @@ class TwitterSearch(object):
         return True
 
     def get_metadata(self):
-        """ Returns all available meta data collected during last query
+        """ Returns all available meta data collected during last query. \
+        See `Advanced usage <advanced_usage.html>`_ for example
 
-        :returns: Available meta information about the
+        :returns: Available meta information about the \
         last query in form of a ``dict``
         :raises: TwitterSearchException
         """
@@ -300,7 +324,8 @@ class TwitterSearch(object):
         return self.__response['meta']
 
     def get_tweets(self):
-        """ Returns all available data from last query
+        """ Returns all available data from last query. \
+        See `Advanced usage <advanced_usage.html>`_ for example
 
         :returns: All tweets found using the last query as a ``dict``
         :raises: TwitterSearchException
@@ -311,14 +336,19 @@ class TwitterSearch(object):
         return self.__response['content']
 
     def get_statistics(self):
-        """ Returns dict with statistical information about
-        amount of queries and received tweets
+        """ Returns dict with statistical information about \
+        amount of queries and received tweets. Returns statistical values \
+        about the number of queries and the sum of all tweets received by \
+        this very instance of :class:`TwitterSearch`. \
+        Example usage: ``print("Queries done: %i. Tweets received: %i"
+        % ts.get_statistics())``
 
-        :returns: A ``dict`` with ``queries`` and
-        ``tweets`` keys containing integers.
+        :returns: A ``tuple`` with ``queries`` and \
+        ``tweets`` keys containing integers. E.g. ``(1,100)`` which stands \
+        for one query that contained one hundred tweets.
         """
 
-        return self.__statistics
+        return (self.__statistics[0], self.__statistics[1])
 
     def get_amount_of_tweets(self):
         """ Returns current amount of tweets available within this instance
@@ -335,10 +365,11 @@ class TwitterSearch(object):
                 else len(self.__response['content']))
 
     def set_supported_languages(self, order):
-        """ Loads currently supported languages from Twitter API
-        and sets them in a given TwitterSearchOrder instance
+        """ Loads currently supported languages from Twitter API \
+        and sets them in a given TwitterSearchOrder instance.
+        See `Advanced usage <advanced_usage.html>`_ for example
 
-        :param order: A TwitterOrder instance.
+        :param order: A TwitterOrder instance. \
         Can be either TwitterSearchOrder or TwitterUserOrder
         """
 

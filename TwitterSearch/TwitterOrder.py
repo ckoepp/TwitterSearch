@@ -13,8 +13,8 @@ class TwitterOrder(object):
     arguments = {}
 
     def create_search_url(self):
-        """ Generates an url-encoded query string from
-        stored key-values tuples. Has to be implemented
+        """ Generates an url-encoded query string from \
+        stored key-values tuples. Has to be implemented \
         within child classes
 
         :raises: NotImplementedError
@@ -23,7 +23,7 @@ class TwitterOrder(object):
         raise NotImplementedError
 
     def set_search_url(self, url):
-        """ Reads given query string and stores key-value tuples.
+        """ Reads given query string and stores key-value tuples. \
         Has to be implemented within child classes
 
         :param url: A string containing the twitter API endpoint URL
@@ -33,10 +33,10 @@ class TwitterOrder(object):
         raise NotImplementedError
 
     def set_since_id(self, twid):
-        """ Sets 'since_id' parameter used to return only results
+        """ Sets 'since_id' parameter used to return only results \
         with an ID greater than (that is, more recent than) the specified ID
 
-        :param twid: A valid tweet ID in either long (Py2k)
+        :param twid: A valid tweet ID in either long (Py2k) \
         or integer (Py2k + Py3k) format
         :raises: TwitterSearchException
         """
@@ -54,10 +54,10 @@ class TwitterOrder(object):
             raise TwitterSearchException(1004)
 
     def set_max_id(self, twid):
-        """ Sets 'max_id' parameter used to return only results
+        """ Sets 'max_id' parameter used to return only results \
         with an ID less than (that is, older than) or equal to the specified ID
 
-        :param twid: A valid tweet ID in either long (Py2k)
+        :param twid: A valid tweet ID in either long (Py2k) \
         or integer (Py2k + Py3k) format
         :raises: TwitterSearchException
         """
@@ -75,10 +75,10 @@ class TwitterOrder(object):
             raise TwitterSearchException(1004)
 
     def set_count(self, cnt):
-        """ Sets 'count' parameter used to define the number of
+        """ Sets 'count' parameter used to define the number of \
         tweets to return per page. Maximum and default value is 100
 
-        :param cnt: Integer containing the number of tweets per
+        :param cnt: Integer containing the number of tweets per \
         page within a range of 1 to 100
         :raises: TwitterSearchException
         """
@@ -89,7 +89,7 @@ class TwitterOrder(object):
             raise TwitterSearchException(1004)
 
     def set_include_entities(self, include):
-        """ Sets 'include entities' parameter to either
+        """ Sets 'include entities' parameter to either \
         include or exclude the entities node within the results
 
         :param include: Boolean to trigger the 'include entities' parameter

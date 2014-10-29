@@ -3,7 +3,10 @@
 
 class TwitterSearchException(Exception):
     """
-    This class handles all exceptions directly based on TwitterSearch.
+    This class is all about exceptions (surprise, surprise!).
+    All exception based directly on TwitterSearch will consist of
+    a **code** and a **message** describing the reason of the
+    exception shortly.
     """
 
     # HTTP status codes are stored in TwitterSearch.exceptions due

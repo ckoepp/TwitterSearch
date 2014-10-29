@@ -121,7 +121,8 @@ class TwitterSearchOrder(TwitterOrder):
         return self.url
 
     def set_language(self, lang):
-        """ Sets 'lang' parameter used to only fetch tweets within a certain language
+        """ Sets 'lang' parameter used to only fetch tweets within \
+        a certain language
 
         :param lang: A 2-letter language code string (ISO 6391 compatible)
         :raises: TwitterSearchException
@@ -133,7 +134,7 @@ class TwitterSearchOrder(TwitterOrder):
             raise TwitterSearchException(1002)
 
     def set_locale(self, lang):
-        """ Sets 'locale' parameter to specify the language
+        """ Sets 'locale' parameter to specify the language \
         of the query you are sending (only ja is currently effective)
 
         :param lang: A 2-letter language code string (ISO 6391 compatible)
@@ -146,15 +147,16 @@ class TwitterSearchOrder(TwitterOrder):
             raise TwitterSearchException(1002)
 
     def set_result_type(self, result_type):
-        """ Sets 'result_type' parameter to specify what type of search
-        results you would prefer to receive. The current default is “mixed.”
-        Valid values include:
-            - mixed: Include both popular and real time results
-            - recent: return only the most recent results
-            - popular: return only the most popular results
+        """ Sets 'result_type' parameter to specify what type of search \
+        results you would prefer to receive. The current default is “mixed.” \
+        Valid values include: \
+            - mixed: Include both popular and real time results \
+            - recent: return only the most recent results \
+            - popular: return only the most popular results \
 
-        :param result_type: A string containing one of
+        :param result_type: A string containing one of \
         the three valid result types
+
         :raises: TwitterSearchException
         """
 
@@ -165,19 +167,20 @@ class TwitterSearchOrder(TwitterOrder):
             raise TwitterSearchException(1003)
 
     def set_geocode(self, latitude, longitude, radius, imperial_metric=True):
-        """ Sets geolocation parameters to return only tweets
-        by users located within a given radius of the given latitude/longitude.
-        The location is preferentially taking from the Geotagging API,
+        """ Sets geolocation parameters to return only tweets by users \
+        located within a given radius of the given latitude/longitude. \
+        The location is preferentially taking from the Geotagging API, \
         but will fall back to their Twitter profile.
 
         :param latitude: A integer or long describing the latitude
         :param longitude: A integer or long describing the longitude
         :param radius: A integer or long describing the radius
-        :param imperial_metric: Whether the radius is given in metric
-        (kilometers) or imperial (miles) system.
-        Default is ``True`` which relates to usage of the
+        :param imperial_metric: Whether the radius is given in metric \
+        (kilometers) or imperial (miles) system. \
+        Default is ``True`` which relates to usage of the \
         imperial kilometer metric
         :raises: TwitterSearchException
+
         """
 
         if not isinstance(radius, int if py3k else (int, long)) or radius <= 0:
@@ -197,7 +200,7 @@ class TwitterSearchOrder(TwitterOrder):
             raise TwitterSearchException(1004)
 
     def set_callback(self, func):
-        """ Sets 'callback' parameter. If supplied, the response
+        """ Sets 'callback' parameter. If supplied, the response \
         will use the JSONP format with a callback of the given name
 
         :param func: A string containing the name of the callback function
@@ -210,7 +213,7 @@ class TwitterSearchOrder(TwitterOrder):
             raise TwitterSearchException(1006)
 
     def set_until(self, date):
-        """ Sets 'until' parameter used to return
+        """ Sets 'until' parameter used to return \
         only tweets generated before the given date
 
         :param date: A datetime instance

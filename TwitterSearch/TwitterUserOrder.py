@@ -24,7 +24,7 @@ class TwitterUserOrder(TwitterOrder):
     def __init__(self, user):
         """ Argument user can be either a ID or screen-name of a user
 
-        :param user: Either string or integer/long value
+        :param user: Either string or integer/long value \
         of twitter user to query time-line from
         :raises: TwitterSearchException
         """
@@ -53,8 +53,8 @@ class TwitterUserOrder(TwitterOrder):
                 raise TwitterSearchException(1017)
 
     def set_trim_user(self, trim):
-        """ Sets 'trim_user' parameter. When set to True,
-        each tweet returned in a timeline will include a
+        """ Sets 'trim_user' parameter. When set to True, \
+        each tweet returned in a timeline will include a \
         user object including only the status authors numerical ID
 
         :param trim: Boolean triggering the usage of the parameter
@@ -66,7 +66,7 @@ class TwitterUserOrder(TwitterOrder):
         self.arguments.update({'trim_user': 'true' if trim else 'false'})
 
     def set_include_rts(self, rts):
-        """ Sets 'include_rts' parameter. When set to False,
+        """ Sets 'include_rts' parameter. When set to False, \
         the timeline will strip any native retweets from the returned timeline
 
         :param rts: Boolean triggering the usage of the parameter
@@ -78,7 +78,7 @@ class TwitterUserOrder(TwitterOrder):
         self.arguments.update({'include_rts': 'true' if rts else 'false'})
 
     def set_exclude_replies(self, exclude):
-        """ Sets 'exclude_replies' parameter used to
+        """ Sets 'exclude_replies' parameter used to \
         prevent replies from appearing in the returned timeline
 
         :param exclude: Boolean triggering the usage of the parameter
@@ -92,9 +92,9 @@ class TwitterUserOrder(TwitterOrder):
                                                   else 'false'})
 
     def set_contributor_details(self, contdetails):
-        """ Sets 'contributor_details' parameter used to enhance the
-        contributors element of the status response to include
-        the screen_name of the contributor. By default only
+        """ Sets 'contributor_details' parameter used to enhance the \
+        contributors element of the status response to include \
+        the screen_name of the contributor. By default only \
         the user_id of the contributor is included
 
         :param contdetails: Boolean triggering the usage of the parameter

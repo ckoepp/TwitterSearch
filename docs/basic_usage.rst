@@ -24,7 +24,34 @@ In most cases you probably just like to iterate through all available tweets as 
         except TwitterSearchException as e: # take care of all those ugly errors if there are some
             print(e)
 
-Please note that is a working example for both, Python2 **and** Python3.
+If you're into the access of a timeline of a certain user, you can do this by using the same pattern:
+
+.. code-block:: python
+
+  from TwitterSearch import *
+
+  try:
+      # create a TwitterUserOrder for user named 'NeinQuarterly'
+      tuo = TwitterUserOrder('NeinQuarterly') # is equal to TwitterUserOrder(458966079)
+
+      # it's about time to create TwitterSearch object again
+      ts = TwitterSearch(
+          consumer_key = 'aaabbb',
+          consumer_secret = 'cccddd',
+          access_token = '111222',
+          access_token_secret = '333444'
+      )
+
+      # start asking Twitter about the timeline
+      for tweet in ts.search_tweets_iterable(tuo):
+          print('@%s tweeted: %s' % (tweet['user']['screen_name'], tweet['text']))
+
+  except TwitterSearchException as e: # catch all those ugly errors
+      print(e)
+
+
+Please note those code snippes are already working examples executable in both, Python2 **and** Python3.
+
 
 Accessible information
 ----------------------
@@ -134,3 +161,9 @@ An example of how such a tweet looks like is the following dict:
           'utc_offset': None,
           'verified': False}}
 
+Architecture
+------------
+
+TwitterSearch consists of four classes: `TwitterSearch <TwitterSearch.html#module-TwitterSearch.TwitterSearch>`_, `TwitterSearchOrder <TwitterSearch.html#module-TwitterSearch.TwitterSearchOrder>`_, `TwitterUserOrder <TwitterSearch.html#module-TwitterSearch.TwitterUserOrder>`_ and `TwitterSearchException <TwitterSearch.html#module-TwitterSearch.TwitterSearchException>`_.
+
+To not repeat certain code-fragments the class  `TwitterOrder <TwitterSearch.html#module-TwitterSearch.TwitterOrder>`_ is also available. However, this class is rarely used directly and only contains few basic methods.
