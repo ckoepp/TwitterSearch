@@ -180,8 +180,7 @@ class TwitterSearchOrder(TwitterOrder):
         :raises: TwitterSearchException
         """
 
-        if not isinstance(radius, (int) if py3k else (int, long))
-        or radius <= 0:
+        if not isinstance(radius, int if py3k else (int, long)) or radius <= 0:
             raise TwitterSearchException(1004)
 
         if isinstance(latitude, float) and isinstance(longitude, float):
