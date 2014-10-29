@@ -31,5 +31,4 @@ nosetests.xml
 *.mo
 
 # documentation
-docs/modules.rst
 docs/_build
