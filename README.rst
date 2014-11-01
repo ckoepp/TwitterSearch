@@ -136,7 +136,7 @@ Apart from this issue, four other API changes were introduced with version 1.0.0
 
 In total those changes can be done quickly without browsing the documentation.
 
-If you're unable apply those changes, you might consider using TwitterSearch versions < 1.0.0. Those will stay available through pypi and therefore will be installable in the future using the common installation methods like ``pip install -I TwitterSearch==0.7.8``.'Using the `release tags <https://github.com/ckoepp/TwitterSearch/releases>`_ is another easy way to navigate through all versions of this library.
+If you're unable apply those changes, you might consider using TwitterSearch versions < 1.0.0. Those will stay available through pypi and therefore will be installable in the future using the common installation methods like ``pip install -I TwitterSearch==0.78.6``.'Using the `release tags <https://github.com/ckoepp/TwitterSearch/releases>`_ is another easy way to navigate through all versions of this library.
 
 License (MIT)
 #############
