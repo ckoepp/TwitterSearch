@@ -33,6 +33,7 @@ Table of contents
    advanced_usage_ts
    advanced_usage_tse
    advanced_usage_tso
+   advanced_usage_tuo
 
 Indices and tables
 ==================

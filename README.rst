@@ -18,10 +18,6 @@ TwitterSearch
      :target: https://coveralls.io/r/ckoepp/TwitterSearch?branch=master
      :alt: Coverage
 
-.. image:: https://api.flattr.com/button/flattr-badge-large.png
-    :target: https://flattr.com/submit/auto?user_id=ckoepp&url=https://github.com/ckoepp/TwitterSearch&title=TwitterSearch&language=&tags=github&category=software
-    :alt: Flattr this git repo
-
 This library allows you easily create a search through the Twitter  API without having to know too much about the API details. Based on such a search you can even iterate throughout all tweets reachable via the Twitter Search API. There is an automatic reload of the next pages while using the iteration.
 
 Version 1.0.0 and newer

@@ -4,7 +4,7 @@ Advanced usage: The :class:`TwitterSearchOrder` class
 
 This class mainly acts as a plain container for configuration all parameters currently available by the Twitter Search API. There are several parameters which can easily be set and modified by methods in :class:`TwitterSearchOrder`. 
 
-The only parameter with a default value is ``count`` with *100*. This is because it is the maximum of tweets returned by the Twitter API and in most cases you'd like to reduce traffic and the amount of queries, so it makes sense to set the biggest possible value by default.
+The only parameter with a default value is ``count`` with *100*. This is because it is the maximum of tweets returned by this very Twitter API endpoint. In most cases you'd like to reduce traffic and the amount of queries, so it makes sense to set the biggest possible value by default. Please note that this endpoint has a different maximum size than the one used in :class:`TwitterUserOrder`.
 
 Be aware that some parameters *can be* ignored by Twitter. For example currently not every language is detectable by the Search API. TwitterSearch is only responsible for transmitting values according to the Twitter documentation.
 
@@ -34,7 +34,8 @@ include_entities *optional*     ``set_include_etities(<bool,int>)``             
 callback         *optional*     ``set_callback(<string>)``                                                                        ``set_callback('myMethod')``
 ================ ============== ================================================================================================= =============================================================
 
-If you're not familiar with the meaning of the parameters, please have a look at the `Twitter Search API documentation <https://dev.twitter.com/docs/api/1.1/get/search/tweets>`_. Most parameter are self-describing anyway.
+If you're not familiar with the meaning of the parameters, please have a look at the `Twitter Search API documentation <https://dev.twitter.com/docs/api/1.1/get/search/tweets>`_. Most parameter are self-describing anyway. 
+
 
 Advanced usage examples
 -----------------------
@@ -59,7 +60,7 @@ You may want to use :class:`TwitterSearchOrder` for just generating a valid Twit
 
 You'll receive ``?q=One+Two+myKeyword&count=100&lang=nl&locale=ja`` as result. Now you are free to use this string for manually querying Twitter (or any other API using the same parameter as Twitter does).
 
-Maybe you would like to create another :class:`TwitterSearchOrder` instance with a slightly other URL.
+Maybe you would like to create another :class:`TwitterSearchOrder` instance with a slightly different URL.
 
 .. code-block:: python
   
