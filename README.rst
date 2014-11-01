@@ -132,7 +132,7 @@ Apart from this issue, four other API changes were introduced with version 1.0.0
 * simplified proxy functionality (no usage of dicts but plain strings as only HTTPS proxies can be supported anyway)
 * simplified geo-code parameter (``TwitterSearchOrder.set_geocode(...,metric=True)`` renamed to ``set_geocode(...,imperial_metric=True)``)
 * simplified ``TwitterSearch.get_statistics()`` from dict to tuple style (``{'queries':<int>, 'tweets':<int>}`` to ``(<int>,<int>)``)
-* additional feature: timelines of users can now be accessed using the new class :class:`TwitterUserOrder`
+* additional feature: timelines of users can now be accessed using the new class ``TwitterUserOrder``
 
 In total those changes can be done quickly without browsing the documentation.
 
