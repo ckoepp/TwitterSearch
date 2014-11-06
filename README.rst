@@ -38,7 +38,7 @@ More than that, TwitterSearch is:
 Installation
 ############
 
-TwitterSearch is also available on pypi and therefore can be installed via ``pip install TwitterSearch`` or ``easy_install TwitterSearch``. If you'd like to work with bleeding edge versions you're free to clone the ``devel`` branch. A manual installation can be done doing by downloading or cloning the repository and running ``python setup.py install`` within the directory of it. 
+TwitterSearch is also available on pypi and therefore can be installed via ``pip install TwitterSearch`` or ``easy_install TwitterSearch``. If you'd like to work with bleeding edge versions you're free to clone the ``devel`` branch. A manual installation can be done doing by downloading or cloning the repository and running ``python setup.py install``.
 
 Search Twitter
 ##############
@@ -120,12 +120,12 @@ You may guess the resulting output, but here it is anyway:
 Interested in some more details?
 ################################
 
-If you'd like to get more information about how TwitterSearch works internally and how to use it with all it's possibilities have a look at the `latest documentation <https://twittersearch.readthedocs.org/en/latest/>`_. A `changelog <./CHANGELOG.rst>`_ is also available within this repository.
+If you'd like to get more information about how TwitterSearch works internally and how to use it with all it's possibilities have a look at the `latest documentation <https://twittersearch.readthedocs.org/en/latest/>`_. A `changelog <https://github.com/ckoepp/TwitterSearch/blob/master/CHANGELOG.rst>`_ is also available within this repository.
 
 Updating to 1.0.0 and newer
 ###########################
 
-If you're upgrading from a version < 1.0.0 be aware that the API changed! As part of the process to gain fully `PEP-8 <http://legacy.python.org/dev/peps/pep-0008/>`_ compatibility all methods had to be renamed. The code changes to support the `PEP-8 naming scheme <http://legacy.python.org/dev/peps/pep-0008/#function-names>`_ is trivial. Just change the old method naming scheme from ``setKeywords(...)`` to the new one of ``set_keywords(...)``.
+If you're upgrading from a version **< 1.0.0** be aware that the API changed! As part of the process to obtain `PEP-8 <http://legacy.python.org/dev/peps/pep-0008/>`_ compatibility all methods had to be renamed. The code changes to support the PEP-8 naming scheme are trivial. Just change the old method naming scheme from ``setKeywords(...)`` to the new one of ``set_keywords(...)``.
 
 Apart from this issue, four other API changes were introduced with version 1.0.0:
 
@@ -136,7 +136,7 @@ Apart from this issue, four other API changes were introduced with version 1.0.0
 
 In total those changes can be done quickly without browsing the documentation.
 
-If you're unable apply those changes, you might consider using TwitterSearch versions < 1.0.0. Those will stay available through pypi and therefore will be installable in the future using the common installation methods like ``pip install -I TwitterSearch==0.78.6``.'Using the `release tags <https://github.com/ckoepp/TwitterSearch/releases>`_ is another easy way to navigate through all versions of this library.
+If you're unable apply those changes, you might consider using TwitterSearch versions < 1.0.0. Those will stay available through pypi and therefore will be installable in the future using the common installation methods like ``pip install -I TwitterSearch==0.78.6``. Using the `release tags <https://github.com/ckoepp/TwitterSearch/releases>`_ is another easy way to navigate through all versions of this library.
 
 License (MIT)
 #############
