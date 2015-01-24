@@ -73,7 +73,7 @@ Maybe you would like to create another :class:`TwitterSearchOrder` instance with
       tso.set_keywords(['One','Two'])
       tso.add_keyword('myKeyword')
   
-      querystr = tso.createSearchURL()
+      querystr = tso.create_search_url()
   
       # create a new TwitterSearchOrder based on the old query string and work with it
       tso2 = TwitterSearchOrder()
