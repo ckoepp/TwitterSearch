@@ -2,7 +2,7 @@
 Advanced usage: The :class:`TwitterSearchException` class
 =========================================================
 
-You can also print an exception like a string which will result in ``Error <TwitterSearchException.code>: <TwitterSearchException.message>``. For those new to Python, this can be easily done like this:
+It is possible to print an *TwitterSearch* exception. Doing so will result in strings of the type ``Error <TwitterSearchException.code>: <TwitterSearchException.message>``. For those new to Python, the standard way to print an exceptions is:
 
 .. code-block:: python
 
@@ -12,12 +12,12 @@ You can also print an exception like a string which will result in ``Error <Twit
 List of exceptions
 ------------------
 
-There are *two* different kinds of exceptions. Those based on the HTTP status of the query to the Twitter API and those based on misconfiguration of the library, for example by setting odd parameters or trying to access tweets without querying the API before.
+There are *two* different kinds of exceptions in *TwitterSearch*. The first kind is based on the HTTP status of the query to the Twitter API while the second type of exceptions are based on misconfiguration of the library. Misconfiguration can be performed, for example, by setting odd parameters or trying to access tweets without querying the API before.
 
 Library based exceptions
 ++++++++++++++++++++++++
 
-All exceptions based on issues within TwitterSearch do have ``TwitterSearchException.code >= 1000``
+All exceptions based on issues within TwitterSearch do have ``TwitterSearchException.code >= 1000``.
 
 ====== ======================================
 *Code* *Message*                             
@@ -60,7 +60,7 @@ All exceptions based on issues within TwitterSearch do have ``TwitterSearchExcep
 HTTP based exceptions
 +++++++++++++++++++++
 
-Exceptions based on the `HTTP status response <https://dev.twitter.com/docs/error-codes-responses>`_ of the Twitter API are ``TwitterSearchException.code < 1000``. Note that the ``code`` attribute is exactly the HTTP status value returned to TwitterSearch. All those exceptions are raised in :class:`TwitterSearch` only.
+Exceptions based on the `HTTP status response <https://dev.twitter.com/docs/error-codes-responses>`_ of the Twitter API are ``TwitterSearchException.code < 1000``. Note that the ``code`` attribute is exactly the HTTP status value returned to *TwitterSearch* from the Twitter API. All those exceptions are raised in :class:`TwitterSearch` only.
 
 ====== ======================================================================================================================
 *Code* *Message*        
@@ -81,7 +81,7 @@ Exceptions based on the `HTTP status response <https://dev.twitter.com/docs/erro
 ------ ----------------------------------------------------------------------------------------------------------------------
 422    Unprocessable Entity: Image unable to be processed
 ------ ----------------------------------------------------------------------------------------------------------------------
-429      Too Many Requests: Request cannot be served due to the application's rate limit having been exhausted for the resource
+429    Too Many Requests: Request cannot be served due to the application's rate limit having been exhausted for the resource
 ------ ----------------------------------------------------------------------------------------------------------------------
 500    Internal Server Error: Something is broken
 ------ ----------------------------------------------------------------------------------------------------------------------
@@ -95,9 +95,9 @@ Exceptions based on the `HTTP status response <https://dev.twitter.com/docs/erro
 Advanced exception usage
 ------------------------
 
-Maybe there is an odd reason why you don't want TwitterSearch to raise an exception when a 404 HTTP status is returned by Twitter. Additional you'd like to raise an exception when a 200 HTTP status is returned. Maybe you would like to test your firewall by doing complex HTTP queries. Okay, don't ask me about use-cases, let's just assume there is some strange reason to do so.
+The HTTP exceptions are somehow configurable. Imagine  there is a reason why you don't like TwitterSearch to raise an exception when a 404 HTTP status is returned by the Twitter API. Instead you'd like to raise an exception when a 200 HTTP status is returned. Maybe you would like to test your firewall by doing complex HTTP queries. Anyway, let's just assume there is some strange reason to do so...
 
-Since TwitterSearch is designed to be used in academic and highly individual scenarios it is perfectly possible to do such crazy stuff without much trouble.
+Since TwitterSearch is designed to be used in academic and highly individual scenarios it is perfectly possible to do such crazy stuff without too much of trouble.
 
 .. code-block:: python
 
@@ -131,4 +131,4 @@ Since TwitterSearch is designed to be used in academic and highly individual sce
       else:
         print("Regular exception: %i - %s" % (e.code, e.message))
 
-If your credentials are correct you will receive the output ``HTTP status based exception: 200 - It worked - damn it!``
+If your credentials are correct you will receive the output ``HTTP status based exception: 200 - It worked - damn it!``.

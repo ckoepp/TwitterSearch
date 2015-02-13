@@ -50,7 +50,7 @@ If you're into the access of a timeline of a certain user, you can do this by us
       print(e)
 
 
-Please note those code snippes are already working examples executable in both, Python2 **and** Python3.
+Please note those code snippets are already working examples executable in both, Python2 **and** Python3.
 
 
 Accessible information

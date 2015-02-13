@@ -24,6 +24,7 @@ If you're new to Python take a look at the following example:
 
     ts2 = TwitterSearch('aaabbb', 'cccddd', '111222', '333444', verify=True, proxy=None)
 
+
 Authentication and verification
 -------------------------------
 
@@ -35,6 +36,76 @@ Proxy usage
 -----------
 
 To use a HTTPS proxy at initialization of the :class:`TwitterSearch` class, an addition argument named ``proxy='some.proxy:888'`` can be used. Otherwise the authentication will fail if the client has no direct access to the Twitter API.
+
+Delaying requests to avoid rate-limitation
+------------------------------------------
+
+Sometimes there is the need to build in certain delays in order to avoid being `rate-limited <https://dev.twitter.com/rest/public/rate-limiting>`_ by Twitter. This is not exactly build in into the library as it is pretty easy to do it manually with the build-in module ``time`` of Python.
+
+.. code-block:: python
+
+    from TwitterSearch import *
+    import time
+
+    try:
+        tso = TwitterSearchOrder()
+        tso.set_keywords(['foo', 'bar'])
+        
+        ts = TwitterSearch(
+            consumer_key = 'aaabbb',
+            consumer_secret = 'cccddd',
+            access_token = '111222',
+            access_token_secret = '333444'
+         )
+        
+
+        counter = 0 # rate-limit counter
+        sleep_at = 123 # enforce delay after receiving 123 tweets
+        sleep_for = 60.5 # sleep for 60.5 seconds (just to show that floats also work here)
+
+        for tweet in ts.search_tweets_iterable(tso):
+            print( '@%s tweeted: %s' % ( tweet['user']['screen_name'], tweet['text'] ) )
+
+            counter += 1 # increase counter
+            if counter >= sleep_at: # it's time to apply the delay
+                counter = 0
+                time.sleep(sleep_for) # sleep for n secs
+        
+    except TwitterSearchException as e:
+        print(e)
+
+As you might know there is a certain amount of `meta-data <#access-meta-data>`_ available when using *TwitterSearch*. Advanced users might want to rely on the ``get_statistics()`` method of the :class:`TwitterSearch` class directly in order to avoid using an own counter. This function returns a tuple of two integers. The first integer represents the amount of queries sent to Twitter so far, while the second one is an automatically increasing counter of the so far received tweets during those queries. Thus, an example taking those two meta-information into account could look like:
+
+.. code-block:: python
+
+    from TwitterSearch import *
+    import time
+
+    try:
+        tso = TwitterSearchOrder()
+        tso.set_keywords(['foo', 'bar'])
+        
+        ts = TwitterSearch(
+            consumer_key = 'aaabbb',
+            consumer_secret = 'cccddd',
+            access_token = '111222',
+            access_token_secret = '333444'
+         )
+        
+        sleep_for = 60 # sleep for 60 seconds
+        last_amount_of_queries = 0 # used to detect when new queries are done
+
+        for tweet in ts.search_tweets_iterable(tso):
+            print( '@%s tweeted: %s' % ( tweet['user']['screen_name'], tweet['text'] ) )
+
+            current_amount_of_queries = ts.get_statistics()[0]
+            if not last_amount_of_queries == current_amount_of_queries:
+                last_amount_of_queries = current_amount_of_queries
+                time.sleep(sleep_for)
+        
+    except TwitterSearchException as e:
+        print(e)
+
 
 Returned tweets
 ---------------
@@ -201,7 +272,7 @@ Example:
 
 Be **careful** about those data as it contains sensible data as you can see in ``get_metadata()['content-location']``. Do **NOT** save or output those information to insecure environments!
 
-If you are interested in the amount of queries that this library did automatically on your behalf you can access those information easy by calling ``get_statistcs()``. A trivial example use-case could be to print out those informations as part of a debugging or logging facility: ``print("Queries done: %i. Tweets received: %i" % ts.get_statistics())``
+If you are interested in the amount of queries that this library did automatically on your behalf you can access those information easily by calling ``get_statistcs()``. A trivial example use-case could be to print out those informations as part of a debugging or logging facility: ``print("Queries done: %i. Tweets received: %i" % ts.get_statistics())``
 
 
 TwitterSearch without automatic iteration
