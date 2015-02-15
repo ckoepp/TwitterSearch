@@ -1,7 +1,6 @@
 from TwitterSearch import *
 
 import unittest
-from unittest.mock import Mock
 import httpretty
 
 class TwitterSearchTest(unittest.TestCase):
@@ -129,6 +128,10 @@ class TwitterSearchTest(unittest.TestCase):
     def test_TS_search_tweets_iterable_callback(self):
         """ Tests TwitterSearch.search_tweets_iterable(callback) by using TwitterSearchOrder class """
 
+        import sys
+        if sys.version_info[0] < 3:
+            self.assertTrue(True) # Dummy test for py2 doesn't have Mock class
+
         httpretty.register_uri(httpretty.GET, self.search_url,
                         responses=[
                             httpretty.Response(streaming=True, status=200, content_type='text/json', body=self.apiAnsweringMachine('tests/mock-data/search/0.log')),
@@ -142,6 +145,8 @@ class TwitterSearchTest(unittest.TestCase):
         tso = self.createTSO()
         tso.set_count(4)
         ts = self.createTS()
+
+        from unittest.mock import Mock
 
         mock = Mock()
         for tweet in ts.search_tweets_iterable(tso, callback=mock):
