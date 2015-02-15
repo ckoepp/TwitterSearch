@@ -131,6 +131,7 @@ class TwitterSearchTest(unittest.TestCase):
         import sys
         if sys.version_info[0] < 3:
             self.assertTrue(True) # Dummy test for py2 doesn't have Mock class
+            return
 
         httpretty.register_uri(httpretty.GET, self.search_url,
                         responses=[
