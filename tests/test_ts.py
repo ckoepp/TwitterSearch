@@ -1,6 +1,7 @@
 from TwitterSearch import *
 
 import unittest
+from unittest.mock import Mock
 import httpretty
 
 class TwitterSearchTest(unittest.TestCase):
@@ -125,8 +126,8 @@ class TwitterSearchTest(unittest.TestCase):
         self.assertEqual(stats[0], pages, "Query counter is NOT working correctly (%i should be %i)" % (stats[0], pages))
 
     @httpretty.activate
-    def test_TS_search_tweets_iterable_callable(self):
-        """ Tests TwitterSearch.search_tweets_iterable(callable) and .get_statistics() by using TwitterSearchOrder class """
+    def test_TS_search_tweets_iterable_callback(self):
+        """ Tests TwitterSearch.search_tweets_iterable(callback) by using TwitterSearchOrder class """
 
         httpretty.register_uri(httpretty.GET, self.search_url,
                         responses=[
@@ -137,26 +138,17 @@ class TwitterSearchTest(unittest.TestCase):
                             ]
                         )
 
-        cnt = 4
-        pages = 4 # 4 pages with 4*4-1 tweets in total
+        pages = 4
         tso = self.createTSO()
-        tso.set_count(cnt)
+        tso.set_count(4)
         ts = self.createTS()
 
-        def test_closure(ts):
-            ts.__statistics[0] += 1
-            ts.__statistics[0] += 1
+        mock = Mock()
+        for tweet in ts.search_tweets_iterable(tso, callback=mock):
+            mock.assert_called_with(ts)
 
-        tweet_cnt = 0
-        for tweet in ts.search_tweets_iterable(tso, callback=test_closure):
-            tweet_cnt += 1
-
-        self.assertEqual( (cnt*4*2-1), tweet_cnt, "Wrong amount of tweets")
-
-        # test statistics
-        stats = ts.get_statistics()
-        self.assertEqual(stats[1], tweet_cnt, "Tweet counter is NOT working correctly (%i should be %i)" % (stats[1], tweet_cnt*2))
-        self.assertEqual(stats[0], pages, "Query counter is NOT working correctly (%i should be %i)" % (stats[0], pages*2))
+        times = len(mock.call_args_list)
+        self.assertEqual(pages, times, "Callback function was NOT called 4 times but %i times" % times)
 
     @httpretty.activate
     def test_TS_search_tweets_iterable(self):
