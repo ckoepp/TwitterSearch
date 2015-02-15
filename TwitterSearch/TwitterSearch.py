@@ -108,6 +108,9 @@ class TwitterSearch(object):
         # statistics
         self.__statistics = [0,0]
 
+        # callback
+        self.__callback = None
+
         # verify
         if "verify" in attr:
             self.authenticate(attr["verify"])
@@ -181,15 +184,22 @@ class TwitterSearch(object):
             raise TwitterSearchException(http_status,
                                          self.exceptions[http_status])
 
-    def search_tweets_iterable(self, order):
+    def search_tweets_iterable(self, order, callback=None):
         """ Returns itself and queries the Twitter API. Is called when using \
         an instance of this class as iterable. \
         See `Basic usage <basic_usage.html>`_ for examples
 
         :param order: An instance of TwitterOrder class \
         (e.g. TwitterSearchOrder or TwitterUserOrder)
+        :param callback: Function to be called after a new page \
+        is queried from the Twitter API
         :returns: Itself using ``self`` keyword
         """
+
+        if callback:
+            if not callable(callback):
+                raise TwitterSearchException(1018)
+            self.__callback = callback
 
         self.search_tweets(order)
         return self
@@ -241,6 +251,10 @@ class TwitterSearch(object):
         seen_tweets = self.get_amount_of_tweets()
         self.__statistics[0] += 1
         self.__statistics[1] += seen_tweets
+
+        # call callback if available
+        if self.__callback:
+            self.__callback(self)
 
         # if we've seen the correct amount of tweets there may be some more
         # using IDs to request more results
