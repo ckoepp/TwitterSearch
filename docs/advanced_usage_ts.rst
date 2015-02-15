@@ -37,10 +37,10 @@ Proxy usage
 
 To use a HTTPS proxy at initialization of the :class:`TwitterSearch` class, an addition argument named ``proxy='some.proxy:888'`` can be used. Otherwise the authentication will fail if the client has no direct access to the Twitter API.
 
-Delaying requests to avoid rate-limitation
+Avoid rate-limitation with callback method
 ------------------------------------------
 
-Sometimes there is the need to build in certain delays in order to avoid being `rate-limited <https://dev.twitter.com/rest/public/rate-limiting>`_ by Twitter. This is not exactly build in into the library as it is pretty easy to do it manually with the build-in module ``time`` of Python.
+Sometimes there is the need to build in certain delays in order to avoid being `rate-limited <https://dev.twitter.com/rest/public/rate-limiting>`_ by Twitter. One way to add an artificial delay to your queries is to use the build-in module ``time`` of Python in combination with a callback method. The following example demonstrates how to use the ``callback`` argument of the ``TwitterSearch.search_tweets_iterable()`` method properly. In this particular case every 5th call to the Twitter API activates a delay of 60 seconds.
 
 .. code-block:: python
 
@@ -58,23 +58,20 @@ Sometimes there is the need to build in certain delays in order to avoid being `
             access_token_secret = '333444'
          )
         
+        def my_callback_closure(current_ts_instance): # accepts ONE argument: an instance of TwitterSearch
+            queries, tweets_seen = current_ts_instance.get_statistics()
+            if queries > 0 and (queries % 5) == 0: # trigger delay every 5th query
+                time.sleep(60) # sleep for 60 seconds
 
-        counter = 0 # rate-limit counter
-        sleep_at = 123 # enforce delay after receiving 123 tweets
-        sleep_for = 60.5 # sleep for 60.5 seconds (just to show that floats also work here)
-
-        for tweet in ts.search_tweets_iterable(tso):
+        for tweet in ts.search_tweets_iterable(tso, callback=my_callback_closure):
             print( '@%s tweeted: %s' % ( tweet['user']['screen_name'], tweet['text'] ) )
-
-            counter += 1 # increase counter
-            if counter >= sleep_at: # it's time to apply the delay
-                counter = 0
-                time.sleep(sleep_for) # sleep for n secs
         
     except TwitterSearchException as e:
         print(e)
 
-As you might know there is a certain amount of `meta-data <#access-meta-data>`_ available when using *TwitterSearch*. Advanced users might want to rely on the ``get_statistics()`` method of the :class:`TwitterSearch` class directly in order to avoid using an own counter. This function returns a tuple of two integers. The first integer represents the amount of queries sent to Twitter so far, while the second one is an automatically increasing counter of the so far received tweets during those queries. Thus, an example taking those two meta-information into account could look like:
+Remember that the callback is called every time a query to the Twitter API is performed. It's in your responsibility to make sure that your code doesn't have any unwanted side-effects or throws unintended exceptions. Also, every closure submitted via the ``callback`` argument is called with a the current instance of :class:`TwitterSearch`. Performing a delay is just one way to use this callback pattern.
+
+As you might know there is a certain amount of `meta-data <#access-meta-data>`_ available when using *TwitterSearch*. Some users might want to rely only on the ``get_statistics()`` method of the :class:`TwitterSearch` to trigger, for example, an artificial delay. This function returns a tuple of two integers. The first integer represents the amount of queries sent to Twitter so far, while the second one is an automatically increasing counter of the so far received tweets during those queries. Thus, an example taking those two meta-information into account could look like:
 
 .. code-block:: python
 
