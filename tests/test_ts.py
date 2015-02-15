@@ -124,6 +124,39 @@ class TwitterSearchTest(unittest.TestCase):
         self.assertEqual(stats[1], tweet_cnt, "Tweet counter is NOT working correctly (%i should be %i)" % (stats[1], tweet_cnt))
         self.assertEqual(stats[0], pages, "Query counter is NOT working correctly (%i should be %i)" % (stats[0], pages))
 
+    @httpretty.activate
+    def test_TS_search_tweets_iterable_callable(self):
+        """ Tests TwitterSearch.search_tweets_iterable(callable) and .get_statistics() by using TwitterSearchOrder class """
+
+        httpretty.register_uri(httpretty.GET, self.search_url,
+                        responses=[
+                            httpretty.Response(streaming=True, status=200, content_type='text/json', body=self.apiAnsweringMachine('tests/mock-data/search/0.log')),
+                            httpretty.Response(streaming=True, status=200, content_type='text/json', body=self.apiAnsweringMachine('tests/mock-data/search/1.log')),
+                            httpretty.Response(streaming=True, status=200, content_type='text/json', body=self.apiAnsweringMachine('tests/mock-data/search/2.log')),
+                            httpretty.Response(streaming=True, status=200, content_type='text/json', body=self.apiAnsweringMachine('tests/mock-data/search/3.log'))
+                            ]
+                        )
+
+        cnt = 4
+        pages = 4 # 4 pages with 4*4-1 tweets in total
+        tso = self.createTSO()
+        tso.set_count(cnt)
+        ts = self.createTS()
+
+        def test_closure(ts):
+            ts.__statistics[0] += 1
+            ts.__statistics[0] += 1
+
+        tweet_cnt = 0
+        for tweet in ts.search_tweets_iterable(tso, callable=test_closure):
+            tweet_cnt += 1
+
+        self.assertEqual( (cnt*4*2-1), tweet_cnt, "Wrong amount of tweets")
+
+        # test statistics
+        stats = ts.get_statistics()
+        self.assertEqual(stats[1], tweet_cnt, "Tweet counter is NOT working correctly (%i should be %i)" % (stats[1], tweet_cnt*2))
+        self.assertEqual(stats[0], pages, "Query counter is NOT working correctly (%i should be %i)" % (stats[0], pages*2))
 
     @httpretty.activate
     def test_TS_search_tweets_iterable(self):
