@@ -18,6 +18,10 @@ TwitterSearch
      :target: https://coveralls.io/r/ckoepp/TwitterSearch?branch=master
      :alt: Coverage
 
+.. image:: https://readthedocs.org/projects/twittersearch/badge/?version=latest
+     :target: https://twittersearch.readthedocs.org/en/latest/
+     :alt: Documentation
+
 This library allows you easily create a search through the Twitter  API without having to know too much about the API details. Based on such a search you can even iterate throughout all tweets reachable via the Twitter Search API. There is an automatic reload of the next pages while using the iteration.
 
 Reasons to use TwitterSearch
