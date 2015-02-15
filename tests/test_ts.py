@@ -148,7 +148,7 @@ class TwitterSearchTest(unittest.TestCase):
             ts.__statistics[0] += 1
 
         tweet_cnt = 0
-        for tweet in ts.search_tweets_iterable(tso, callable=test_closure):
+        for tweet in ts.search_tweets_iterable(tso, callback=test_closure):
             tweet_cnt += 1
 
         self.assertEqual( (cnt*4*2-1), tweet_cnt, "Wrong amount of tweets")
