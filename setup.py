@@ -14,7 +14,7 @@ def requirements():
     return req
 
 setup(name='TwitterSearch',
-      version='1.0.0',
+      version='1.0.1',
       description='A library to easily iterate tweets found by the Twitter API',
       long_description=readme(),
       url='http://github.com/ckoepp/TwitterSearch',

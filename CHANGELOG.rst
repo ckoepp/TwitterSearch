@@ -1,6 +1,12 @@
 Change history
 **************
 
+1.0.1
+#####
+
+* added support for user-defined callback-method while performing API queries (issue #25)
+* added support for advanced query operators (issue #24)
+
 1.0.0
 #####
 

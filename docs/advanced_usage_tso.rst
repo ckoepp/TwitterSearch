@@ -9,7 +9,7 @@ The only parameter with a default value is ``count`` with *100*. This is because
 Be aware that some parameters *can be* ignored by Twitter. For example currently not every language is detectable by the Search API. TwitterSearch is only responsible for transmitting values according to the Twitter documentation.
 
 ================ ============== ================================================================================================= =============================================================
-API Parameter    Type           Modifying methods                                                                   Example
+API Parameter    Type           Modifying methods                                                                                 Example
 ---------------- -------------- ------------------------------------------------------------------------------------------------- -------------------------------------------------------------
 q                ***required*** ``add_keyword(<string>)``, ``set_keywords(<list>)``                                               ``add_keyword('#Hashtag')``, ``set_keywords(['foo','bar'])``
 ---------------- -------------- ------------------------------------------------------------------------------------------------- -------------------------------------------------------------
