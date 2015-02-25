@@ -22,7 +22,7 @@ TwitterSearch
      :target: https://twittersearch.readthedocs.org/en/latest/
      :alt: Documentation
 
-This library allows you easily create a search through the Twitter  API without having to know too much about the API details. Based on such a search you can even iterate throughout all tweets reachable via the Twitter Search API. There is an automatic reload of the next pages while using the iteration.
+This library allows you easily create a search through the Twitter  API without having to know too much about the API details. Based on such a search you can even iterate throughout all tweets reachable via the Twitter Search API. There is an automatic reload of the next pages while using the iteration. TwitterSearch was developed as part of an interdisciplinary project at the `Technische Universität München <http://www.tum.de/en/>`_.
 
 Reasons to use TwitterSearch
 ############################
