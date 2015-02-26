@@ -66,8 +66,12 @@ class TwitterSearchOrder(TwitterOrder):
         self.arguments = {'count': '%s' % self._max_count}
         self.searchterms = []
         self.url = ''
+        self.remove_all_filters()
 
-        # None = no attitude, True = positive, False = negative
+    def remove_all_filters(self):
+        """ Removes all filters """
+
+        # attitude: None = no attitude, True = positive, False = negative
         self.attitude_filter = self.source_filter = None
         self.question_filter = self.link_filter = False
 
@@ -137,9 +141,10 @@ class TwitterSearchOrder(TwitterOrder):
         """
 
         if isinstance(word, str if py3k else basestring) and len(word) >= 2:
-            self.searchterms.append(word)
-        elif isinstance(word, list):
-            self.searchterms += "OR".join(word) if or_operator else word
+            self.searchterms.append(word if " " not in word else '"%s"' % word)
+        elif isinstance(word, (tuple,list)):
+            word = [ (i if " " not in i else '"%s"' % i)  for i in word ]
+            self.searchterms += [" OR ".join(word)] if or_operator else word
         else:
             raise TwitterSearchException(1000)
 
@@ -153,9 +158,10 @@ class TwitterSearchOrder(TwitterOrder):
         :raises: TwitterSearchException
         """
 
-        if not isinstance(words, list):
+        if not isinstance(words, (tuple,list)):
             raise TwitterSearchException(1001)
-        self.searchterms = ["OR".join(words)] if or_operator else words
+        words = [ (i if " " not in i else '"%s"' % i)  for i in words ]
+        self.searchterms = [" OR ".join(words)] if or_operator else words
 
     def set_search_url(self, url):
         """ Reads given query string and stores key-value tuples

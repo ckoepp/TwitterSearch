@@ -285,6 +285,14 @@ class TwitterSearchOrderTest(unittest.TestCase):
         tso.set_keywords(['test'])
         self.assertEqual(tso.create_search_url()[0:7], '?q=test', "Keywords are NOT equal")
 
+        # space keywords
+        space_test = "James Bond"
+        test_against = "%22" + space_test.replace(" ","+") + "%22"
+        tso.add_keyword(space_test)
+        self.assertTrue(test_against in tso.create_search_url())
+        tso.set_keywords([space_test])
+        self.assertTrue(test_against in tso.create_search_url())
+
         # wrong values
         try:
             tso.add_keyword({ 'foo' : 'bar' })
@@ -302,56 +310,71 @@ class TwitterSearchOrderTest(unittest.TestCase):
         except TwitterSearchException as e:
             self.assertEqual(e.code, 1015, "Wrong exception code")
 
+    def test_TSO_add_keyword_OR(self):
+        """" Tests TwitterSearchOrder.add_keyword(or_operator) """
+
+        tso = self.getCopy()
+        keywords = ("bob","alice")
+        tso.add_keyword(keywords, or_operator=True)
+        self.assertTrue("+or+".join(keywords) in tso.create_search_url().lower())
+
+    def test_TSO_set_keywords_OR(self):
+        """" Tests TwitterSearchOrder.set_keywords(or_operator) """
+
+        tso = self.getCopy()
+        keywords = ("bob","alice")
+        tso.set_keywords(keywords, or_operator=True)
+        self.assertTrue("+or+".join(keywords) in tso.create_search_url().lower())
 
     def test_TSO_filters(self):
         """ Tests TwitterSearchOrder advanced filtering methods """
 
-        tso1 = self.getCopy()
+        tso = self.getCopy()
 
         # source filter
         source = "nyancat"
-        self.assertTrue(tso1.source_filter is None) # default
-        tso1.set_source_filter(source)
-        self.assertEqual(tso1.source_filter, source)
-        self.assertTrue("source%3a" + source in tso1.create_search_url().lower())
-        tso1.remove_source_filter()
-        self.assertTrue(tso1.source_filter is None)
+        self.assertTrue(tso.source_filter is None) # default
+        tso.set_source_filter(source)
+        self.assertEqual(tso.source_filter, source)
+        self.assertTrue("source%3a" + source in tso.create_search_url().lower())
+        tso.remove_source_filter()
+        self.assertTrue(tso.source_filter is None)
 
         # check for exception when inserting invalid values
         for obj in ([], {}, None, 2, 37.1, ""):
             with self.assertRaises(TwitterSearchException):
-                tso1.set_source_filter(obj)
+                tso.set_source_filter(obj)
 
         # link filter
-        self.assertFalse(tso1.link_filter) # default
-        tso1.set_link_filter()
-        self.assertTrue(tso1.link_filter)
-        self.assertTrue("filter%3alinks" in tso1.create_search_url().lower())
-        tso1.remove_link_filter()
-        self.assertFalse(tso1.link_filter)
+        self.assertFalse(tso.link_filter) # default
+        tso.set_link_filter()
+        self.assertTrue(tso.link_filter)
+        self.assertTrue("filter%3alinks" in tso.create_search_url().lower())
+        tso.remove_link_filter()
+        self.assertFalse(tso.link_filter)
 
         # question filter
-        self.assertFalse(tso1.question_filter) # default
-        tso1.set_question_filter()
-        self.assertTrue(tso1.question_filter)
-        self.assertTrue("%3f" in tso1.create_search_url().lower())
-        tso1.remove_question_filter()
-        self.assertFalse(tso1.question_filter)
+        self.assertFalse(tso.question_filter) # default
+        tso.set_question_filter()
+        self.assertTrue(tso.question_filter)
+        self.assertTrue("%3f" in tso.create_search_url().lower())
+        tso.remove_question_filter()
+        self.assertFalse(tso.question_filter)
 
         # negative attitude filter
-        self.assertTrue(tso1.attitude_filter is None) # default
-        tso1.set_negative_attitude_filter()
-        self.assertFalse(tso1.attitude_filter)
-        self.assertTrue("%3a%28" in tso1.create_search_url().lower())
-        tso1.remove_attitude_filter()
-        self.assertTrue(tso1.attitude_filter is None)
+        self.assertTrue(tso.attitude_filter is None) # default
+        tso.set_negative_attitude_filter()
+        self.assertFalse(tso.attitude_filter)
+        self.assertTrue("%3a%28" in tso.create_search_url().lower())
+        tso.remove_attitude_filter()
+        self.assertTrue(tso.attitude_filter is None)
 
         # positive attitude filter
-        tso1.set_positive_attitude_filter()
-        self.assertTrue(tso1.attitude_filter)
-        self.assertTrue("%3a%29" in tso1.create_search_url().lower())
-        tso1.remove_attitude_filter()
-        self.assertTrue(tso1.attitude_filter is None)
+        tso.set_positive_attitude_filter()
+        self.assertTrue(tso.attitude_filter)
+        self.assertTrue("%3a%29" in tso.create_search_url().lower())
+        tso.remove_attitude_filter()
+        self.assertTrue(tso.attitude_filter is None)
 
     def test_TSO_setURL(self):
         """ Tests TwitterSearchOrder.set_search_url() """
