@@ -65,10 +65,11 @@ class TwitterSearchOrder(TwitterOrder):
 
         self.arguments = {'count': '%s' % self._max_count}
         self.searchterms = []
-        self.attitude_filter = None # None = no attitude, True = positive, False = negative
-        self.question_filter = self.link_filter = False
-        self.source_filter = None
         self.url = ''
+
+        # None = no attitude, True = positive, False = negative
+        self.attitude_filter = self.source_filter = None
+        self.question_filter = self.link_filter = False
 
     def set_source_filter(self, source):
         """ Only search for tweets entered via given source
@@ -78,12 +79,12 @@ class TwitterSearchOrder(TwitterOrder):
         :raises: TwitterSearchException
         """
 
-        if isinstance(word, str if py3k else basestring) and len(word) >= 2:
+        if isinstance(source, str if py3k else basestring) and len(source) >= 2:
             self.source_filter = source
         else:
             raise TwitterSearchException(1009)
 
-    def set_source_filter(self, source):
+    def remove_source_filter(self):
         """ Remove the current source filter """
 
         self.source_filter = None
@@ -162,18 +163,27 @@ class TwitterSearchOrder(TwitterOrder):
         :param url: A string containing a valid URL to parse arguments from
         """
 
+        self.__init__()
+
         if url[0] == '?':
             url = url[1:]
 
         args = parse_qs(url)
-        self.searchterms = args['q']
+
+        # urldecode keywords
+        for arg in args['q']:
+            self.searchterms += [ unquote(i) for i in arg.split(" ") ]
         del args['q']
+
+        for key, value in args.items():
+            self.arguments.update({key: unquote(value[0])})
 
         # look for advanced operators: attitudes
         for attitude in self._attitudes:
             try:
-                del self.searchterms[ self.searchterms.index(attitude) ]
-                self.attitude_filter = (self.attitude.index(attitude) == 1)
+                i = self.searchterms.index(attitude)
+                del self.searchterms[i]
+                self.attitude_filter = (i == 1)
             except ValueError:
                 pass
 
@@ -191,6 +201,8 @@ class TwitterSearchOrder(TwitterOrder):
         except ValueError:
             pass
 
+
+
         # look for advanced operators: source-filter
         i = None
         for element in self.searchterms:
@@ -200,14 +212,6 @@ class TwitterSearchOrder(TwitterOrder):
         if i:
             del self.searchterms[ self.searchterms.index(i) ]
             self.source_filter = i[ len(self._source): ]
-
-        # urldecode keywords
-        for item in self.searchterms:
-            item = unquote(item)
-
-        self.arguments = {}
-        for key, value in args.items():
-            self.arguments.update({key: unquote(value[0])})
 
     def create_search_url(self):
         """ Generates (urlencoded) query string from stored key-values tuples
@@ -222,10 +226,10 @@ class TwitterSearchOrder(TwitterOrder):
         url += '+'.join([quote_plus(i) for i in self.searchterms])
 
         if self.attitude_filter is not None:
-            url += '+%s' % quote_plus(self._attitudes[0 if self.attitude else 1])
+            url += '+%s' % quote_plus(self._attitudes[0 if self.attitude_filter else 1])
 
         if self.source_filter:
-            url += '+%s' % quote_plus(self._source + self.source)
+            url += '+%s' % quote_plus(self._source + self.source_filter)
 
         if self.link_filter:
             url += '+%s' % quote_plus(self._link)
