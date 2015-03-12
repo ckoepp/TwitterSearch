@@ -39,5 +39,5 @@ setup(name='TwitterSearch',
       install_requires=requirements(),
       zip_safe=False,
       test_suite='nose.collector',
-      tests_require=['nose>=1.0.0', 'httpretty<0.8.7']
+      tests_require=['nose>=1.0.0', 'httpretty>=0.8.8']
       )
