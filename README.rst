@@ -2,21 +2,25 @@
 TwitterSearch
 *************
 
-.. image:: https://api.travis-ci.org/ckoepp/TwitterSearch.png?branch=master
+.. image:: https://img.shields.io/travis/ckoepp/TwitterSearch/master.svg?style=flat-square
     :target: http://travis-ci.org/ckoepp/TwitterSearch/branches
     :alt: Build Status
 
-.. image:: https://pypip.in/d/TwitterSearch/badge.png
+.. image:: https://img.shields.io/coveralls/ckoepp/TwitterSearch.svg?style=flat-square
+    :target: https://coveralls.io/r/ckoepp/TwitterSearch?branch=master
+    :alt: Coverage
+
+.. image:: https://img.shields.io/pypi/dm/TwitterSearch.svg?style=flat-square
     :target: https://crate.io/packages/TwitterSearch/
     :alt: Downloads
-    
-.. image:: https://pypip.in/v/TwitterSearch/badge.png
+
+.. image:: https://img.shields.io/pypi/v/TwitterSearch.svg?style=flat-square
     :target: https://pypi.python.org/pypi/TwitterSearch/
     :alt: PyPi version
-
-.. image:: https://coveralls.io/repos/ckoepp/TwitterSearch/badge.png?branch=master
-     :target: https://coveralls.io/r/ckoepp/TwitterSearch?branch=master
-     :alt: Coverage
+	
+.. image:: https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square
+    :target: https://raw.githubusercontent.com/ckoepp/TwitterSearch/master/LICENSE
+    :alt: MIT License
 
 .. image:: https://readthedocs.org/projects/twittersearch/badge/?version=latest
      :target: https://twittersearch.readthedocs.org/en/latest/
