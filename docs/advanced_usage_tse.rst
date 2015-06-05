@@ -55,6 +55,10 @@ All exceptions based on issues within TwitterSearch do have ``TwitterSearchExcep
 1015   No keywords given                      
 ------ --------------------------------------
 1016   Invalid dict                           
+------ --------------------------------------
+1017   Invalid user id or screen-name
+------ --------------------------------------
+1018   Not a callable function
 ====== ======================================
 
 HTTP based exceptions

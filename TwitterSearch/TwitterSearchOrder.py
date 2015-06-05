@@ -20,12 +20,25 @@ class TwitterSearchOrder(TwitterOrder):
     syntax of the Twitter Search API.
     """
 
+    # Attitude filter search strings (<negative>,<positive>) as taken from
+    # https://dev.twitter.com/rest/public/search
+    _attitudes = (":)", ":(")
+
+    # Question filter search string
+    _question = "?"
+
+    # Link filter search string
+    _link = "filter:links"
+
+    # Source filter prefix string
+    _source = "source:"
+
     # default value for count should be the maximum value to minimize traffic
     # see https://dev.twitter.com/docs/api/1.1/get/search/tweets
     _max_count = 100
 
     # taken from http://www.loc.gov/standards/iso639-2/php/English_list.php
-    iso_6391 = ['aa', 'ab', 'ae', 'af', 'ak', 'am', 'an', 'ar', 'as',
+    iso_6391 = ('aa', 'ab', 'ae', 'af', 'ak', 'am', 'an', 'ar', 'as',
                 'av', 'ay', 'az', 'ba', 'be', 'bg', 'bh', 'bi', 'bm',
                 'bn', 'bo', 'br', 'bs', 'ca', 'ce', 'ch', 'co', 'cr',
                 'cs', 'cu', 'cv', 'cy', 'da', 'de', 'dv', 'dz', 'ee',
@@ -45,7 +58,7 @@ class TwitterSearchOrder(TwitterOrder):
                 'sw', 'ta', 'te', 'tg', 'th', 'ti', 'tk', 'tl', 'tn',
                 'to', 'tr', 'ts', 'tt', 'tw', 'ty', 'ug', 'uk', 'ur',
                 'uz', 've', 'vi', 'vo', 'wa', 'wo', 'xh', 'yi', 'yo',
-                'za', 'zh', 'zu']
+                'za', 'zh', 'zu')
 
     def __init__(self):
         """ Constructor """
@@ -53,31 +66,102 @@ class TwitterSearchOrder(TwitterOrder):
         self.arguments = {'count': '%s' % self._max_count}
         self.searchterms = []
         self.url = ''
+        self.remove_all_filters()
 
-    def add_keyword(self, word):
+    def remove_all_filters(self):
+        """ Removes all filters """
+
+        # attitude: None = no attitude, True = positive, False = negative
+        self.attitude_filter = self.source_filter = None
+        self.question_filter = self.link_filter = False
+
+    def set_source_filter(self, source):
+        """ Only search for tweets entered via given source
+
+        :param source: String. Name of the source to search for. An example \
+        would be ``source=twitterfeed`` for tweets submitted via TwitterFeed
+        :raises: TwitterSearchException
+        """
+
+        if isinstance(source, str if py3k else basestring) and len(source) >= 2:
+            self.source_filter = source
+        else:
+            raise TwitterSearchException(1009)
+
+    def remove_source_filter(self):
+        """ Remove the current source filter """
+
+        self.source_filter = None
+
+
+    def set_link_filter(self):
+        """ Only search for tweets including links """
+
+        self.link_filter = True
+
+    def remove_link_filter(self):
+        """ Remove the current link filter """
+
+        self.link_filter = False
+
+    def set_question_filter(self):
+        """ Only search for tweets asking a question """
+
+        self.question_filter = True
+
+    def remove_question_filter(self):
+        """ Remove the current question filter """
+
+        self.question_filter = False
+
+    def set_positive_attitude_filter(self):
+        """ Only search for tweets with positive attitude """
+
+        self.attitude_filter = True
+
+    def set_negative_attitude_filter(self):
+        """ Only search for tweets with negative attitude """
+
+        self.attitude_filter = False
+
+    def remove_attitude_filter(self):
+        """ Remove attitude filter """
+
+        self.attitude_filter = None
+
+    def add_keyword(self, word, or_operator=False):
         """ Adds a given string or list to the current keyword list
 
         :param word: String or list of at least 2 character long keyword(s)
+        :param or_operator: Boolean. Concatenates all elements of parameter \
+        word with ``OR``. Is ignored is word is not a list. Thus it is \
+        possible to search for ``foo OR bar``. Default value is False \
+        which corresponds to a search of ``foo AND bar``.
         :raises: TwitterSearchException
         """
 
         if isinstance(word, str if py3k else basestring) and len(word) >= 2:
-            self.searchterms.append(word)
-        elif isinstance(word, list):
-            self.searchterms += word
+            self.searchterms.append(word if " " not in word else '"%s"' % word)
+        elif isinstance(word, (tuple,list)):
+            word = [ (i if " " not in i else '"%s"' % i)  for i in word ]
+            self.searchterms += [" OR ".join(word)] if or_operator else word
         else:
             raise TwitterSearchException(1000)
 
-    def set_keywords(self, words):
+    def set_keywords(self, words, or_operator=False):
         """ Sets a given list as the new keyword list
 
         :param words: A list of at least 2 character long new keywords
+        :param or_operator: Boolean. Concatenates all elements of parameter \
+        word with ``OR``. Enables searches for ``foo OR bar``. Default value \
+        is False which corresponds to a search of ``foo AND bar``.
         :raises: TwitterSearchException
         """
 
-        if not isinstance(words, list):
+        if not isinstance(words, (tuple,list)):
             raise TwitterSearchException(1001)
-        self.searchterms = words
+        words = [ (i if " " not in i else '"%s"' % i)  for i in words ]
+        self.searchterms = [" OR ".join(words)] if or_operator else words
 
     def set_search_url(self, url):
         """ Reads given query string and stores key-value tuples
@@ -85,20 +169,55 @@ class TwitterSearchOrder(TwitterOrder):
         :param url: A string containing a valid URL to parse arguments from
         """
 
+        self.__init__()
+
         if url[0] == '?':
             url = url[1:]
 
         args = parse_qs(url)
-        self.searchterms = args['q']
-        del args['q']
 
         # urldecode keywords
-        for item in self.searchterms:
-            item = unquote(item)
+        for arg in args['q']:
+            self.searchterms += [ unquote(i) for i in arg.split(" ") ]
+        del args['q']
 
-        self.arguments = {}
         for key, value in args.items():
             self.arguments.update({key: unquote(value[0])})
+
+        # look for advanced operators: attitudes
+        for attitude in self._attitudes:
+            try:
+                i = self.searchterms.index(attitude)
+                del self.searchterms[i]
+                self.attitude_filter = (i == 1)
+            except ValueError:
+                pass
+
+        # look for advanced operators: question
+        try:
+            del self.searchterms[ self.searchterms.index(self._question) ]
+            self.question_filter = True
+        except ValueError:
+            pass
+
+        # look for advanced operators: link-filter
+        try:
+            del self.searchterms[ self.searchterms.index(self._link) ]
+            self.link_filter = True
+        except ValueError:
+            pass
+
+
+
+        # look for advanced operators: source-filter
+        i = None
+        for element in self.searchterms:
+            if element.startswith(self._source):
+                i = element
+                break
+        if i:
+            del self.searchterms[ self.searchterms.index(i) ]
+            self.source_filter = i[ len(self._source): ]
 
     def create_search_url(self):
         """ Generates (urlencoded) query string from stored key-values tuples
@@ -111,6 +230,18 @@ class TwitterSearchOrder(TwitterOrder):
 
         url = '?q='
         url += '+'.join([quote_plus(i) for i in self.searchterms])
+
+        if self.attitude_filter is not None:
+            url += '+%s' % quote_plus(self._attitudes[0 if self.attitude_filter else 1])
+
+        if self.source_filter:
+            url += '+%s' % quote_plus(self._source + self.source_filter)
+
+        if self.link_filter:
+            url += '+%s' % quote_plus(self._link)
+
+        if self.question_filter:
+            url += '+%s' % quote_plus(self._question)
 
         for key, value in self.arguments.items():
             url += '&%s=%s' % (quote_plus(key), (quote_plus(value)

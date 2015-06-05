@@ -1,6 +1,14 @@
 Change history
 **************
 
+1.0.1
+#####
+
+* added support for user-defined callback-method while performing API queries (issue #25)
+* added support for advanced query operators (issue #24)
+* adjusted search term parsing in method TwitterSearchOrder.set_search_url()
+* auto-handling of keywords with spaces
+
 1.0.0
 #####
 

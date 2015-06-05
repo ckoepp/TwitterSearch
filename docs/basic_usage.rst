@@ -56,6 +56,9 @@ Please note those code snippets are already working examples executable in both,
 Accessible information
 ----------------------
 
+.. note::
+    The Twitter Search API does not reveal tweets older than a week (or sometimes dating back to 10 days). Be aware that the official `Twitter Search <https://twitter.com/search-home>`_ does not use the Twitter Search API but a internal Twitter interface. Thus, it reveals tweets older than those you can collect through the public API. If you need access to old tweets you might have pay a commercial provider to give you access to its Twitter archives.
+
 The creator of this library doesn't like to hide any informations from you. Therefore the data you'll receive is quite a lot. A typical tweet, as mentioned in the section above, consists of a huge ``dict``.
 
 You may ask the question "*But what does this field exactly mean?*". Well, that's where the job of *TwitterSearch* ends and the `Twitter documentation <https://dev.twitter.com/docs/platform-objects/tweets>`_ joins the fun.

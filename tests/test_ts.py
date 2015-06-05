@@ -124,6 +124,37 @@ class TwitterSearchTest(unittest.TestCase):
         self.assertEqual(stats[1], tweet_cnt, "Tweet counter is NOT working correctly (%i should be %i)" % (stats[1], tweet_cnt))
         self.assertEqual(stats[0], pages, "Query counter is NOT working correctly (%i should be %i)" % (stats[0], pages))
 
+    @httpretty.activate
+    def test_TS_search_tweets_iterable_callback(self):
+        """ Tests TwitterSearch.search_tweets_iterable(callback) by using TwitterSearchOrder class """
+
+        import sys
+        if sys.version_info[0] < 3:
+            self.assertTrue(True) # Dummy test for py2 doesn't have Mock class
+            return
+
+        httpretty.register_uri(httpretty.GET, self.search_url,
+                        responses=[
+                            httpretty.Response(streaming=True, status=200, content_type='text/json', body=self.apiAnsweringMachine('tests/mock-data/search/0.log')),
+                            httpretty.Response(streaming=True, status=200, content_type='text/json', body=self.apiAnsweringMachine('tests/mock-data/search/1.log')),
+                            httpretty.Response(streaming=True, status=200, content_type='text/json', body=self.apiAnsweringMachine('tests/mock-data/search/2.log')),
+                            httpretty.Response(streaming=True, status=200, content_type='text/json', body=self.apiAnsweringMachine('tests/mock-data/search/3.log'))
+                            ]
+                        )
+
+        pages = 4
+        tso = self.createTSO()
+        tso.set_count(4)
+        ts = self.createTS()
+
+        from unittest.mock import Mock
+
+        mock = Mock()
+        for tweet in ts.search_tweets_iterable(tso, callback=mock):
+            mock.assert_called_with(ts)
+
+        times = len(mock.call_args_list)
+        self.assertEqual(pages, times, "Callback function was NOT called 4 times but %i times" % times)
 
     @httpretty.activate
     def test_TS_search_tweets_iterable(self):

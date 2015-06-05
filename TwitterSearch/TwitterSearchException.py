@@ -30,6 +30,7 @@ class TwitterSearchException(Exception):
         1015: 'No keywords given',
         1016: 'Invalid dict',
         1017: 'Invalid argument: need either a user ID or a screen-name',
+        1018: 'Not a callable function',
     }
 
     def __init__(self, code, msg=None):
