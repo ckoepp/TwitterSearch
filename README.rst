@@ -9,10 +9,10 @@ TwitterSearch
 .. image:: https://img.shields.io/coveralls/ckoepp/TwitterSearch.svg?style=flat-square
     :target: https://coveralls.io/r/ckoepp/TwitterSearch?branch=master
     :alt: Coverage
-
-.. image:: https://img.shields.io/pypi/dm/TwitterSearch.svg?style=flat-square
-    :target: https://crate.io/packages/TwitterSearch/
-    :alt: Downloads
+    
+.. image:: https://landscape.io/github/ckoepp/TwitterSearch/master/landscape.svg?style=flat
+    :target: https://landscape.io/github/ckoepp/TwitterSearch/master
+    :alt: Code Health
 
 .. image:: https://img.shields.io/pypi/v/TwitterSearch.svg?style=flat-square
     :target: https://pypi.python.org/pypi/TwitterSearch/
