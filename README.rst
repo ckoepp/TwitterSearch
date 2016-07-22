@@ -10,7 +10,7 @@ TwitterSearch
     :target: https://coveralls.io/r/ckoepp/TwitterSearch?branch=master
     :alt: Coverage
     
-.. image:: https://landscape.io/github/ckoepp/TwitterSearch/master/landscape.svg?style=flat
+.. image:: https://landscape.io/github/ckoepp/TwitterSearch/master/landscape.svg?style=flat-square
     :target: https://landscape.io/github/ckoepp/TwitterSearch/master
     :alt: Code Health
 
