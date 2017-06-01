@@ -355,3 +355,16 @@ class TwitterSearchOrder(TwitterOrder):
             self.arguments.update({'until': '%s' % date.strftime('%Y-%m-%d')})
         else:
             raise TwitterSearchException(1007)
+
+    def set_since(self, date):
+        """ Sets 'since' parameter used to return \
+        only tweets generated after the given date
+
+        :param date: A datetime instance
+        :raises: TwitterSearchException
+        """
+
+        if isinstance(date, datetime.date) and date <= datetime.date.today():
+            self.arguments.update({'since': '%s' % date.strftime('%Y-%m-%d')})
+        else:
+            raise TwitterSearchException(1007)
