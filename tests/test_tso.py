@@ -24,6 +24,18 @@ class TwitterSearchOrderTest(unittest.TestCase):
 
         return ''.join(random.choice(chars) for x in range(size))
 
+    def generateCorrectDates(self):
+        """ Generates and returns correct date values to test against """
+
+        today = date.today()
+        return [ today, today - timedelta(days=1), today - timedelta(days=10), today - timedelta(days=371) ]
+
+    def generateWrongDates(self):
+        """ Generates odd dates to provoke exceptions """
+
+        today = date.today()
+        return [ today + timedelta(days=1), '', [], {}, -1, 39.0, 31, 'foobar' ]
+
     def generateInt(self, minimum=0, maximum=100):
         """ Generates random integers """
 
@@ -69,18 +81,40 @@ class TwitterSearchOrderTest(unittest.TestCase):
         """ Tests TwitterSearchOrder.set_until() """
 
         tso = self.getCopy()
-        today = date.today()
-        correct_values = [ today, today - timedelta(days=1), today - timedelta(days=10), today - timedelta(days=371) ]
+
+        # expected input
+        correct_values = self.generateCorrectDates()
         for value in correct_values:
             tso.set_until(value)
             cor = '%s&until=%s' % (self.__tso.create_search_url(), value.strftime('%Y-%m-%d'))
             self.assertEqualQuery(tso.create_search_url(), cor)
 
-        # wrong values
-        wrong_values = [ today + timedelta(days=1), '', [], {}, -1, 39.0, 31, 'foobar' ]
+        # unexpected input
+        wrong_values = self.generateWrongDates()
         for value in wrong_values:
             try:
                 tso.set_until(value)
+                assertTrue(False, "Not raising exception for %s" % value.strfttime('%Y-%m-%d'))
+            except TwitterSearchException as e:
+                self.assertEqual(e.code, 1007, "Wrong exception code")
+
+    def test_TSO_since(self):
+        """ Tests TwitterSearchOrder.set_since() """
+
+        tso = self.getCopy()
+
+        # expected input
+        correct_values = self.generateCorrectDates()
+        for value in correct_values:
+            tso.set_since(value)
+            cor = '%s&since=%s' % (self.__tso.create_search_url(), value.strftime('%Y-%m-%d'))
+            self.assertEqualQuery(tso.create_search_url(), cor)
+
+        # unexpected input
+        wrong_values = self.generateWrongDates()
+        for value in wrong_values:
+            try:
+                tso.set_since(value)
                 assertTrue(False, "Not raising exception for %s" % value.strfttime('%Y-%m-%d'))
             except TwitterSearchException as e:
                 self.assertEqual(e.code, 1007, "Wrong exception code")
@@ -380,7 +414,7 @@ class TwitterSearchOrderTest(unittest.TestCase):
         """ Tests TwitterSearchOrder.set_search_url() """
 
         tso1 = self.getCopy()
-        tso1.set_search_url('?q=test1+test2&count=77&until=2013-07-10&locale=en')
+        tso1.set_search_url('?q=test1+test2&count=77&until=2013-07-15&since=2013-07-10&locale=en')
 
         # testing filter settings (off)
         self.assertFalse(tso1.question_filter)
@@ -391,7 +425,8 @@ class TwitterSearchOrderTest(unittest.TestCase):
         tso2 = TwitterSearchOrder()
         tso2.set_keywords([ 'test1', 'test2' ])
         tso2.set_count(77)
-        tso2.set_until(date(2013,7,10))
+        tso2.set_until(date(2013,7,15))
+        tso2.set_since(date(2013,7,10))
         tso2.set_locale('en')
 
         self.assertEqualQuery(tso1.create_search_url(), tso2.create_search_url(), "Query strings NOT equal")
