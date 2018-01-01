@@ -34,6 +34,8 @@ count            *optional*     ``set_count(<int>[Range: 1-100])``              
 ---------------- -------------- ------------------------------------------------------------------------------------------------- -------------------------------------------------------------
 until            *optional*     ``set_until(<datetime.date>)``                                                                    ``set_until(datetime.date(2012, 12, 24))``
 ---------------- -------------- ------------------------------------------------------------------------------------------------- -------------------------------------------------------------
+until            *optional*     ``set_since(<datetime.date>)``                                                                    ``set_since(datetime.date(2012, 12, 24))``
+---------------- -------------- ------------------------------------------------------------------------------------------------- -------------------------------------------------------------
 since_id         *optional*     ``set_since_id(<int,long>[Range: >0])``                                                           ``set_since_id(250075927172759552)``
 ---------------- -------------- ------------------------------------------------------------------------------------------------- -------------------------------------------------------------
 max_id           *optional*     ``set_max_id(<int,long>[Range: >0])``                                                             ``set_max_id(249292149810667520)``
@@ -154,7 +156,7 @@ Time-based filtering
 
 *TwitterSearch* tries to concentrate on simple query and does prefer to submit arguments as parameters instead of merging them into the query string. Thus *TwitterSearch* will generate raw query strings like ``?q=foobar&until=2010-12-27`` instead of ``?q=foobar+since:2010-12-27``. Both versions will return the very same tweets but while the first one separates the values in different parameters, the second one just merges everything together. Doing so is likely to lead to long and possibly wrong query strings. Remember that you're perfectly able to submit stuff like ``?q=foobar+since:2010-12-27+until:2010-12-26`` which is obviously non-sense. If you would still like to dump everything into the ``q`` parameter you can do so manually by using ``set_keywords(['since:2010-12-27','until:2010-12-26'])`` for example.
 
-If you have no specific reason to actually include those time-based filters into the search query parameter directly, you should use the default methods of ``set_since_id()`` and/or ``set_until()``.
+If you have no specific reason to actually include those time-based filters into the search query parameter directly, you should use the default methods of ``set_since_id()``, ``set_since()`` and/or ``set_until()``.
 
 Advanced usage examples
 -----------------------
